@@ -36,6 +36,10 @@ yarn-error.log*
 # vercel
 .vercel
 
+# jetbrains / idea (keep project files optional, ignore user-specific)
+.idea/workspace.xml
+.idea/misc.xml
+
 # typescript
 *.tsbuildinfo
 next-env.d.ts
