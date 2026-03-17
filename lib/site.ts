@@ -1,0 +1,14 @@
+export function getSiteUrl() {
+  const raw =
+    process.env.NEXT_PUBLIC_SITE_URL ||
+    process.env.SITE_URL ||
+    "http://localhost:3000";
+  return raw.replace(/\/+$/, "");
+}
+
+export function absoluteUrl(path: string) {
+  const base = getSiteUrl();
+  const p = path.startsWith("/") ? path : `/${path}`;
+  return `${base}${p}`;
+}
+

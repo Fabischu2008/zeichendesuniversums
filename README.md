@@ -1,3 +1,27 @@
+# Zeichen des Universums (MVP)
+
+Next.js App Router Funnel: Landing → Freebie → Shop → Checkout → Success → Upsell + Blog + Tools (Big‑3).
+
+## Start
+
+```bash
+npm install
+npm run dev
+```
+
+## Wichtige ENV
+
+- `NEXT_PUBLIC_SITE_URL` (für SEO: Canonicals/Sitemap)
+
+## Routen (Auszug)
+
+- `/` Homepage
+- `/freebie` → `/success-freebie`
+- `/shop` + `/shop/[slug]`
+- `/tools/birth-chart` (Big‑3)
+- `/api/tools/big3` (Berechnung)
+- `/sitemap.xml`, `/robots.txt`
+
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
 ## Getting Started
