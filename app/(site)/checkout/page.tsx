@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import CheckoutClient from "./ui";
+import CheckoutClient from "@/app/checkout/ui";
 
 export const metadata: Metadata = {
   title: "Checkout",

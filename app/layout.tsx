@@ -1,8 +1,6 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { getSiteUrl } from "@/lib/site";
 
 const geistSans = Geist({
@@ -47,16 +45,8 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="de">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        <div className="min-h-dvh bg-background text-foreground">
-          <SiteHeader />
-          <main className="mx-auto w-full max-w-7xl px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
-            {children}
-          </main>
-          <SiteFooter />
-        </div>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <div className="min-h-dvh bg-background text-foreground">{children}</div>
       </body>
     </html>
   );
