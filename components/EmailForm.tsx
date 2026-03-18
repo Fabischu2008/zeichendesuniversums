@@ -14,8 +14,10 @@ function safeJsonParse(raw: string): unknown {
 
 export function EmailForm({
   redirectTo = "/success-freebie",
+  source = "freebie",
 }: {
   redirectTo?: string;
+  source?: string;
 }) {
   const router = useRouter();
   const [email, setEmail] = useState("");
@@ -33,7 +35,7 @@ export function EmailForm({
       const res = await fetch("/api/email/subscribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email, source }),
       });
 
       const raw = await res.text();
@@ -74,7 +76,7 @@ export function EmailForm({
         disabled={status === "loading"}
         className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
       >
-        {status === "loading" ? "Sende…" : "Guide holen"}
+        {status === "loading" ? "Sende…" : "Kostenloser Guide"}
       </button>
 
       {status === "error" ? (

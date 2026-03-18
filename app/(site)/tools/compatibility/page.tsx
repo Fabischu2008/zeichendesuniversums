@@ -102,12 +102,20 @@ export default function CompatibilityToolPage() {
                 Reibungspunkte, Kommunikationsmuster und konkrete Lösungen.
               </p>
             </div>
+            <div className="mt-4 rounded-2xl border border-black/10 bg-white p-4 text-sm dark:border-white/15 dark:bg-transparent">
+              <p className="font-medium">🔒 Vollanalyse ist gesperrt</p>
+              <p className="mt-1 text-black/70 dark:text-white/70">
+                Schalte frei, um die <span className="font-medium">3 Haupt‑Trigger</span>,
+                die <span className="font-medium">beste Kommunikations‑Strategie</span>{" "}
+                und eure <span className="font-medium">Stärken</span> als Paar zu sehen.
+              </p>
+            </div>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
                 href="/shop/compatibility-vollanalyse"
                 className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
-                Komplette Analyse freischalten (9€)
+                Jetzt freischalten (9€)
               </Link>
               <Link
                 href="/freebie"

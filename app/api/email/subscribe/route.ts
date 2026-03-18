@@ -5,8 +5,12 @@ function isValidEmail(email: string) {
 }
 
 export async function POST(req: Request) {
-  const body = (await req.json().catch(() => null)) as { email?: unknown } | null;
+  const body = (await req.json().catch(() => null)) as
+    | { email?: unknown; source?: unknown }
+    | null;
   const email = typeof body?.email === "string" ? body.email.trim() : "";
+  const source =
+    typeof body?.source === "string" ? body.source.trim().slice(0, 64) : "";
 
   if (!email || !isValidEmail(email)) {
     return NextResponse.json(
@@ -16,8 +20,9 @@ export async function POST(req: Request) {
   }
 
   // MVP Stub: hier würdest du ConvertKit/Mailchimp integrieren.
+  // Für Automationen: `source` als Tag/Feld mitschicken (z.B. "freebie").
   await new Promise((r) => setTimeout(r, 200));
 
-  return NextResponse.json({ ok: true });
+  return NextResponse.json({ ok: true, source: source || "unknown" });
 }
 

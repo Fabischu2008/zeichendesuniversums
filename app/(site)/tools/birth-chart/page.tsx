@@ -30,25 +30,6 @@ function blurb(sign: string) {
   return map[sign] || "Kurzbeschreibung folgt.";
 }
 
-function big3Meaning({
-  sun,
-  moon,
-  ascendant,
-}: {
-  sun: string;
-  moon: string;
-  ascendant: string;
-}) {
-  const sunText =
-    "Deine Sonne beschreibt deinen Kern: Identität, Richtung, Willen und das, worüber du in deinem Leben wachsen willst.";
-  const moonText =
-    "Dein Mond zeigt deine emotionale Welt: Bedürfnisse, Sicherheit, Instinkt und wie du reagierst, wenn niemand hinschaut.";
-  const ascText =
-    "Dein Aszendent ist deine Außenwirkung: erster Eindruck, Auftreten und wie du ins Leben startest (dein „Weg nach außen“).";
-  const summary = `Kurz gesagt: Sonne in ${sun} = dein Antrieb & Selbstbild, Mond in ${moon} = dein Gefühlskern, Aszendent in ${ascendant} = dein Stil nach außen.`;
-  return { sunText, moonText, ascText, summary };
-}
-
 type Place = {
   id: string;
   label: string;
@@ -328,35 +309,38 @@ export default function BirthChartToolPage() {
               </p>
             ) : null}
 
-            <div className="mt-6 rounded-3xl border border-black/5 bg-white/60 p-6 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-              <h3 className="text-base font-semibold tracking-tight">
-                Kurze Auswertung
-              </h3>
-              <div className="mt-4 grid gap-4 md:grid-cols-3">
-                <div className="space-y-2">
+            <div className="mt-6 rounded-3xl border border-black/10 bg-white p-6 text-sm dark:border-white/15 dark:bg-transparent">
+              <p className="font-medium">🔒 Vollreport ist gesperrt</p>
+              <p className="mt-1 text-black/70 dark:text-white/70">
+                Du siehst die Big 3 – die echte Klarheit kommt im Vollreport:
+                <span className="font-medium">
+                  {" "}
+                  Trigger, Beziehungsmuster und konkrete Next Steps
+                </span>{" "}
+                passend zu dir.
+              </p>
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-2xl bg-black/5 p-4 dark:bg-white/10">
                   <p className="text-xs font-medium text-black/60 dark:text-white/60">
-                    Sonne in {big3.sun}
+                    Was dich blockiert
                   </p>
-                  <p>{big3Meaning(big3).sunText}</p>
+                  <div className="mt-2 h-3 w-4/5 rounded bg-black/10 dark:bg-white/10" />
+                  <div className="mt-2 h-3 w-3/5 rounded bg-black/10 dark:bg-white/10" />
                 </div>
-                <div className="space-y-2">
+                <div className="rounded-2xl bg-black/5 p-4 dark:bg-white/10">
                   <p className="text-xs font-medium text-black/60 dark:text-white/60">
-                    Mond in {big3.moon}
+                    Was du brauchst
                   </p>
-                  <p>{big3Meaning(big3).moonText}</p>
+                  <div className="mt-2 h-3 w-5/6 rounded bg-black/10 dark:bg-white/10" />
+                  <div className="mt-2 h-3 w-2/3 rounded bg-black/10 dark:bg-white/10" />
                 </div>
-                <div className="space-y-2">
+                <div className="rounded-2xl bg-black/5 p-4 dark:bg-white/10">
                   <p className="text-xs font-medium text-black/60 dark:text-white/60">
-                    Aszendent in {big3.ascendant}
+                    Dein Plan (7 Tage)
                   </p>
-                  <p>{big3Meaning(big3).ascText}</p>
+                  <div className="mt-2 h-3 w-3/4 rounded bg-black/10 dark:bg-white/10" />
+                  <div className="mt-2 h-3 w-1/2 rounded bg-black/10 dark:bg-white/10" />
                 </div>
-              </div>
-              <div className="mt-4 rounded-2xl bg-black/5 p-4 text-sm dark:bg-white/10">
-                <p className="font-medium">Big‑3 Summary</p>
-                <p className="mt-1 text-black/70 dark:text-white/70">
-                  {big3Meaning(big3).summary}
-                </p>
               </div>
             </div>
 
