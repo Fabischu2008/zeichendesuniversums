@@ -12,7 +12,7 @@ const nav = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-30 border-b border-black/5 bg-background/80 backdrop-blur dark:border-white/10">
+    <header className="sticky top-0 z-30 border-b border-black/5 bg-background backdrop-blur dark:border-white/10">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-6 sm:px-6 sm:py-4 lg:px-8">
         <Link href="/" className="inline-flex items-center gap-3">
           <Image
