@@ -15,6 +15,8 @@ export default function Home() {
         primaryCta={{ label: "Kostenloser Guide", href: "/freebie" }}
         secondaryCta={{ label: "Später: Shop ansehen", href: "/shop" }}
         note="In weniger als 3 Minuten gelesen · bereits von vielen genutzt"
+        imageSrc="/images/hero-cosmic-eye.png"
+        imageAlt="Kosmischer Hintergrund mit blauem Auge"
       />
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">

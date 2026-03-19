@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "@/components/SiteHeaderMobileNav";
 
@@ -13,8 +14,16 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-30 border-b border-black/5 bg-background/80 backdrop-blur dark:border-white/10">
       <div className="mx-auto flex w-full max-w-7xl items-center justify-between gap-3 px-4 py-3 sm:gap-6 sm:px-6 sm:py-4 lg:px-8">
-        <Link href="/" className="font-semibold tracking-tight">
-          Zeichen des Universums
+        <Link href="/" className="inline-flex items-center gap-3">
+          <Image
+            src="/images/logo-eye-inline.png"
+            alt=""
+            width={80}
+            height={80}
+            className="h-16 w-16 object-contain"
+            aria-hidden
+          />
+          <span className="font-semibold tracking-tight">Zeichen des Universums</span>
         </Link>
 
         <nav className="hidden items-center gap-5 text-sm md:flex">
