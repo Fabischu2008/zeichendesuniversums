@@ -29,7 +29,7 @@ export function Hero({
           fill
           priority
           sizes="(max-width: 1280px) 100vw, 1280px"
-          className="object-cover object-[85%_50%] sm:object-[95%_50%]"
+          className="object-cover object-[15%_50%] sm:object-[25%_50%]"
         />
         <div className="relative z-10 max-w-2xl">
           <p className="text-base font-medium text-white/90 sm:text-lg">
