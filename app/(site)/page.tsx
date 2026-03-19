@@ -10,7 +10,7 @@ export default function Home() {
   return (
     <div className="flex flex-col gap-10 sm:gap-14 lg:gap-16">
       <Hero
-        headline="Finde dein wahres Sternzeichen‑Potenzial"
+        headline="Finde dein wahres Sternzeichen-Potenzial"
         subline="Für alle, die sich selbst (und ihre Beziehungen) besser verstehen wollen: Hol dir den kostenlosen Guide und starte mit Klarheit statt Rätselraten."
         primaryCta={{ label: "Kostenloser Guide", href: "/freebie" }}
         secondaryCta={{ label: "Später: Shop ansehen", href: "/shop" }}
@@ -147,7 +147,7 @@ export default function Home() {
       </section>
 
       <CTA
-        title="Kostenloser Sternzeichen‑Guide"
+        title="Kostenloser Sternzeichen-Guide"
         description="Hol dir den Guide, starte die Mail‑Serie und entdecke deine nächsten Schritte."
         cta={{ label: "Kostenloser Guide", href: "/freebie" }}
       />

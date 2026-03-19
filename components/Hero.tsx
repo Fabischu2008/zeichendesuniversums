@@ -35,10 +35,10 @@ export function Hero({
           <p className="text-base font-medium text-white/90 sm:text-lg">
             Astrology, aber praktisch.
           </p>
-          <h1 className="mt-4 text-4xl font-semibold tracking-tight text-white sm:mt-5 sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight text-white sm:mt-5 sm:text-5xl lg:text-6xl">
             {headline}
           </h1>
-          <p className="mt-6 max-w-xl py-5 text-base leading-[1.75] text-white/90 sm:mt-7 sm:text-lg sm:leading-[1.85] sm:py-6">
+          <p className="mt-6 break-words max-w-xl py-5 text-base leading-[1.75] text-white/90 sm:mt-7 sm:text-lg sm:leading-[1.85] sm:py-6">
             {subline}
           </p>
           <div className="mt-2 flex flex-col gap-3 sm:mt-4 sm:flex-row">
@@ -71,10 +71,10 @@ export function Hero({
         <p className="text-base font-medium text-black/70 dark:text-white/70 sm:text-lg">
           Astrology, aber praktisch.
         </p>
-        <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:mt-5 sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight sm:mt-5 sm:text-5xl lg:text-6xl">
           {headline}
         </h1>
-        <p className="mt-6 max-w-xl py-5 text-base leading-[1.75] text-black/75 dark:text-white/80 sm:mt-7 sm:text-lg sm:leading-[1.85] sm:py-6">
+        <p className="mt-6 break-words max-w-xl py-5 text-base leading-[1.75] text-black/75 dark:text-white/80 sm:mt-7 sm:text-lg sm:leading-[1.85] sm:py-6">
           {subline}
         </p>
         <div className="mt-2 flex flex-col gap-3 sm:mt-4 sm:flex-row">
