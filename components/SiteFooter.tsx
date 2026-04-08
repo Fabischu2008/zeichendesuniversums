@@ -9,28 +9,16 @@ export function SiteFooter() {
         </div>
         <div className="flex flex-wrap gap-4 text-sm">
           <Link
-            href="/shop"
+            href="/"
             className="text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
           >
-            Shop
+            Startseite
           </Link>
           <Link
             href="/freebie"
             className="text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
           >
-            Freebie
-          </Link>
-          <Link
-            href="/blog"
-            className="text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
-          >
-            Blog
-          </Link>
-          <Link
-            href="/tools"
-            className="text-black/70 hover:text-black dark:text-white/70 dark:hover:text-white"
-          >
-            Tools
+            Kostenloser Guide
           </Link>
         </div>
       </div>

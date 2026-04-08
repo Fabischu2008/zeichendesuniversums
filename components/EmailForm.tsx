@@ -13,14 +13,17 @@ function safeJsonParse(raw: string): unknown {
 }
 
 export function EmailForm({
-  redirectTo = "/success-freebie",
+  redirectTo = "/freebie/download",
   source = "freebie",
 }: {
   redirectTo?: string;
   source?: string;
 }) {
   const router = useRouter();
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">(
     "idle",
   );
@@ -35,7 +38,13 @@ export function EmailForm({
       const res = await fetch("/api/email/subscribe", {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify({ email, source }),
+        body: JSON.stringify({
+          first_name: firstName.trim().slice(0, 80),
+          last_name: lastName.trim().slice(0, 80),
+          email,
+          source,
+          ...(phone.trim() ? { phone: phone.trim().slice(0, 32) } : {}),
+        }),
       });
 
       const raw = await res.text();
@@ -59,6 +68,35 @@ export function EmailForm({
 
   return (
     <form onSubmit={onSubmit} className="space-y-3">
+      <div className="grid gap-3 sm:grid-cols-2">
+        <label className="block sm:col-span-1">
+          <span className="text-sm font-medium">Vorname</span>
+          <input
+            value={firstName}
+            onChange={(e) => setFirstName(e.target.value)}
+            type="text"
+            name="given-name"
+            autoComplete="given-name"
+            required
+            placeholder="Max"
+            className="mt-2 h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none placeholder:text-black/40 focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:placeholder:text-white/40 dark:focus:border-white/30"
+          />
+        </label>
+        <label className="block sm:col-span-1">
+          <span className="text-sm font-medium">Nachname</span>
+          <input
+            value={lastName}
+            onChange={(e) => setLastName(e.target.value)}
+            type="text"
+            name="family-name"
+            autoComplete="family-name"
+            required
+            placeholder="Mustermann"
+            className="mt-2 h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none placeholder:text-black/40 focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:placeholder:text-white/40 dark:focus:border-white/30"
+          />
+        </label>
+      </div>
+
       <label className="block">
         <span className="text-sm font-medium">E‑Mail</span>
         <input
@@ -67,6 +105,21 @@ export function EmailForm({
           type="email"
           required
           placeholder="du@beispiel.de"
+          className="mt-2 h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none placeholder:text-black/40 focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:placeholder:text-white/40 dark:focus:border-white/30"
+        />
+      </label>
+
+      <label className="block">
+        <span className="text-sm font-medium">
+          Telefonnummer <span className="font-normal text-black/50 dark:text-white/50">(optional)</span>
+        </span>
+        <input
+          value={phone}
+          onChange={(e) => setPhone(e.target.value)}
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="z.B. +49 …"
           className="mt-2 h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none placeholder:text-black/40 focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:placeholder:text-white/40 dark:focus:border-white/30"
         />
       </label>

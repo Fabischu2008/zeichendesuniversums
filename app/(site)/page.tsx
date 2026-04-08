@@ -1,20 +1,51 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CTA } from "@/components/CTA";
 import { Hero } from "@/components/Hero";
-import { ProductCard } from "@/components/ProductCard";
 import { Testimonial } from "@/components/Testimonial";
-import { getFeaturedProducts } from "@/lib/cms";
+
+export const metadata: Metadata = {
+  title: "Kostenloser Sternzeichen-Guide",
+  description:
+    "PDF-Guide in Minuten: Vorname, Nachname, E-Mail – danach sofortiger Download. Praktische Astrologie ohne Buzzwords.",
+  openGraph: {
+    title: "Kostenloser Sternzeichen-Guide · Zeichen des Universums",
+    description:
+      "Hol dir den PDF-Guide: kurz, umsetzbar, direkt nach dem Absenden zum Download.",
+    url: "/",
+  },
+};
+
+const steps = [
+  {
+    step: "1",
+    title: "Kurz eintragen",
+    body: "Vorname, Nachname und E‑Mail – Telefon nur, wenn du magst.",
+  },
+  {
+    step: "2",
+    title: "Absenden",
+    body: "Wir speichern deine Daten sicher für Rückfragen und Updates.",
+  },
+  {
+    step: "3",
+    title: "PDF laden",
+    body: "Du landest auf der Download‑Seite und speicherst den Guide sofort.",
+  },
+] as const;
 
 export default function Home() {
-  const featured = getFeaturedProducts();
   return (
     <div className="flex flex-col gap-10 sm:gap-14 lg:gap-16">
       <Hero
-        headline="Finde dein wahres Sternzeichen-Potenzial"
-        subline="Für alle, die sich selbst (und ihre Beziehungen) besser verstehen wollen: Hol dir den kostenlosen Guide und starte mit Klarheit statt Rätselraten."
-        primaryCta={{ label: "Kostenloser Guide", href: "/freebie" }}
-        secondaryCta={{ label: "Später: Shop ansehen", href: "/shop" }}
-        note="In weniger als 3 Minuten gelesen · bereits von vielen genutzt"
+        headline="Dein Sternzeichen‑Guide – klar, kurz, sofort da"
+        subline="Kein Warten auf Mails: Trag dich ein und lade den Guide direkt als PDF. Für alle, die sich selbst und ihre Beziehungen besser verstehen wollen – ohne esoterisches Geschwurbel."
+        primaryCta={{ label: "Jetzt Guide holen", href: "/freebie" }}
+        secondaryCta={{
+          label: "So funktioniert’s",
+          href: "#so-funktionierts",
+        }}
+        note="Lesezeit unter 3 Minuten · PDF direkt nach dem Formular · kein Spam"
         imageSrc="/images/hero-cosmic-eye.png"
         imageAlt="Kosmischer Hintergrund mit blauem Auge"
       />
@@ -23,32 +54,32 @@ export default function Home() {
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-1">
             <p className="text-sm font-medium text-black/70 dark:text-white/70">
-              Kostenloser Guide
+              Im Guide steckt
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
               Konkrete Aha‑Momente statt Vibes
             </h2>
             <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-              3 schnelle Insights, die du direkt im Alltag anwenden kannst.
+              Drei Schwerpunkte, die du im Alltag spürst – kompakt erklärt.
             </p>
           </div>
-          <ul className="md:col-span-2 grid gap-3 sm:grid-cols-3">
+          <ul className="grid gap-3 sm:grid-cols-3 md:col-span-2">
             <li className="rounded-2xl border border-black/5 bg-white p-4 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
               <p className="font-medium">Warum du oft anders reagierst</p>
               <p className="mt-1 text-black/70 dark:text-white/70">
-                Erkenne dein Muster unter Stress – ohne Rumraten.
+                Stressmuster erkennen – ohne dich kleinzureden.
               </p>
             </li>
             <li className="rounded-2xl border border-black/5 bg-white p-4 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-              <p className="font-medium">Welche Beziehungen zu dir passen</p>
+              <p className="font-medium">Beziehungsmuster verstehen</p>
               <p className="mt-1 text-black/70 dark:text-white/70">
-                Klarheit über Nähe/Distanz, Tempo und Trigger.
+                Nähe, Distanz, Tempo: was dich immer wieder triggert.
               </p>
             </li>
             <li className="rounded-2xl border border-black/5 bg-white p-4 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-              <p className="font-medium">Wie du deine Stärken nutzt</p>
+              <p className="font-medium">Stärken gezielt nutzen</p>
               <p className="mt-1 text-black/70 dark:text-white/70">
-                3 konkrete Schritte, die du heute umsetzen kannst.
+                Drei Schritte, die du heute ausprobieren kannst.
               </p>
             </li>
           </ul>
@@ -58,10 +89,10 @@ export default function Home() {
             href="/freebie"
             className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
-            Kostenloser Guide
+            Zum kostenlosen Guide
           </Link>
           <p className="mt-2 text-xs text-black/50 dark:text-white/50">
-            Kostenlos · E‑Mail reicht · Abmelden jederzeit möglich
+            Kostenlos · danach sofort PDF · Abmelden jederzeit möglich
           </p>
         </div>
       </section>
@@ -70,24 +101,24 @@ export default function Home() {
         <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
           <div>
             <p className="text-sm font-medium text-black/70 dark:text-white/70">
-              Social Proof
+              Vertrauen
             </p>
             <p className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
               100k+ Views
             </p>
             <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-              Inhalte, die nicht nur gut klingen – sondern wirklich helfen.
+              Inhalte, die nicht nur gut klingen – sondern ankommen.
             </p>
           </div>
           <Testimonial
-            quote="Ich hab mich zum ersten Mal wirklich verstanden gefühlt. Kurz, klar, auf den Punkt."
+            quote="Kurz, klar, ohne Schnickschnack – endlich was, das ich mir aufhebe und wirklich nutze."
             name="Lea"
-            detail="Guide Käuferin"
+            detail="hat den Guide geladen"
           />
           <Testimonial
-            quote="Das Compatibility‑Teaser Ergebnis war unheimlich treffsicher – hab direkt die Vollanalyse gekauft."
-            name="Mara"
-            detail="Tool Nutzerin"
+            quote="Dachte, wieder so ein PDF-Schmarren – war überrascht, wie konkret die Punkte sind."
+            name="Jonas"
+            detail="hat den Guide geladen"
           />
         </div>
       </section>
@@ -98,14 +129,15 @@ export default function Home() {
             Du fühlst dich oft nicht verstanden?
           </h2>
           <p className="text-black/70 dark:text-white/70">
-            Vielleicht versuchst du dich nur mit den falschen Worten zu
-            erklären. Dein Sternzeichen zeigt dir, warum du tickst wie du
-            tickst – und wie du deine Stärken im Alltag nutzt.
+            Vielleicht fehlen dir nur die richtigen Worte für dein Muster. Der
+            Guide übersetzt dein Sternzeichen in Klartext: Stärken, Trigger und
+            ein paar erste Schritte – damit du nicht mehr gegen dich selbst
+            arbeitest.
           </p>
           <CTA
-            title="Starte mit dem kostenlosen Guide"
-            description="In 3 Minuten weißt du, welche Muster dich steuern – und wie du sie drehst."
-            cta={{ label: "Kostenloser Guide", href: "/freebie" }}
+            title="Hol dir den Guide in einer Minute"
+            description="Formular ausfüllen, auf die Download‑Seite – PDF speichern. Fertig."
+            cta={{ label: "Zum Formular", href: "/freebie" }}
           />
         </div>
         <div className="rounded-3xl border border-black/5 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 p-6 sm:p-8 dark:border-white/10">
@@ -116,42 +148,58 @@ export default function Home() {
             <ul className="space-y-2 text-sm text-black/80 dark:text-white/80">
               <li>• Persönlichkeit in Klartext</li>
               <li>• Stärken & Trigger erkennen</li>
-              <li>• Beziehungsmuster verstehen</li>
+              <li>• Beziehungsmuster einordnen</li>
+              <li>• Sofort als PDF – nichts Warten</li>
             </ul>
           </div>
         </div>
       </section>
 
-      <section className="space-y-6">
-        <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-end sm:gap-6">
-          <div>
-            <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Bestseller
-            </h2>
-            <p className="mt-2 text-black/70 dark:text-white/70">
-              Schnell starten oder direkt tief gehen.
-            </p>
-          </div>
-          <Link
-            href="/shop"
-            className="text-sm font-medium text-black/80 underline-offset-4 hover:underline dark:text-white/80"
-          >
-            Alle Produkte →
-          </Link>
+      <section
+        id="so-funktionierts"
+        className="scroll-mt-28 rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
+      >
+        <div className="mx-auto max-w-2xl text-center">
+          <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            So funktioniert’s
+          </h2>
+          <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+            Drei einfache Schritte bis zur Datei auf deinem Gerät.
+          </p>
         </div>
-        <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
+        <ol className="mt-8 grid gap-4 sm:grid-cols-3">
+          {steps.map((s) => (
+            <li
+              key={s.step}
+              className="relative rounded-2xl border border-black/5 bg-white p-5 text-left dark:border-white/10 dark:bg-white/5"
+            >
+              <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-black text-sm font-semibold text-white dark:bg-white dark:text-black">
+                {s.step}
+              </span>
+              <p className="mt-3 font-medium text-black dark:text-white">
+                {s.title}
+              </p>
+              <p className="mt-1 text-sm text-black/70 dark:text-white/70">
+                {s.body}
+              </p>
+            </li>
           ))}
+        </ol>
+        <div className="mt-8 flex justify-center">
+          <Link
+            href="/freebie"
+            className="inline-flex h-12 w-full max-w-sm items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+          >
+            Jetzt starten
+          </Link>
         </div>
       </section>
 
       <CTA
-        title="Kostenloser Sternzeichen-Guide"
-        description="Hol dir den Guide, starte die Mail‑Serie und entdecke deine nächsten Schritte."
-        cta={{ label: "Kostenloser Guide", href: "/freebie" }}
+        title="Bereit für den Sternzeichen‑Guide?"
+        description="Ein kurzes Formular, dann liegt das PDF bei dir – praktisch, lesbar, ohne Füllwort-Friedhof."
+        cta={{ label: "Kostenlosen Guide holen", href: "/freebie" }}
       />
     </div>
   );
 }
-

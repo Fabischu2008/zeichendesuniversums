@@ -69,13 +69,6 @@ export default function MobileNav({ nav }: { nav: NavItem[] }) {
                   {item.label}
                 </Link>
               ))}
-              <Link
-                href="/freebie"
-                onClick={() => setOpen(false)}
-                className="mt-2 inline-flex h-12 items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-              >
-                Kostenlos starten
-              </Link>
             </nav>
           </div>
         </div>

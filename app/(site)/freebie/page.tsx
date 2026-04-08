@@ -3,7 +3,7 @@ import { EmailForm } from "@/components/EmailForm";
 
 export const metadata: Metadata = {
   title: "Kostenloser Guide",
-  description: "Hol dir den kostenlosen Sternzeichen‑Guide per E‑Mail.",
+  description: "Hol dir den kostenlosen Sternzeichen‑Guide als PDF.",
 };
 
 export default function FreebiePage() {
@@ -51,11 +51,11 @@ export default function FreebiePage() {
 
       <div className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <h2 className="text-xl font-semibold tracking-tight">
-          Jetzt kostenlos anfordern
+          Jetzt kostenlos laden
         </h2>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Trag deine E‑Mail ein. Du bekommst den Guide sofort (und eine kurze
-          Serie mit echten Mehrwerten).
+          Vorname, Nachname und E‑Mail (Telefon optional). Danach öffnet sich die
+          Download‑Seite mit dem PDF.
         </p>
         <div className="mt-6">
           <EmailForm />
