@@ -21,7 +21,7 @@ const DEFAULT_LEAD_TO_EMAIL = "fabianschuck13@gmail.com";
 /**
  * Leads per E-Mail (Resend).
  * .env.local: RESEND_API_KEY=re_… (https://resend.com → API Keys)
- * Optional: LEAD_TO_EMAIL, RESEND_FROM (sonst onboarding@resend.dev)
+ * Optional: LEAD_TO_EMAIL, RESEND_FROM (Default-Absender: ZdU Freebie <onboarding@resend.dev>)
  *
  * Hinweis: Mit onboarding@resend.dev darfst du testweise nur an die Adresse
  * senden, mit der du bei Resend registriert bist (hier: fabianschuck13@gmail.com).
@@ -68,10 +68,13 @@ export async function POST(req: Request) {
 
   const resolvedSource = source || "freebie";
   const apiKey = process.env.RESEND_API_KEY?.trim();
-  const to = process.env.LEAD_TO_EMAIL?.trim() || DEFAULT_LEAD_TO_EMAIL;
+  const to = (
+    process.env.LEAD_TO_EMAIL?.trim() || DEFAULT_LEAD_TO_EMAIL
+  ).toLowerCase();
+  // Default-Absender ohne Umlaute (robuster); eigenes RESEND_FROM nach Domain-Verifikation.
   const from =
     process.env.RESEND_FROM?.trim() ||
-    "Zeichen des Universums <onboarding@resend.dev>";
+    "ZdU Freebie <onboarding@resend.dev>";
 
   if (!apiKey) {
     // Kein harter Fehler: Nutzer soll trotzdem zum PDF. E-Mail nur, wenn Key gesetzt ist.
@@ -97,28 +100,59 @@ export async function POST(req: Request) {
 
   const resend = new Resend(apiKey);
 
-  const { error } = await resend.emails.send({
+  const payload = {
     from,
-    to: [to],
+    to: [to] as string[],
     subject: `Freebie-Lead: ${firstName} ${lastName}`,
     text: textBody,
     html: htmlBody,
     replyTo: email,
-  });
+  };
 
-  if (error) {
-    // Nie den Nutzer blockieren (PDF-Flow); Owner sieht Fehler in Logs / Resend-Dashboard.
-    console.error(
-      "[email/subscribe] Resend fehlgeschlagen:",
-      error.message ?? error,
-      "| Prüf Vercel → Settings → Environment Variables → RESEND_API_KEY (für „Production“) und Redeploy.",
+  try {
+    let result = await resend.emails.send(payload);
+
+    if (result.error) {
+      console.warn(
+        "[email/subscribe] Resend 1. Versuch:",
+        JSON.stringify(result.error),
+      );
+      result = await resend.emails.send({
+        from,
+        to: [to],
+        subject: payload.subject,
+        text: textBody,
+        html: htmlBody,
+      });
+    }
+
+    if (result.error) {
+      console.error(
+        "[email/subscribe] Resend endgueltig fehlgeschlagen:",
+        JSON.stringify(result.error),
+        "| Logs: resend.com → Emails / Logs. Mit onboarding@resend.dev oft nur Zustellung an die E-Mail deines Resend-Accounts – LEAD_TO_EMAIL muss dieselbe sein, oder eigene Domain verifizieren.",
+      );
+      return NextResponse.json({
+        ok: true,
+        source: resolvedSource,
+        saved: false,
+      });
+    }
+
+    console.info(
+      "[email/subscribe] Resend OK, email_id:",
+      result.data?.id ?? "?",
+      "an",
+      to,
     );
+
+    return NextResponse.json({ ok: true, source: resolvedSource, saved: true });
+  } catch (e) {
+    console.error("[email/subscribe] Resend Netzwerk/Exception:", e);
     return NextResponse.json({
       ok: true,
       source: resolvedSource,
       saved: false,
     });
   }
-
-  return NextResponse.json({ ok: true, source: resolvedSource, saved: true });
 }
