@@ -1,18 +1,31 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 
-function isValidEmail(email: string) {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+export const runtime = "nodejs";
+
+function isValidEmail(addr: string) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr);
+}
+
+function escapeHtml(text: string) {
+  return text
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;");
 }
 
 /** Standard-Empfänger; per LEAD_TO_EMAIL in .env überschreiben. */
 const DEFAULT_LEAD_TO_EMAIL = "fabianschuck13@gmail.com";
 
 /**
- * Leads per E-Mail (Resend) – kein Datenbank-Setup.
- * 1) Account: https://resend.com → API Key
- * 2) .env: RESEND_API_KEY (Pflicht zum Senden)
- * 3) Optional: LEAD_TO_EMAIL – sonst DEFAULT_LEAD_TO_EMAIL
- * 4) Absender: bis Domain verifiziert ist „onboarding@resend.dev“ nutzen (oder RESEND_FROM setzen)
+ * Leads per E-Mail (Resend).
+ * .env.local: RESEND_API_KEY=re_… (https://resend.com → API Keys)
+ * Optional: LEAD_TO_EMAIL, RESEND_FROM (sonst onboarding@resend.dev)
+ *
+ * Hinweis: Mit onboarding@resend.dev darfst du testweise nur an die Adresse
+ * senden, mit der du bei Resend registriert bist (hier: fabianschuck13@gmail.com).
+ * Eigene Domain bei Resend verifizieren → beliebige Empfänger + RESEND_FROM setzen.
  */
 
 export async function POST(req: Request) {
@@ -54,19 +67,19 @@ export async function POST(req: Request) {
   }
 
   const resolvedSource = source || "freebie";
-  const apiKey = process.env.RESEND_API_KEY;
-  const to =
-    process.env.LEAD_TO_EMAIL?.trim() || DEFAULT_LEAD_TO_EMAIL;
+  const apiKey = process.env.RESEND_API_KEY?.trim();
+  const to = process.env.LEAD_TO_EMAIL?.trim() || DEFAULT_LEAD_TO_EMAIL;
   const from =
-    process.env.RESEND_FROM?.trim() || "Zeichen des Universums <onboarding@resend.dev>";
+    process.env.RESEND_FROM?.trim() ||
+    "Zeichen des Universums <onboarding@resend.dev>";
 
   if (!apiKey) {
-    console.warn("[email/subscribe] RESEND_API_KEY fehlt – Lead nicht gesendet.");
-    return NextResponse.json({
-      ok: true,
-      source: resolvedSource,
-      saved: false,
-    });
+    const message =
+      process.env.NODE_ENV === "development"
+        ? "RESEND_API_KEY fehlt in .env.local. Auf resend.com einen API-Key anlegen und eintragen."
+        : "Der Versand ist noch nicht konfiguriert. Bitte später erneut versuchen.";
+    console.error("[email/subscribe]", message);
+    return NextResponse.json({ ok: false, message }, { status: 503 });
   }
 
   const lines = [
@@ -74,40 +87,30 @@ export async function POST(req: Request) {
     `Name: ${firstName} ${lastName}`,
     `E-Mail: ${email}`,
     phoneRaw ? `Telefon: ${phoneRaw}` : null,
-  ].filter(Boolean);
+  ].filter(Boolean) as string[];
 
-  const res = await fetch("https://api.resend.com/emails", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      from,
-      to: [to],
-      subject: `Freebie-Lead: ${firstName} ${lastName}`,
-      text: lines.join("\n"),
-    }),
+  const textBody = lines.join("\n");
+  const htmlBody = `<pre style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(textBody)}</pre>`;
+
+  const resend = new Resend(apiKey);
+
+  const { error } = await resend.emails.send({
+    from,
+    to: [to],
+    subject: `Freebie-Lead: ${firstName} ${lastName}`,
+    text: textBody,
+    html: htmlBody,
+    replyTo: email,
   });
 
-  const raw = await res.text();
-  let parsed: { message?: string } = {};
-  try {
-    parsed = JSON.parse(raw) as { message?: string };
-  } catch {
-    /* ignore */
-  }
-
-  if (!res.ok) {
-    console.error("[email/subscribe] Resend:", res.status, raw);
-    return NextResponse.json(
-      {
-        ok: false,
-        message:
-          parsed.message || "Benachrichtigung konnte nicht gesendet werden.",
-      },
-      { status: 502 },
-    );
+  if (error) {
+    console.error("[email/subscribe] Resend:", error);
+    const message =
+      process.env.NODE_ENV === "development"
+        ? (error.message ??
+            "Resend-Fehler – API-Key, RESEND_FROM und erlaubte Empfänger prüfen.")
+        : "E-Mail-Versand fehlgeschlagen. Bitte versuch es später erneut.";
+    return NextResponse.json({ ok: false, message }, { status: 502 });
   }
 
   return NextResponse.json({ ok: true, source: resolvedSource, saved: true });
