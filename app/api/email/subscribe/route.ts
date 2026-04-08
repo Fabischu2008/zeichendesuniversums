@@ -74,12 +74,15 @@ export async function POST(req: Request) {
     "Zeichen des Universums <onboarding@resend.dev>";
 
   if (!apiKey) {
-    const message =
-      process.env.NODE_ENV === "development"
-        ? "RESEND_API_KEY fehlt in .env.local. Auf resend.com einen API-Key anlegen und eintragen."
-        : "Der Versand ist noch nicht konfiguriert. Bitte später erneut versuchen.";
-    console.error("[email/subscribe]", message);
-    return NextResponse.json({ ok: false, message }, { status: 503 });
+    // Kein harter Fehler: Nutzer soll trotzdem zum PDF. E-Mail nur, wenn Key gesetzt ist.
+    console.warn(
+      "[email/subscribe] RESEND_API_KEY fehlt – Lead-E-Mail nicht gesendet. .env.local: RESEND_API_KEY=re_… (resend.com) bzw. in Vercel → Environment Variables.",
+    );
+    return NextResponse.json({
+      ok: true,
+      source: resolvedSource,
+      saved: false,
+    });
   }
 
   const lines = [
