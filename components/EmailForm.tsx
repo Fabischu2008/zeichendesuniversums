@@ -58,6 +58,12 @@ export function EmailForm({
         throw new Error(data.message || `Bitte versuch es erneut (HTTP ${res.status}).`);
       }
 
+      if (data.ok === false) {
+        throw new Error(
+          data.message || "Bitte versuch es erneut.",
+        );
+      }
+
       setStatus("success");
       router.push(redirectTo);
     } catch (err) {

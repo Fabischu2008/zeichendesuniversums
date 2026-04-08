@@ -107,13 +107,17 @@ export async function POST(req: Request) {
   });
 
   if (error) {
-    console.error("[email/subscribe] Resend:", error);
-    const message =
-      process.env.NODE_ENV === "development"
-        ? (error.message ??
-            "Resend-Fehler – API-Key, RESEND_FROM und erlaubte Empfänger prüfen.")
-        : "E-Mail-Versand fehlgeschlagen. Bitte versuch es später erneut.";
-    return NextResponse.json({ ok: false, message }, { status: 502 });
+    // Nie den Nutzer blockieren (PDF-Flow); Owner sieht Fehler in Logs / Resend-Dashboard.
+    console.error(
+      "[email/subscribe] Resend fehlgeschlagen:",
+      error.message ?? error,
+      "| Prüf Vercel → Settings → Environment Variables → RESEND_API_KEY (für „Production“) und Redeploy.",
+    );
+    return NextResponse.json({
+      ok: true,
+      source: resolvedSource,
+      saved: false,
+    });
   }
 
   return NextResponse.json({ ok: true, source: resolvedSource, saved: true });
