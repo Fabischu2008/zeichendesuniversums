@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Tools",
   description:
-    "Compatibility und Birth Chart Tools – mit Upsell in die Vollanalyse.",
+    "Compatibility und Birth Chart Tools – inkl. Big 3 und astrologischem Vollprofil.",
 };
 
 const tools = [
@@ -15,7 +15,8 @@ const tools = [
   },
   {
     title: "Birth Chart Tool (Big 3)",
-    description: "Sonne, Mond und Aszendent – exakt berechnet (DACH).",
+    description:
+      "Sonne, Mond, Aszendent plus erweitertes Vollprofil (Elemente, Häuser, Planeten).",
     href: "/tools/birth-chart",
   },
 ];

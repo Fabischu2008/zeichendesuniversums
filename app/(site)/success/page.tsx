@@ -21,6 +21,7 @@ export default async function SuccessPage({
   const productId =
     sp?.productId && typeof sp.productId === "string" ? sp.productId : "";
   const product = getProducts().find((p) => p.id === productId);
+  const isProfileProduct = product?.id === "p_birth_profile";
 
   return (
     <div className="mx-auto grid max-w-3xl gap-8">
@@ -34,12 +35,21 @@ export default async function SuccessPage({
             : "Dein Produkt ist bereit."}
         </p>
         <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          <a
-            href={product?.fileUrl || "/downloads/demo.pdf"}
-            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Download
-          </a>
+          {isProfileProduct ? (
+            <Link
+              href="/tools/birth-chart/profile"
+              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              Profil jetzt öffnen
+            </Link>
+          ) : (
+            <a
+              href={product?.fileUrl || "/downloads/demo.pdf"}
+              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              Download
+            </a>
+          )}
           <Link
             href="/reading"
             className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"

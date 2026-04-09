@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { AstroProfileDisplay } from "@/components/AstroProfileDisplay";
+import type { AstroProfileResult } from "@/lib/astro/profile";
 
 function safeJsonParse(raw: string): unknown {
   if (!raw) return {};
@@ -52,12 +54,15 @@ export default function BirthChartToolPage() {
 
   const [calcLoading, setCalcLoading] = useState(false);
   const [calcError, setCalcError] = useState<string | null>(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState<string | null>(null);
   const [big3, setBig3] = useState<null | {
     sun: string;
     moon: string;
     ascendant: string;
     meta?: { tz?: string; utc?: string };
   }>(null);
+  const [profile, setProfile] = useState<AstroProfileResult | null>(null);
 
   const abortRef = useRef<AbortController | null>(null);
 
@@ -117,6 +122,8 @@ export default function BirthChartToolPage() {
     setCalcLoading(true);
     setCalcError(null);
     setBig3(null);
+    setProfile(null);
+    setProfileError(null);
     try {
       const res = await fetch("/api/tools/big3", {
         method: "POST",
@@ -159,6 +166,48 @@ export default function BirthChartToolPage() {
       setCalcError(e instanceof Error ? e.message : "Unbekannter Fehler");
     } finally {
       setCalcLoading(false);
+    }
+  }
+
+  async function calculateProfile() {
+    if (!place) return;
+    setProfileLoading(true);
+    setProfileError(null);
+    setProfile(null);
+    try {
+      const res = await fetch("/api/tools/profile", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          date: birthdate,
+          time: birthtime,
+          location: {
+            name: place.city || place.label,
+            lat: place.lat,
+            lon: place.lon,
+            countryCode: place.countryCode,
+          },
+        }),
+      });
+      const raw = await res.text();
+      const parsed = safeJsonParse(raw);
+      const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
+        profile?: AstroProfileResult;
+        message?: string;
+      };
+
+      if (!res.ok || !data.profile) {
+        throw new Error(
+          data.message ||
+            `Profil-Berechnung fehlgeschlagen (HTTP ${res.status}).`,
+        );
+      }
+
+      setProfile(data.profile);
+    } catch (e) {
+      setProfileError(e instanceof Error ? e.message : "Unbekannter Fehler");
+    } finally {
+      setProfileLoading(false);
     }
   }
 
@@ -249,14 +298,24 @@ export default function BirthChartToolPage() {
         </div>
 
         <div className="mt-6">
-          <button
-            type="button"
-            disabled={!canCalculate || calcLoading}
-            onClick={() => void calculate()}
-            className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            {calcLoading ? "Berechne…" : "Big 3 berechnen"}
-          </button>
+          <div className="grid gap-3 sm:grid-cols-2">
+            <button
+              type="button"
+              disabled={!canCalculate || calcLoading}
+              onClick={() => void calculate()}
+              className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              {calcLoading ? "Berechne…" : "Big 3 berechnen"}
+            </button>
+            <button
+              type="button"
+              disabled={!canCalculate || profileLoading}
+              onClick={() => void calculateProfile()}
+              className="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-black/10 bg-white px-5 text-sm font-medium text-black hover:bg-black/5 disabled:opacity-60 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            >
+              {profileLoading ? "Erstelle…" : "Vollprofil erstellen"}
+            </button>
+          </div>
           <p className="mt-2 text-xs text-black/50 dark:text-white/50">
             Für exakte Ergebnisse brauchen wir Datum, Uhrzeit und Ort.
           </p>
@@ -346,10 +405,16 @@ export default function BirthChartToolPage() {
 
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/shop/manifestation-blueprint"
+                href="/shop/astro-vollprofil"
                 className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
                 Vollreport freischalten
+              </Link>
+              <Link
+                href="/tools/birth-chart/profile"
+                className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+              >
+                Profil-Seite öffnen
               </Link>
               <Link
                 href="/freebie"
@@ -362,6 +427,33 @@ export default function BirthChartToolPage() {
         ) : (
           <p className="mt-3 text-sm text-black/70 dark:text-white/70">
             Gib Datum, Uhrzeit und Ort ein und starte die Berechnung.
+          </p>
+        )}
+      </section>
+
+      <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-2xl font-semibold tracking-tight">
+          Astrologisches Vollprofil (Beta)
+        </h2>
+        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+          Archetyp, Element-Balken, Häuser, Planeten-Glyphen, Knoten, Lilith &
+          Glückspunkt.
+        </p>
+
+        {profileError ? (
+          <p className="mt-3 text-sm text-red-600 dark:text-red-400">
+            {profileError}
+          </p>
+        ) : null}
+
+        {profile ? (
+          <div className="mt-5">
+            <AstroProfileDisplay profile={profile} variant="embedded" />
+          </div>
+        ) : (
+          <p className="mt-3 text-sm text-black/70 dark:text-white/70">
+            Klicke auf „Vollprofil erstellen“, um die ausführliche Auswertung zu
+            sehen.
           </p>
         )}
       </section>
