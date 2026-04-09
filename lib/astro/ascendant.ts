@@ -9,21 +9,19 @@ function rad2deg(r: number) {
   return (r * 180) / Math.PI;
 }
 
-function trueObliquityDegrees(dateUtc: Date) {
-  const J2000 = new Date("2000-01-01T12:00:00Z");
-  const days = (dateUtc.getTime() - J2000.getTime()) / 86400000;
-  const T = days / 36525;
-  return 23.4392911 - 0.0130042 * T;
-}
-
+/**
+ * Tropical ascendant (ecliptic longitude of the eastern horizon), using the same
+ * apparent sidereal time and true obliquity of date as `astronomy-engine` (GAST + e_tilt).
+ */
 export function ascendantLongitudeDegrees(input: {
   dateUtc: Date;
   latitudeDegrees: number;
   longitudeDegrees: number;
 }) {
-  const gmstHours = Astronomy.SiderealTime(input.dateUtc);
+  const time = Astronomy.MakeTime(input.dateUtc);
+  const gmstHours = Astronomy.SiderealTime(time);
   const ramcDeg = normalizeDegrees(gmstHours * 15 + input.longitudeDegrees);
-  const eps = deg2rad(trueObliquityDegrees(input.dateUtc));
+  const eps = deg2rad(Astronomy.e_tilt(time).tobl);
   const lat = deg2rad(input.latitudeDegrees);
   const ramc = deg2rad(ramcDeg);
 
