@@ -51,6 +51,7 @@ export function EmailForm({
       const parsed = safeJsonParse(raw);
       const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
         ok?: boolean;
+        saved?: boolean;
         message?: string;
       };
 
@@ -61,6 +62,12 @@ export function EmailForm({
       if (data.ok === false) {
         throw new Error(
           data.message || "Bitte versuch es erneut.",
+        );
+      }
+
+      if (data.saved === false) {
+        throw new Error(
+          "Eintragung gespeichert, aber E-Mail-Versand fehlgeschlagen. Bitte in Resend API-Key/Absender prüfen.",
         );
       }
 
