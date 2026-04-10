@@ -10,3 +10,6 @@ export const THEME_COLOR = "#7c3aed";
 
 /** Anzeigename für Resend `from`, falls kein RESEND_FROM gesetzt ist. */
 export const EMAIL_FROM_DISPLAY = "Zeichen des Universums";
+
+/** Cache-Buster für Favicon-URLs (`favicon.svg` + `favicon.jpg`); bei neuem Favicon hochzählen. */
+export const FAVICON_QUERY = "v=20260410-4";

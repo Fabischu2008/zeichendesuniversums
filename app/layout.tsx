@@ -1,7 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { SITE_DESCRIPTION, SITE_NAME, THEME_COLOR } from "@/lib/brand";
+import {
+  FAVICON_QUERY,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  THEME_COLOR,
+} from "@/lib/brand";
 import { getSiteUrl } from "@/lib/site";
 
 const geistSans = Geist({
@@ -26,9 +31,26 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   metadataBase: new URL(getSiteUrl()),
   icons: {
-    icon: [{ url: "/favicon.jpg", type: "image/jpeg", sizes: "1024x1024" }],
-    apple: [{ url: "/favicon.jpg", type: "image/jpeg", sizes: "180x180" }],
-    shortcut: ["/favicon.jpg"],
+    icon: [
+      {
+        url: `/favicon.svg?${FAVICON_QUERY}`,
+        type: "image/svg+xml",
+        sizes: "any",
+      },
+      {
+        url: `/favicon.jpg?${FAVICON_QUERY}`,
+        type: "image/jpeg",
+        sizes: "1024x1024",
+      },
+    ],
+    apple: [
+      {
+        url: `/favicon.jpg?${FAVICON_QUERY}`,
+        type: "image/jpeg",
+        sizes: "180x180",
+      },
+    ],
+    shortcut: [`/favicon.svg?${FAVICON_QUERY}`],
   },
   openGraph: {
     type: "website",
