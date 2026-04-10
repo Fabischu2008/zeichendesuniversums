@@ -26,10 +26,9 @@ export const metadata: Metadata = {
   description: SITE_DESCRIPTION,
   metadataBase: new URL(getSiteUrl()),
   icons: {
-    icon: [{ url: "/images/logo-eye-inline.png", type: "image/png" }],
-    apple: [
-      { url: "/images/logo-eye.png", sizes: "1024x1024", type: "image/jpeg" },
-    ],
+    icon: [{ url: "/favicon.jpg", type: "image/jpeg", sizes: "1024x1024" }],
+    apple: [{ url: "/favicon.jpg", type: "image/jpeg", sizes: "180x180" }],
+    shortcut: ["/favicon.jpg"],
   },
   openGraph: {
     type: "website",
