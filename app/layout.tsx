@@ -9,7 +9,7 @@ import {
   SOCIAL_PREVIEW_IMAGE_SIZE,
   THEME_COLOR,
 } from "@/lib/brand";
-import { getSiteUrl } from "@/lib/site";
+import { absoluteUrl, getSiteUrl } from "@/lib/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -59,13 +59,14 @@ export const metadata: Metadata = {
     siteName: SITE_NAME,
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    url: "/",
+    url: absoluteUrl("/"),
     locale: "de_DE",
     images: [
       {
-        url: SOCIAL_PREVIEW_IMAGE,
+        url: absoluteUrl(SOCIAL_PREVIEW_IMAGE),
         ...SOCIAL_PREVIEW_IMAGE_SIZE,
         alt: SITE_NAME,
+        type: "image/jpeg",
       },
     ],
   },
@@ -73,7 +74,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: [SOCIAL_PREVIEW_IMAGE],
+    images: [absoluteUrl(SOCIAL_PREVIEW_IMAGE)],
   },
 };
 

@@ -8,6 +8,9 @@ import {
   SOCIAL_PREVIEW_IMAGE,
   SOCIAL_PREVIEW_IMAGE_SIZE,
 } from "@/lib/brand";
+import { absoluteUrl } from "@/lib/site";
+
+const homeOgImage = absoluteUrl(SOCIAL_PREVIEW_IMAGE);
 
 export const metadata: Metadata = {
   title: "Kostenloser Sternzeichen-Guide",
@@ -17,18 +20,19 @@ export const metadata: Metadata = {
     title: `Kostenloser Sternzeichen-Guide · ${SITE_NAME}`,
     description:
       "Hol dir den PDF-Guide: kurz, umsetzbar, direkt nach dem Absenden zum Download.",
-    url: "/",
+    url: absoluteUrl("/"),
     images: [
       {
-        url: SOCIAL_PREVIEW_IMAGE,
+        url: homeOgImage,
         ...SOCIAL_PREVIEW_IMAGE_SIZE,
         alt: SITE_NAME,
+        type: "image/jpeg",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    images: [SOCIAL_PREVIEW_IMAGE],
+    images: [homeOgImage],
   },
 };
 

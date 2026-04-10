@@ -1,6 +1,9 @@
 /** Zentrale Marketing-/Brand-Werte (Site, E-Mail, OG). */
 export const SITE_NAME = "Zeichen des Universums";
 
+/** Öffentliche Live-Domain (https, ohne Slash). Für OG/WhatsApp, wenn keine SITE_URL-Env gesetzt ist. */
+export const CANONICAL_SITE_ORIGIN = "https://zeichendesuniversums.com";
+
 export const SITE_DESCRIPTION =
   "Sternzeichen-Guide, Tools und Readings – finde dein wahres Sternzeichen-Potenzial.";
 
