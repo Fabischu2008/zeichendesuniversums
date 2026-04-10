@@ -85,6 +85,8 @@ export async function POST(req: Request) {
       ok: true,
       source: resolvedSource,
       saved: false,
+      message:
+        "E-Mail-Versand nicht aktiv: RESEND_API_KEY fehlt in der Server-Umgebung.",
     });
   }
 
@@ -136,6 +138,9 @@ export async function POST(req: Request) {
         ok: true,
         source: resolvedSource,
         saved: false,
+        message:
+          result.error.message ||
+          "Resend hat den Versand abgelehnt. Bitte Absender/Domain und API-Key prüfen.",
       });
     }
 
@@ -153,6 +158,8 @@ export async function POST(req: Request) {
       ok: true,
       source: resolvedSource,
       saved: false,
+      message:
+        "Netzwerkfehler beim E-Mail-Versand. Bitte später erneut versuchen.",
     });
   }
 }

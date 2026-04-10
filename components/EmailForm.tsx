@@ -67,7 +67,8 @@ export function EmailForm({
 
       if (data.saved === false) {
         throw new Error(
-          "Eintragung gespeichert, aber E-Mail-Versand fehlgeschlagen. Bitte in Resend API-Key/Absender prüfen.",
+          data.message ||
+            "Eintragung gespeichert, aber E-Mail-Versand fehlgeschlagen. Bitte in Resend API-Key/Absender prüfen.",
         );
       }
 
