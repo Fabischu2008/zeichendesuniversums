@@ -22,6 +22,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
     },
     { url: absoluteUrl("/reading"), lastModified: now, changeFrequency: "monthly" },
+    { url: absoluteUrl("/impressum"), lastModified: now, changeFrequency: "yearly" },
+    { url: absoluteUrl("/datenschutz"), lastModified: now, changeFrequency: "yearly" },
+    { url: absoluteUrl("/agb"), lastModified: now, changeFrequency: "yearly" },
+    { url: absoluteUrl("/widerruf"), lastModified: now, changeFrequency: "yearly" },
   ];
 
   const productRoutes: MetadataRoute.Sitemap = getProducts().map((p) => ({
