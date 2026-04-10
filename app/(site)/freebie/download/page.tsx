@@ -11,7 +11,7 @@ export const metadata: Metadata = {
   },
 };
 
-const PDF_HREF = "/downloads/testpdf.pdf";
+const PDF_HREF = "/downloads/Freebie.pdf";
 
 export default function FreebieDownloadPage() {
   return (
