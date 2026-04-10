@@ -16,7 +16,7 @@ function escapeHtml(text: string) {
 }
 
 /** Standard-Empfänger; per LEAD_TO_EMAIL in .env überschreiben. */
-const DEFAULT_LEAD_TO_EMAIL = "fabianschuck13@gmail.com";
+const DEFAULT_LEAD_TO_EMAIL = "zeichendesuniversums.info@gmail.com";
 
 /**
  * Leads per E-Mail (Resend).
@@ -24,7 +24,7 @@ const DEFAULT_LEAD_TO_EMAIL = "fabianschuck13@gmail.com";
  * Optional: LEAD_TO_EMAIL, RESEND_FROM (Default-Absender: ZdU Freebie <onboarding@resend.dev>)
  *
  * Hinweis: Mit onboarding@resend.dev darfst du testweise nur an die Adresse
- * senden, mit der du bei Resend registriert bist (hier: fabianschuck13@gmail.com).
+ * senden, mit der du bei Resend registriert bist (hier: zeichendesuniversums.info@gmail.com).
  * Eigene Domain bei Resend verifizieren → beliebige Empfänger + RESEND_FROM setzen.
  */
 
