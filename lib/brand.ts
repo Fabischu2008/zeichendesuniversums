@@ -8,6 +8,10 @@ export const SITE_TAGLINE = "Astrology, aber praktisch.";
 
 export const THEME_COLOR = "#7c3aed";
 
+/** Link-Vorschau (WhatsApp, Telegram, Social): Datei unter `public/`. */
+export const SOCIAL_PREVIEW_IMAGE = "/auge.jpg";
+export const SOCIAL_PREVIEW_IMAGE_SIZE = { width: 1024, height: 1024 } as const;
+
 /** Anzeigename für Resend `from`, falls kein RESEND_FROM gesetzt ist. */
 export const EMAIL_FROM_DISPLAY = "Zeichen des Universums";
 

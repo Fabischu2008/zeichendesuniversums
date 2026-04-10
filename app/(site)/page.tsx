@@ -3,7 +3,11 @@ import Link from "next/link";
 import { CTA } from "@/components/CTA";
 import { Hero } from "@/components/Hero";
 import { Testimonial } from "@/components/Testimonial";
-import { SITE_NAME } from "@/lib/brand";
+import {
+  SITE_NAME,
+  SOCIAL_PREVIEW_IMAGE,
+  SOCIAL_PREVIEW_IMAGE_SIZE,
+} from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Kostenloser Sternzeichen-Guide",
@@ -16,16 +20,15 @@ export const metadata: Metadata = {
     url: "/",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        url: SOCIAL_PREVIEW_IMAGE,
+        ...SOCIAL_PREVIEW_IMAGE_SIZE,
         alt: SITE_NAME,
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    images: ["/twitter-image"],
+    images: [SOCIAL_PREVIEW_IMAGE],
   },
 };
 

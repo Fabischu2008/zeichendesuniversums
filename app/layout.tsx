@@ -5,6 +5,8 @@ import {
   FAVICON_QUERY,
   SITE_DESCRIPTION,
   SITE_NAME,
+  SOCIAL_PREVIEW_IMAGE,
+  SOCIAL_PREVIEW_IMAGE_SIZE,
   THEME_COLOR,
 } from "@/lib/brand";
 import { getSiteUrl } from "@/lib/site";
@@ -61,9 +63,8 @@ export const metadata: Metadata = {
     locale: "de_DE",
     images: [
       {
-        url: "/opengraph-image",
-        width: 1200,
-        height: 630,
+        url: SOCIAL_PREVIEW_IMAGE,
+        ...SOCIAL_PREVIEW_IMAGE_SIZE,
         alt: SITE_NAME,
       },
     ],
@@ -72,7 +73,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: SITE_NAME,
     description: SITE_DESCRIPTION,
-    images: ["/twitter-image"],
+    images: [SOCIAL_PREVIEW_IMAGE],
   },
 };
 
