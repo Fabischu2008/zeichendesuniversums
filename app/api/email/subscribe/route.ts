@@ -1,18 +1,15 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
+import {
+  buildLeadEmailBodies,
+  defaultResendFrom,
+  leadEmailSubject,
+} from "@/lib/email-lead";
 
 export const runtime = "nodejs";
 
 function isValidEmail(addr: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr);
-}
-
-function escapeHtml(text: string) {
-  return text
-    .replace(/&/g, "&amp;")
-    .replace(/</g, "&lt;")
-    .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
 }
 
 /** Standard-Empfänger; per LEAD_TO_EMAIL in .env überschreiben. */
@@ -21,7 +18,7 @@ const DEFAULT_LEAD_TO_EMAIL = "zeichendesuniversums.info@gmail.com";
 /**
  * Leads per E-Mail (Resend).
  * .env.local: RESEND_API_KEY=re_… (https://resend.com → API Keys)
- * Optional: LEAD_TO_EMAIL, RESEND_FROM (Default-Absender: ZdU Freebie <onboarding@resend.dev>)
+ * Optional: LEAD_TO_EMAIL, RESEND_FROM (Default-Absender: siehe defaultResendFrom in lib/email-lead.ts)
  *
  * Hinweis: Mit onboarding@resend.dev darfst du testweise nur an die Adresse
  * senden, mit der du bei Resend registriert bist (hier: zeichendesuniversums.info@gmail.com).
@@ -71,10 +68,7 @@ export async function POST(req: Request) {
   const to = (
     process.env.LEAD_TO_EMAIL?.trim() || DEFAULT_LEAD_TO_EMAIL
   ).toLowerCase();
-  // Default-Absender ohne Umlaute (robuster); eigenes RESEND_FROM nach Domain-Verifikation.
-  const from =
-    process.env.RESEND_FROM?.trim() ||
-    "ZdU Freebie <onboarding@resend.dev>";
+  const from = process.env.RESEND_FROM?.trim() || defaultResendFrom();
 
   if (!apiKey) {
     // Kein harter Fehler: Nutzer soll trotzdem zum PDF. E-Mail nur, wenn Key gesetzt ist.
@@ -90,22 +84,20 @@ export async function POST(req: Request) {
     });
   }
 
-  const lines = [
-    `Quelle: ${resolvedSource}`,
-    `Name: ${firstName} ${lastName}`,
-    `E-Mail: ${email}`,
-    phoneRaw ? `Telefon: ${phoneRaw}` : null,
-  ].filter(Boolean) as string[];
-
-  const textBody = lines.join("\n");
-  const htmlBody = `<pre style="font-family:system-ui,sans-serif;font-size:14px;line-height:1.6;white-space:pre-wrap">${escapeHtml(textBody)}</pre>`;
+  const { textBody, htmlBody } = buildLeadEmailBodies({
+    resolvedSource,
+    firstName,
+    lastName,
+    email,
+    phoneRaw,
+  });
 
   const resend = new Resend(apiKey);
 
   const payload = {
     from,
     to: [to] as string[],
-    subject: `Freebie-Lead: ${firstName} ${lastName}`,
+    subject: leadEmailSubject(firstName, lastName),
     text: textBody,
     html: htmlBody,
     replyTo: email,
@@ -125,6 +117,7 @@ export async function POST(req: Request) {
         subject: payload.subject,
         text: textBody,
         html: htmlBody,
+        replyTo: email,
       });
     }
 

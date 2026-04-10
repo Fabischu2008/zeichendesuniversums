@@ -3,16 +3,29 @@ import Link from "next/link";
 import { CTA } from "@/components/CTA";
 import { Hero } from "@/components/Hero";
 import { Testimonial } from "@/components/Testimonial";
+import { SITE_NAME } from "@/lib/brand";
 
 export const metadata: Metadata = {
   title: "Kostenloser Sternzeichen-Guide",
   description:
     "PDF-Guide in Minuten: Vorname, Nachname, E-Mail – danach sofortiger Download. Praktische Astrologie ohne Buzzwords.",
   openGraph: {
-    title: "Kostenloser Sternzeichen-Guide · Zeichen des Universums",
+    title: `Kostenloser Sternzeichen-Guide · ${SITE_NAME}`,
     description:
       "Hol dir den PDF-Guide: kurz, umsetzbar, direkt nach dem Absenden zum Download.",
     url: "/",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+      },
+    ],
+  },
+  twitter: {
+    card: "summary_large_image",
+    images: ["/twitter-image"],
   },
 };
 

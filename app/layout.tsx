@@ -1,6 +1,7 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SITE_DESCRIPTION, SITE_NAME, THEME_COLOR } from "@/lib/brand";
 import { getSiteUrl } from "@/lib/site";
 
 const geistSans = Geist({
@@ -13,28 +14,44 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  themeColor: THEME_COLOR,
+};
+
 export const metadata: Metadata = {
   title: {
-    default: "Zeichen des Universums",
-    template: "%s · Zeichen des Universums",
+    default: SITE_NAME,
+    template: `%s · ${SITE_NAME}`,
   },
-  description:
-    "Sternzeichen-Guide, Tools und Readings – finde dein wahres Sternzeichen-Potenzial.",
+  description: SITE_DESCRIPTION,
   metadataBase: new URL(getSiteUrl()),
+  icons: {
+    icon: [{ url: "/images/logo-eye-inline.png", type: "image/png" }],
+    apple: [
+      { url: "/images/logo-eye.png", sizes: "1024x1024", type: "image/jpeg" },
+    ],
+  },
   openGraph: {
     type: "website",
-    siteName: "Zeichen des Universums",
-    title: "Zeichen des Universums",
-    description:
-      "Sternzeichen-Guide, Tools und Readings – finde dein wahres Sternzeichen-Potenzial.",
+    siteName: SITE_NAME,
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
     url: "/",
     locale: "de_DE",
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: SITE_NAME,
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Zeichen des Universums",
-    description:
-      "Sternzeichen-Guide, Tools und Readings – finde dein wahres Sternzeichen-Potenzial.",
+    title: SITE_NAME,
+    description: SITE_DESCRIPTION,
+    images: ["/twitter-image"],
   },
 };
 

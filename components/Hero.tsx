@@ -1,5 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
+import { SITE_TAGLINE } from "@/lib/brand";
 
 type HeroProps = {
   headline: string;
@@ -33,7 +34,7 @@ export function Hero({
         />
         <div className="relative z-10 max-w-2xl">
           <p className="text-base font-medium text-white/90 sm:text-lg">
-            Astrology, aber praktisch.
+            {SITE_TAGLINE}
           </p>
           <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight text-white sm:mt-5 sm:text-5xl lg:text-6xl">
             {headline}
@@ -69,7 +70,7 @@ export function Hero({
     <section className="rounded-3xl border border-black/5 bg-gradient-to-b from-violet-500/10 via-sky-500/10 to-transparent p-6 sm:p-10 lg:p-12 dark:border-white/10">
       <div className="max-w-2xl">
         <p className="text-base font-medium text-black/70 dark:text-white/70 sm:text-lg">
-          Astrology, aber praktisch.
+          {SITE_TAGLINE}
         </p>
         <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight sm:mt-5 sm:text-5xl lg:text-6xl">
           {headline}
