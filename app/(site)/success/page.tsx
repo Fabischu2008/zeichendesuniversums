@@ -1,10 +1,13 @@
-import Link from "next/link";
 import type { Metadata } from "next";
-import { getProducts } from "@/lib/cms";
+import { ProfileAccessLinkCard } from "@/components/ProfileAccessLinkCard";
+import { getProducts, PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
+import { createProfileAccessToken } from "@/lib/profile-access-token";
+import { shouldIssueProfileAccessToken } from "@/lib/profile-access-policy";
+import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Kauf erfolgreich",
-  description: "Danke für deinen Kauf – hier ist dein Download.",
+  description: "Dein persönlicher Profil-Zugangslink.",
   robots: {
     index: false,
     follow: false,
@@ -15,71 +18,64 @@ export const metadata: Metadata = {
 export default async function SuccessPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ productId?: string }>;
+  searchParams?: Promise<{ productId?: string; session_id?: string }>;
 }) {
   const sp = await searchParams;
   const productId =
     sp?.productId && typeof sp.productId === "string" ? sp.productId : "";
+  const sessionId =
+    sp?.session_id && typeof sp.session_id === "string"
+      ? sp.session_id
+      : undefined;
+
   const product = getProducts().find((p) => p.id === productId);
-  const isProfileProduct = product?.id === "p_birth_profile";
+  const isProfileProduct = product?.id === PRODUCT_ID_ASTRO_VOLLPROFIL;
+
+  const mayIssue = await shouldIssueProfileAccessToken(
+    isProfileProduct,
+    sessionId,
+  );
+  const token = mayIssue ? createProfileAccessToken() : null;
+  const profileAccessUrl =
+    token !== null
+      ? `${getSiteUrl()}/tools/birth-chart/profile?unlock=${encodeURIComponent(token)}`
+      : null;
+
+  if (isProfileProduct && profileAccessUrl) {
+    return (
+      <div className="mx-auto max-w-2xl">
+        <ProfileAccessLinkCard profileUrl={profileAccessUrl} />
+      </div>
+    );
+  }
+
+  if (isProfileProduct && !profileAccessUrl) {
+    return (
+      <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 text-sm text-black/75 dark:border-white/10 dark:bg-white/5 dark:text-white/75">
+        <p className="font-medium text-black dark:text-white">
+          Persönlicher Link nicht verfügbar
+        </p>
+        <p className="mt-2">
+          Der Zugangslink konnte nicht erstellt werden (z. B. fehlende
+          Konfiguration). Bitte den Support kontaktieren oder es später erneut
+          versuchen.
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="mx-auto grid max-w-3xl gap-8">
-      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-        <h1 className="text-3xl font-semibold tracking-tight">
-          Danke für deinen Kauf
-        </h1>
-        <p className="mt-3 text-black/70 dark:text-white/70">
-          {product
-            ? `Dein Produkt „${product.name}“ ist bereit.`
-            : "Dein Produkt ist bereit."}
-        </p>
-        <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-          {isProfileProduct ? (
-            <Link
-              href="/tools/birth-chart/profile"
-              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              Profil jetzt öffnen
-            </Link>
-          ) : (
-            <a
-              href={product?.fileUrl || "/downloads/demo.pdf"}
-              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              Download
-            </a>
-          )}
-          <Link
-            href="/reading"
-            className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Persönliches Reading (Upsell)
-          </Link>
-        </div>
-        <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-          Hinweis: Downloads sind im MVP als Platzhalter-Links angelegt.
-        </p>
-      </section>
-
-      <section className="rounded-3xl border border-black/5 bg-gradient-to-br from-amber-500/10 via-violet-500/10 to-sky-500/10 p-6 sm:p-8 dark:border-white/10">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Nächster Schritt: persönliches Reading
-        </h2>
-        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Wenn du tiefer gehen willst: Geburtshoroskop, Muster & klare Next
-          Steps – 30 oder 60 Minuten.
-        </p>
-        <div className="mt-6">
-          <Link
-            href="/reading"
-            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Reading ansehen
-          </Link>
-        </div>
-      </section>
+    <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+      <h1 className="text-2xl font-semibold tracking-tight">Danke für deinen Kauf</h1>
+      <p className="mt-3 text-sm text-black/70 dark:text-white/70">
+        {product ? `Produkt: ${product.name}` : "Dein Produkt ist bereit."}
+      </p>
+      <a
+        href={product?.fileUrl || "/downloads/demo.pdf"}
+        className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+      >
+        Download
+      </a>
     </div>
   );
 }
-

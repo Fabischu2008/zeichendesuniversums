@@ -25,6 +25,13 @@ export type Post = {
   keywords: string[];
 };
 
+/** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). */
+export const PRODUCT_ID_ASTRO_VOLLPROFIL = "p_birth_profile" as const;
+
+export function checkoutHrefForProduct(productId: string): string {
+  return `/checkout?productId=${encodeURIComponent(productId)}`;
+}
+
 const products: Product[] = [
   {
     id: "p_guide_aries",

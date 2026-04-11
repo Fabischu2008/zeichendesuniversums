@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Big3PlacementCard } from "@/components/Big3PlacementCard";
+import { BirthChartReportDemo } from "@/components/BirthChartReportDemo";
 import { BirthChartVollreportUpsell } from "@/components/BirthChartVollreportUpsell";
-import { AstroProfileDisplay } from "@/components/AstroProfileDisplay";
-import type { AstroProfileResult } from "@/lib/astro/profile";
+import type { ZodiacSign } from "@/lib/astro/signs";
+import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
 
 function safeJsonParse(raw: string): unknown {
   if (!raw) return {};
@@ -56,15 +57,12 @@ export default function BirthChartToolPage() {
 
   const [calcLoading, setCalcLoading] = useState(false);
   const [calcError, setCalcError] = useState<string | null>(null);
-  const [profileLoading, setProfileLoading] = useState(false);
-  const [profileError, setProfileError] = useState<string | null>(null);
   const [big3, setBig3] = useState<null | {
     sun: string;
     moon: string;
     ascendant: string;
     meta?: { tz?: string; utc?: string };
   }>(null);
-  const [profile, setProfile] = useState<AstroProfileResult | null>(null);
 
   const resultRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
@@ -131,8 +129,6 @@ export default function BirthChartToolPage() {
     setCalcLoading(true);
     setCalcError(null);
     setBig3(null);
-    setProfile(null);
-    setProfileError(null);
     try {
       const res = await fetch("/api/tools/big3", {
         method: "POST",
@@ -171,52 +167,16 @@ export default function BirthChartToolPage() {
         throw new Error("Unerwartete Antwort vom Server.");
       }
       setBig3(data);
+      mergeAstroSession({
+        birthdate,
+        birthtime,
+        place,
+        big3: data,
+      });
     } catch (e) {
       setCalcError(e instanceof Error ? e.message : "Unbekannter Fehler");
     } finally {
       setCalcLoading(false);
-    }
-  }
-
-  async function calculateProfile() {
-    if (!place) return;
-    setProfileLoading(true);
-    setProfileError(null);
-    setProfile(null);
-    try {
-      const res = await fetch("/api/tools/profile", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          date: birthdate,
-          time: birthtime,
-          location: {
-            name: place.city || place.label,
-            lat: place.lat,
-            lon: place.lon,
-            countryCode: place.countryCode,
-          },
-        }),
-      });
-      const raw = await res.text();
-      const parsed = safeJsonParse(raw);
-      const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
-        profile?: AstroProfileResult;
-        message?: string;
-      };
-
-      if (!res.ok || !data.profile) {
-        throw new Error(
-          data.message ||
-            `Profil-Berechnung fehlgeschlagen (HTTP ${res.status}).`,
-        );
-      }
-
-      setProfile(data.profile);
-    } catch (e) {
-      setProfileError(e instanceof Error ? e.message : "Unbekannter Fehler");
-    } finally {
-      setProfileLoading(false);
     }
   }
 
@@ -234,19 +194,17 @@ export default function BirthChartToolPage() {
           Mehr über dich · Geburtshoroskop
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Dein Geburtshoroskop – vom ersten Eindruck bis zum Vollreport
+          Dein Geburtshoroskop – Big 3 &amp; Vorschau
         </h1>
         <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
-          Schritt für Schritt: Daten eingeben →{" "}
+          Kostenlos:{" "}
+          <strong className="font-medium text-black dark:text-white">Big 3</strong>{" "}
+          berechnen. Darunter siehst du eine{" "}
           <strong className="font-medium text-black dark:text-white">
-            Big 3
+            Demo-Ansicht
           </strong>{" "}
-          sehen → optional technische Vorschau → wenn du Klarheit und Tiefe
-          willst:{" "}
-          <strong className="font-medium text-black dark:text-white">
-            Vollreport im Shop freischalten
-          </strong>
-          .
+          deines Berichts. Die echte, vollständige Auswertung inkl. persönlichem
+          Zugangslink erhältst du nach einmaliger Zahlung.
         </p>
       </header>
 
@@ -331,7 +289,7 @@ export default function BirthChartToolPage() {
           ) : null}
         </div>
 
-        <div className="mt-8 space-y-3">
+        <div className="mt-8">
           <button
             type="button"
             disabled={!canCalculate || calcLoading}
@@ -340,19 +298,8 @@ export default function BirthChartToolPage() {
           >
             {calcLoading ? "Berechne…" : "Big 3 jetzt berechnen"}
           </button>
-          <button
-            type="button"
-            disabled={!canCalculate || profileLoading}
-            onClick={() => void calculateProfile()}
-            className="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-black/12 bg-white px-5 text-sm font-medium text-black hover:bg-black/[0.04] disabled:opacity-60 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            {profileLoading
-              ? "Lade Vorschau…"
-              : "Technische Chart-Vorschau laden (kostenlos, Beta)"}
-          </button>
-          <p className="text-center text-xs text-black/45 dark:text-white/45">
-            Tipp: Erst Big 3 – dann entscheidest du, ob du tiefer gehst oder den
-            Vollreport holst.
+          <p className="mt-3 text-center text-xs text-black/45 dark:text-white/45">
+            Nur dieser Schritt ist kostenlos – kein vollständiges Profil im Browser.
           </p>
         </div>
       </section>
@@ -362,14 +309,14 @@ export default function BirthChartToolPage() {
         className="scroll-mt-24 space-y-8 rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
       >
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Schritt 2 · Dein Ergebnis
+          Schritt 2 · Ergebnis &amp; Demo
         </h2>
         {calcError ? (
           <p className="text-sm text-red-600 dark:text-red-400">{calcError}</p>
         ) : null}
 
         {big3 ? (
-          <div className="space-y-6">
+          <div className="space-y-2">
             <p className="text-sm text-black/70 dark:text-white/70">
               Deine <strong className="font-medium">Big 3</strong> – Sonne, Mond
               und Aszendent – exakt zu deinem Geburtszeitpunkt und Ort.
@@ -399,26 +346,25 @@ export default function BirthChartToolPage() {
               </p>
             ) : null}
 
-            <BirthChartVollreportUpsell />
+            <BirthChartReportDemo
+              sun={big3.sun as ZodiacSign}
+              moon={big3.moon as ZodiacSign}
+              ascendant={big3.ascendant as ZodiacSign}
+            />
+
+            <BirthChartVollreportUpsell
+              birthdate={birthdate}
+              birthtime={birthtime}
+              place={place}
+              big3={big3}
+            />
           </div>
         ) : (
           <p className="text-sm text-black/65 dark:text-white/65">
-            Sobald du die Big 3 berechnet hast, erscheint hier dein Ergebnis und
-            der Vorschlag für den Vollreport.
+            Sobald du die Big 3 berechnet hast, erscheinen hier deine Zeichen, eine
+            Demo-Ansicht des Berichts und der Weg zur vollen Auswertung.
           </p>
         )}
-
-        {profileError ? (
-          <p className="mt-6 text-sm text-red-600 dark:text-red-400">
-            {profileError}
-          </p>
-        ) : null}
-
-        {profile ? (
-          <div className="mt-8">
-            <AstroProfileDisplay profile={profile} variant="embedded" />
-          </div>
-        ) : null}
       </section>
     </div>
   );

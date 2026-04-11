@@ -15,7 +15,13 @@ export async function POST(req: Request) {
     );
   }
 
-  // MVP Stub: in echt Stripe Checkout Session erzeugen.
+  /**
+   * MVP: Weiterleitung zum Checkout-Stub. Mit Stripe z. B.:
+   * `sessions.create` mit
+   * `success_url: ${getSiteUrl()}/success?session_id={CHECKOUT_SESSION_ID}&productId=…`,
+   * `metadata: { cms_product_id: product.id }` – dann wird auf /success der
+   * Wiederherstellungslink für das Vollprofil ausgestellt.
+   */
   const url = `/checkout?productId=${encodeURIComponent(product.id)}`;
   return NextResponse.json({ url });
 }
