@@ -46,10 +46,6 @@ export default async function CheckoutPage({
           Checkout nicht verfügbar
         </h1>
         <p className="text-sm text-black/80 dark:text-white/80">{result.error}</p>
-        <p className="text-xs text-black/55 dark:text-white/55">
-          Für Vercel: <code className="rounded bg-black/5 px-1 dark:bg-white/10">STRIPE_SECRET_KEY</code>{" "}
-          setzen und neu deployen.
-        </p>
         <Link
           href="/shop"
           className="inline-flex h-12 items-center justify-center rounded-full border border-black/15 bg-white px-6 text-sm font-medium hover:bg-black/5 dark:border-white/20 dark:bg-transparent dark:hover:bg-white/10"

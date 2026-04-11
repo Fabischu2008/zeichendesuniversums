@@ -41,21 +41,21 @@ function resolveProduct(productId: string): ResolvedCheckoutProduct | null {
 
 /**
  * Erstellt eine Stripe Checkout Session und gibt die Hosted-Checkout-URL zurück.
+ * Ohne `STRIPE_SECRET_KEY`: MVP – Weiterleitung zur lokalen Success-Seite (kein Stripe).
  */
 export async function createCheckoutSessionForProduct(
   productId: string,
 ): Promise<{ url: string } | { error: string }> {
-  const stripe = getStripe();
-  if (!stripe) {
-    return {
-      error:
-        "Stripe ist nicht konfiguriert (STRIPE_SECRET_KEY fehlt).",
-    };
-  }
-
   const product = resolveProduct(productId);
   if (!product) {
     return { error: "Unbekanntes Produkt." };
+  }
+
+  const stripe = getStripe();
+  if (!stripe) {
+    return {
+      url: `/success?productId=${encodeURIComponent(product.id)}`,
+    };
   }
 
   const site = getSiteUrl();
