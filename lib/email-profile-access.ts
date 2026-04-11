@@ -1,6 +1,6 @@
 import { Resend } from "resend";
-import { defaultResendFrom } from "@/lib/email-lead";
 import { getResendApiKeyForProfileMail } from "@/lib/email-resend-env";
+import { getResendFromForProfileMail } from "@/lib/email-resend-from";
 
 export function isValidProfileEmail(addr: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(addr);
@@ -49,7 +49,7 @@ export async function sendProfileAccessEmail(params: {
   }
 
   const apiKey = getResendApiKeyForProfileMail();
-  const from = process.env.RESEND_FROM?.trim() || defaultResendFrom();
+  const from = getResendFromForProfileMail();
 
   if (!apiKey) {
     const devHint =
