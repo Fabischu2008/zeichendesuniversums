@@ -2,9 +2,19 @@
 
 import { useState, type FormEvent } from "react";
 
-export function ProfileAccessLinkCard({ profileUrl }: { profileUrl: string }) {
+export function ProfileAccessLinkCard({
+  profileUrl,
+  defaultEmail,
+  queryEmailNotice,
+}: {
+  profileUrl: string;
+  /** z. B. E-Mail aus Stripe Checkout */
+  defaultEmail?: string | null;
+  /** Server hat Link an ?email=… gesendet */
+  queryEmailNotice?: "sent" | "failed" | null;
+}) {
   const [copied, setCopied] = useState(false);
-  const [email, setEmail] = useState("");
+  const [email, setEmail] = useState(defaultEmail?.trim() ?? "");
   const [sending, setSending] = useState(false);
   const [sendMsg, setSendMsg] = useState<string | null>(null);
 
@@ -59,6 +69,18 @@ export function ProfileAccessLinkCard({ profileUrl }: { profileUrl: string }) {
       <p className="mt-2 text-xs text-black/55 dark:text-white/55">
         Tipp: Den Link nicht öffentlich teilen – er ist nur für dich bestimmt.
       </p>
+
+      {queryEmailNotice === "sent" ? (
+        <p className="mt-4 rounded-2xl border border-emerald-500/25 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-950 dark:border-emerald-500/20 dark:bg-emerald-950/30 dark:text-emerald-100">
+          Wir haben dir den Link ebenfalls per E-Mail geschickt – prüfe ggf. den Spam-Ordner.
+        </p>
+      ) : null}
+      {queryEmailNotice === "failed" ? (
+        <p className="mt-4 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-sm text-amber-950 dark:border-amber-500/20 dark:bg-amber-950/30 dark:text-amber-100">
+          Automatischer E-Mail-Versand war nicht möglich (z. B. fehlende Resend-Konfiguration).
+          Nutze das Formular unten oder kopiere den Link.
+        </p>
+      ) : null}
 
       <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-stretch">
         <div className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-white/90 px-3 py-2 text-xs break-all text-black/80 dark:border-white/15 dark:bg-black/30 dark:text-white/85">

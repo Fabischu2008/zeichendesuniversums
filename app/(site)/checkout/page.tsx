@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { CheckoutCollectEmail } from "@/components/CheckoutCollectEmail";
 import { createCheckoutSessionForProduct } from "@/lib/stripe/create-checkout-session";
 
 export const metadata: Metadata = {
@@ -54,6 +55,10 @@ export default async function CheckoutPage({
         </Link>
       </div>
     );
+  }
+
+  if (result.url.startsWith("/")) {
+    return <CheckoutCollectEmail productId={productId} />;
   }
 
   redirect(result.url);

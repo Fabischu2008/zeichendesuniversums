@@ -1,8 +1,14 @@
 import type { Metadata } from "next";
 import { ProfileAccessLinkCard } from "@/components/ProfileAccessLinkCard";
+import { StripeProfileEmailOnce } from "@/components/StripeProfileEmailOnce";
+import { StripSuccessEmailQuery } from "@/components/StripSuccessEmailQuery";
 import { getProducts, PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
+import {
+  isValidProfileEmail,
+  sendProfileAccessEmail,
+} from "@/lib/email-profile-access";
 import { createProfileAccessToken } from "@/lib/profile-access-token";
-import { shouldIssueProfileAccessToken } from "@/lib/profile-access-policy";
+import { resolveProfileAccessForSuccess } from "@/lib/profile-access-policy";
 import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -18,7 +24,11 @@ export const metadata: Metadata = {
 export default async function SuccessPage({
   searchParams,
 }: {
-  searchParams?: Promise<{ productId?: string; session_id?: string }>;
+  searchParams?: Promise<{
+    productId?: string;
+    session_id?: string;
+    email?: string;
+  }>;
 }) {
   const sp = await searchParams;
   const productId =
@@ -27,24 +37,56 @@ export default async function SuccessPage({
     sp?.session_id && typeof sp.session_id === "string"
       ? sp.session_id
       : undefined;
+  const rawQueryEmail =
+    sp?.email && typeof sp.email === "string" ? sp.email.trim() : "";
 
   const isProfileProduct = productId === PRODUCT_ID_ASTRO_VOLLPROFIL;
   const product = getProducts().find((p) => p.id === productId);
 
-  const mayIssue = await shouldIssueProfileAccessToken(
+  const { mayIssue, stripeCustomerEmail } = await resolveProfileAccessForSuccess(
     isProfileProduct,
     sessionId,
   );
+
   const token = mayIssue ? createProfileAccessToken() : null;
   const profileAccessUrl =
     token !== null
       ? `${getSiteUrl()}/tools/birth-chart/profile?unlock=${encodeURIComponent(token)}`
       : null;
 
+  const queryEmailRecipient =
+    rawQueryEmail && isValidProfileEmail(rawQueryEmail) ? rawQueryEmail : null;
+
+  let queryEmailNotice: "sent" | "failed" | null = null;
+  if (isProfileProduct && profileAccessUrl && queryEmailRecipient) {
+    const r = await sendProfileAccessEmail({
+      to: queryEmailRecipient,
+      profileUrl: profileAccessUrl,
+    });
+    queryEmailNotice = r.ok ? "sent" : "failed";
+  }
+
   if (isProfileProduct && profileAccessUrl) {
+    const showStripeClientMail =
+      Boolean(sessionId) &&
+      Boolean(stripeCustomerEmail) &&
+      !queryEmailRecipient;
+
     return (
       <div className="mx-auto max-w-2xl">
-        <ProfileAccessLinkCard profileUrl={profileAccessUrl} />
+        {showStripeClientMail ? (
+          <StripeProfileEmailOnce
+            sessionId={sessionId!}
+            profileUrl={profileAccessUrl}
+            customerEmail={stripeCustomerEmail!}
+          />
+        ) : null}
+        {rawQueryEmail ? <StripSuccessEmailQuery /> : null}
+        <ProfileAccessLinkCard
+          profileUrl={profileAccessUrl}
+          defaultEmail={stripeCustomerEmail}
+          queryEmailNotice={queryEmailNotice}
+        />
       </div>
     );
   }

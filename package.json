@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
-    "verify:profile": "npx tsx scripts/verify-profile-access.ts"
+    "verify:profile": "npx tsx scripts/verify-profile-access.ts",
+    "test:resend": "npx tsx scripts/test-resend.ts"
   },
   "dependencies": {
     "astronomy-engine": "^2.1.19",
@@ -26,6 +27,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/tz-lookup": "^6.1.2",
+    "dotenv": "^17.4.1",
     "eslint": "^9",
     "eslint-config-next": "16.1.7",
     "tailwindcss": "^4",
