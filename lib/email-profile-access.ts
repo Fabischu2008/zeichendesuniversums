@@ -35,10 +35,16 @@ export async function sendProfileAccessEmail(params: {
   const from = process.env.RESEND_FROM?.trim() || defaultResendFrom();
 
   if (!apiKey) {
+    const devHint =
+      process.env.NODE_ENV === "development"
+        ? " Lege im Projektroot `.env.local` an mit `ZD_RESEND_PROFILE_KEY=re_…` oder `RESEND_API_KEY=re_…` (siehe `.env.example`), dann `npm run dev` neu starten."
+        : "";
     return {
       ok: false,
       message:
-        "E-Mail-Versand ist nicht konfiguriert (ZD_RESEND_PROFILE_KEY oder RESEND_API_KEY). Speichere den Link lokal oder kopiere ihn.",
+        "E-Mail-Versand ist nicht konfiguriert (ZD_RESEND_PROFILE_KEY oder RESEND_API_KEY)." +
+        devHint +
+        " Alternativ kannst du den Link oben kopieren.",
     };
   }
 
