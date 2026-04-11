@@ -9,6 +9,7 @@ import {
   hasVollreportUnlocked,
   mergeAstroSession,
   readAstroSession,
+  VOLLREPORT_UNLOCK_STORAGE_EVENT,
   type StoredAstroSessionV1,
 } from "@/lib/astro/profile-client-storage";
 import type { AstroProfileResult } from "@/lib/astro/profile";
@@ -107,8 +108,15 @@ export default function BirthChartProfilePage() {
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
+    const hasUnlockParam =
+      typeof window !== "undefined" &&
+      Boolean(new URLSearchParams(window.location.search).get("unlock"));
     const unlocked = hasVollreportUnlocked();
-    setVollreportAccess(unlocked);
+    if (hasUnlockParam && !unlocked) {
+      setVollreportAccess(null);
+    } else {
+      setVollreportAccess(unlocked);
+    }
     const s = readAstroSession();
     if (s) {
       setBirthdate(s.birthdate);
@@ -120,6 +128,39 @@ export default function BirthChartProfilePage() {
       }
     }
   }, []);
+
+  useEffect(() => {
+    function onUnlockEvent(ev: Event) {
+      const d = (ev as CustomEvent<{ unlocked?: boolean }>).detail;
+      const next =
+        d && typeof d.unlocked === "boolean"
+          ? d.unlocked
+          : hasVollreportUnlocked();
+      setVollreportAccess(next);
+      if (next) {
+        const s = readAstroSession();
+        if (s?.profile) setProfile(s.profile);
+      }
+    }
+    window.addEventListener(VOLLREPORT_UNLOCK_STORAGE_EVENT, onUnlockEvent);
+    return () => {
+      window.removeEventListener(VOLLREPORT_UNLOCK_STORAGE_EVENT, onUnlockEvent);
+    };
+  }, []);
+
+  useEffect(() => {
+    if (!profile || vollreportAccess !== true) return;
+    if (typeof window === "undefined" || window.location.hash !== "#vollreport") {
+      return;
+    }
+    const id = requestAnimationFrame(() => {
+      document.getElementById("vollreport")?.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    });
+    return () => cancelAnimationFrame(id);
+  }, [profile, vollreportAccess]);
 
   useEffect(() => {
     if (vollreportAccess !== true || profile || autoFetchDone.current) return;
@@ -250,19 +291,24 @@ export default function BirthChartProfilePage() {
           Dein astrologisches Profil
         </h1>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Vollständige Ansicht nach Freischaltung: Archetyp, Elemente, Häuser,
-          Planeten, Knoten, Lilith und Glückspunkt. Der{" "}
-          <strong className="font-medium">signierte Zugangslink</strong> von der
-          Bestätigungsseite (oder per E-Mail) ist dein dauerhafter Zugang – einmal
-          öffnen schaltet frei. Daten werden zusätzlich in diesem Browser gehalten.
-          Siehst du das Profil hier nicht, nutze zuerst das{" "}
-          <Link
-            href="/tools/birth-chart"
-            className="font-medium text-violet-700 underline-offset-2 hover:underline dark:text-violet-300"
-          >
-            Geburtshoroskop-Tool
-          </Link>{" "}
-          und schalte den Vollreport frei.
+          Vollständige Auswertung: Archetyp, Elemente, Häuser, Planeten, Knoten,
+          Lilith und Glückspunkt. Der{" "}
+          <strong className="font-medium">Link aus Bestätigung oder E-Mail</strong>{" "}
+          schaltet den Vollreport frei und scrollt direkt zur vollständigen Auswertung.
+          Daten bleiben in diesem Browser gespeichert.
+          {vollreportAccess === false ? (
+            <>
+              {" "}
+              Noch keine Daten? Zuerst im{" "}
+              <Link
+                href="/tools/birth-chart"
+                className="font-medium text-violet-700 underline-offset-2 hover:underline dark:text-violet-300"
+              >
+                Geburtshoroskop-Tool
+              </Link>{" "}
+              eingeben und kaufen.
+            </>
+          ) : null}
         </p>
 
         {vollreportAccess === false ? (

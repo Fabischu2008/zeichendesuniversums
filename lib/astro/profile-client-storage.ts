@@ -3,6 +3,9 @@ import type { AstroProfileResult } from "@/lib/astro/profile";
 const SESSION_KEY = "zd:astro:session_v1";
 const UNLOCK_KEY = "zd:vollreport:unlocked_v1";
 
+/** Nach setVollreportUnlocked / fehlgeschlagenem ?unlock=-Redeem — Profil-Page hört zu und aktualisiert den Zugriffs-State. */
+export const VOLLREPORT_UNLOCK_STORAGE_EVENT = "zd:vollreport-unlock-storage-v1";
+
 export type StoredPlace = {
   id: string;
   label: string;
@@ -96,6 +99,15 @@ export function setVollreportUnlocked(unlocked: boolean): void {
     } else {
       localStorage.removeItem(UNLOCK_KEY);
     }
+  } catch {
+    /* */
+  }
+  try {
+    window.dispatchEvent(
+      new CustomEvent(VOLLREPORT_UNLOCK_STORAGE_EVENT, {
+        detail: { unlocked: hasVollreportUnlocked() },
+      }),
+    );
   } catch {
     /* */
   }

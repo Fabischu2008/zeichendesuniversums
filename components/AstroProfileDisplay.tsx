@@ -19,7 +19,7 @@ export function AstroProfileDisplay({
   const pad = variant === "page" ? "p-6 sm:p-8" : "p-4 sm:p-5";
 
   return (
-    <div className="space-y-6">
+    <div id="vollreport" className="scroll-mt-24 space-y-6">
       <section
         className={`rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 ${pad} dark:border-white/10`}
       >

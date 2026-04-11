@@ -32,7 +32,7 @@ if (
 
 const profileUrl =
   process.env.TEST_PROFILE_URL?.trim() ||
-  "https://zeichendesuniversums.com/tools/birth-chart/profile?unlock=test-token";
+  "https://zeichendesuniversums.com/tools/birth-chart/profile?unlock=test-token#vollreport";
 
 void (async () => {
   console.log("Sende Test-Mail an", to, "…");

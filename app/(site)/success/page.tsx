@@ -51,7 +51,7 @@ export default async function SuccessPage({
   const token = mayIssue ? createProfileAccessToken() : null;
   const profileAccessUrl =
     token !== null
-      ? `${getSiteUrl()}/tools/birth-chart/profile?unlock=${encodeURIComponent(token)}`
+      ? `${getSiteUrl()}/tools/birth-chart/profile?unlock=${encodeURIComponent(token)}#vollreport`
       : null;
 
   const queryEmailRecipient =

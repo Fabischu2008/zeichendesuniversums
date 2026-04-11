@@ -2,7 +2,10 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { setVollreportUnlocked } from "@/lib/astro/profile-client-storage";
+import {
+  setVollreportUnlocked,
+  VOLLREPORT_UNLOCK_STORAGE_EVENT,
+} from "@/lib/astro/profile-client-storage";
 
 /**
  * Verarbeitet ?unlock=… vom E-Mail- / Wiederherstellungslink und schaltet
@@ -31,13 +34,31 @@ export function ProfileUnlockQueryHandler() {
         };
         if (!res.ok || !data.ok) {
           setError(data.message || "Link ungültig oder abgelaufen.");
+          try {
+            window.dispatchEvent(
+              new CustomEvent(VOLLREPORT_UNLOCK_STORAGE_EVENT, {
+                detail: { unlocked: false },
+              }),
+            );
+          } catch {
+            /* */
+          }
           return;
         }
         succeeded.current = true;
         setVollreportUnlocked(true);
-        router.replace("/tools/birth-chart/profile");
+        router.replace("/tools/birth-chart/profile#vollreport");
       } catch {
         setError("Verbindungsfehler. Bitte später erneut auf den Link klicken.");
+        try {
+          window.dispatchEvent(
+            new CustomEvent(VOLLREPORT_UNLOCK_STORAGE_EVENT, {
+              detail: { unlocked: false },
+            }),
+          );
+        } catch {
+          /* */
+        }
       }
     })();
   }, [searchParams, router]);
