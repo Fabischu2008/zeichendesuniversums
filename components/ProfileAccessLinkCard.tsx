@@ -62,9 +62,10 @@ export function ProfileAccessLinkCard({
       </h2>
       <p className="mt-3 text-sm leading-relaxed text-black/75 dark:text-white/75">
         <strong className="font-medium text-black dark:text-white">So geht&apos;s:</strong>{" "}
-        Öffne den Link unten <strong className="font-medium">einmal im Browser</strong> – damit
-        wird dein Vollprofil freigeschaltet. Speichere den Link als Lesezeichen oder schick ihn
-        dir per E-Mail, damit du ihn auf jedem Gerät wiederfindest.
+        Trage <strong className="font-medium">deine E-Mail-Adresse</strong> ein und klicke auf
+        Senden – du bekommst denselben Zugangslink per Mail. Oder kopiere den Link direkt.
+        Öffne den Link danach <strong className="font-medium">einmal im Browser</strong>, um das
+        Vollprofil freizuschalten.
       </p>
       <p className="mt-2 text-xs text-black/55 dark:text-white/55">
         Tipp: Den Link nicht öffentlich teilen – er ist nur für dich bestimmt.
@@ -82,7 +83,41 @@ export function ProfileAccessLinkCard({
         </p>
       ) : null}
 
-      <div className="mt-6 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+      <form onSubmit={sendEmail} className="mt-6 space-y-3">
+        <div>
+          <label className="block text-sm font-medium text-black dark:text-white">
+            Link an deine E-Mail senden
+          </label>
+          <p className="mt-1 text-xs text-black/55 dark:text-white/55">
+            Beliebige gültige E-Mail-Adresse – du erhältst dieselbe URL wie unten.
+          </p>
+        </div>
+        <div className="flex flex-col gap-2 sm:flex-row">
+          <input
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            placeholder="deine@email.de"
+            required
+            autoComplete="email"
+            inputMode="email"
+            className="h-11 flex-1 rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
+          />
+          <button
+            type="submit"
+            disabled={sending || !email.trim()}
+            className="inline-flex h-11 items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-50 dark:bg-white dark:text-black"
+          >
+            {sending ? "Senden…" : "Link per E-Mail senden"}
+          </button>
+        </div>
+      </form>
+
+      <p className="mt-6 text-center text-xs font-medium uppercase tracking-wide text-black/40 dark:text-white/40">
+        oder
+      </p>
+
+      <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:items-stretch">
         <div className="min-w-0 flex-1 rounded-2xl border border-black/10 bg-white/90 px-3 py-2 text-xs break-all text-black/80 dark:border-white/15 dark:bg-black/30 dark:text-white/85">
           {profileUrl}
         </div>
@@ -94,34 +129,6 @@ export function ProfileAccessLinkCard({
           {copied ? "Kopiert" : "Link kopieren"}
         </button>
       </div>
-
-      <form onSubmit={sendEmail} className="mt-6 space-y-3">
-        <div>
-          <label className="block text-sm font-medium text-black dark:text-white">
-            Alternativ: Link an deine E-Mail senden
-          </label>
-          <p className="mt-1 text-xs text-black/55 dark:text-white/55">
-            Trage deine Adresse ein – du erhältst dieselbe URL zum späteren Öffnen.
-          </p>
-        </div>
-        <div className="flex flex-col gap-2 sm:flex-row">
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="deine@email.de"
-            required
-            className="h-11 flex-1 rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
-          />
-          <button
-            type="submit"
-            disabled={sending || !email.trim()}
-            className="inline-flex h-11 items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-50 dark:bg-white dark:text-black"
-          >
-            {sending ? "Senden…" : "Senden"}
-          </button>
-        </div>
-      </form>
       {sendMsg ? (
         <p className="mt-3 text-sm text-black/70 dark:text-white/70">{sendMsg}</p>
       ) : null}

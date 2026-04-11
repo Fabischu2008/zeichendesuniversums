@@ -14,6 +14,23 @@ function escapeHtml(text: string) {
     .replace(/"/g, "&quot;");
 }
 
+/** Resend: Testmodus erlaubt oft nur die Account-E-Mail; sonst Domain + Absender. */
+function mapResendErrorToUserMessage(raw: string): string {
+  const lower = raw.toLowerCase();
+  if (
+    lower.includes("only send testing") ||
+    lower.includes("verify a domain") ||
+    lower.includes("testing emails")
+  ) {
+    return [
+      "Resend erlaubt im Testmodus oft nur Mails an die Adresse deines Resend-Kontos.",
+      "Für beliebige Empfänger: Domain unter resend.com/domains verifizieren und in Vercel RESEND_FROM auf eine Adresse dieser Domain setzen (z. B. noreply@deine-domain.de).",
+      `Technische Meldung: ${raw}`,
+    ].join(" ");
+  }
+  return raw;
+}
+
 /**
  * Sendet den Profil-Zugangslink per Resend (gleicher Inhalt wie /api/email/profile-access).
  */
@@ -81,9 +98,10 @@ export async function sendProfileAccessEmail(params: {
     });
 
     if (result.error) {
+      const raw = result.error.message || "Versand fehlgeschlagen.";
       return {
         ok: false,
-        message: result.error.message || "Versand fehlgeschlagen.",
+        message: mapResendErrorToUserMessage(raw),
       };
     }
 
