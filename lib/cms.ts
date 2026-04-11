@@ -1,8 +1,7 @@
 export type ProductCategory =
   | "guide"
   | "compatibility"
-  | "manifestation"
-  | "birth_profile";
+  | "manifestation";
 
 export type Product = {
   id: string;
@@ -25,8 +24,9 @@ export type Post = {
   keywords: string[];
 };
 
-/** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). */
+/** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). Nicht im Shop-Katalog. */
 export const PRODUCT_ID_ASTRO_VOLLPROFIL = "p_birth_profile" as const;
+export const PRICE_ASTRO_VOLLPROFIL = 19;
 
 export function checkoutHrefForProduct(productId: string): string {
   return `/checkout?productId=${encodeURIComponent(productId)}`;
@@ -71,18 +71,6 @@ const products: Product[] = [
     content:
       "Du bekommst Rituale, Fokus-Framework und Wochenplan – abgestimmt auf deinen Stil.",
     fileUrl: "/downloads/manifestation.pdf",
-  },
-  {
-    id: "p_birth_profile",
-    name: "Astrologisches Vollprofil",
-    slug: "astro-vollprofil",
-    price: 19,
-    description:
-      "Dein komplettes Profil mit Elemente-Mix, Planeten in Häusern und klarer Interpretation.",
-    image: "/images/product-guide.jpg",
-    category: "birth_profile",
-    content:
-      "Du bekommst ein tiefes Gesamtbild: dominante Elemente, Haus-Schwerpunkte, Planetenmuster und konkrete Entwicklungsimpulse.",
   },
 ];
 

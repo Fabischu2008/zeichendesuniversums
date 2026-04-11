@@ -4,11 +4,9 @@ import Link from "next/link";
 import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
 import {
   checkoutHrefForProduct,
-  getProductBySlug,
+  PRICE_ASTRO_VOLLPROFIL,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
 } from "@/lib/cms";
-
-const SHOP_SLUG = "astro-vollprofil";
 
 type Place = {
   id: string;
@@ -38,9 +36,8 @@ export function BirthChartVollreportUpsell({
   place: Place | null;
   big3: Big3 | null;
 }) {
-  const product = getProductBySlug(SHOP_SLUG);
-  const price = product?.price ?? 19;
-  const title = product?.name ?? "Astrologisches Vollprofil";
+  const price = PRICE_ASTRO_VOLLPROFIL;
+  const title = "Astrologisches Vollprofil";
   const checkoutHref = checkoutHrefForProduct(PRODUCT_ID_ASTRO_VOLLPROFIL);
 
   function persistBeforeCheckout() {
@@ -136,13 +133,6 @@ export function BirthChartVollreportUpsell({
             Jetzt zahlen – Profil &amp; Link erhalten
           </Link>
           <Link
-            href={`/shop/${SHOP_SLUG}`}
-            onClick={persistBeforeCheckout}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-black/12 bg-white/80 px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Erst Produktseite ansehen
-          </Link>
-          <Link
             href="/freebie"
             className="inline-flex h-12 items-center justify-center rounded-full border border-black/12 bg-white/80 px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
           >
@@ -154,15 +144,9 @@ export function BirthChartVollreportUpsell({
           dem Kauf findest du auf der Bestätigungsseite deinen{" "}
           <strong className="font-medium text-black/70 dark:text-white/70">
             persönlichen Profil-Link
-          </strong>{" "}
-          und kannst unter{" "}
-          <Link
-            href="/tools/birth-chart/profile"
-            className="font-medium text-violet-800 underline-offset-2 hover:underline dark:text-violet-200"
-          >
-            Dein Profil
-          </Link>{" "}
-          die echte Auswertung öffnen, sobald sie bereit ist.
+          </strong>
+          – damit öffnest du die vollständige Auswertung; vorher bleibt es bei der
+          Demo hier oben.
         </p>
       </div>
     </section>

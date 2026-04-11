@@ -28,8 +28,8 @@ export default async function SuccessPage({
       ? sp.session_id
       : undefined;
 
+  const isProfileProduct = productId === PRODUCT_ID_ASTRO_VOLLPROFIL;
   const product = getProducts().find((p) => p.id === productId);
-  const isProfileProduct = product?.id === PRODUCT_ID_ASTRO_VOLLPROFIL;
 
   const mayIssue = await shouldIssueProfileAccessToken(
     isProfileProduct,

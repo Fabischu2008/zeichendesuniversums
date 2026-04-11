@@ -2,11 +2,9 @@ import Link from "next/link";
 import type { AstroProfileResult } from "@/lib/astro/profile";
 import {
   checkoutHrefForProduct,
-  getProductBySlug,
+  PRICE_ASTRO_VOLLPROFIL,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
 } from "@/lib/cms";
-
-const SHOP_SLUG = "astro-vollprofil";
 
 export function AstroProfileTeaser({
   profile,
@@ -15,8 +13,7 @@ export function AstroProfileTeaser({
   profile: AstroProfileResult;
   variant?: "embedded" | "page";
 }) {
-  const product = getProductBySlug(SHOP_SLUG);
-  const price = product?.price ?? 19;
+  const price = PRICE_ASTRO_VOLLPROFIL;
   const pad = variant === "page" ? "p-6 sm:p-8" : "p-4 sm:p-5";
   const checkoutHref = checkoutHrefForProduct(PRODUCT_ID_ASTRO_VOLLPROFIL);
   const intro = profile.elementAnalysis.intro.slice(0, 280);
@@ -73,12 +70,6 @@ export function AstroProfileTeaser({
             className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
             Jetzt zahlen &amp; freischalten
-          </Link>
-          <Link
-            href={`/shop/${SHOP_SLUG}`}
-            className="inline-flex h-12 items-center justify-center rounded-full border border-black/12 bg-white/80 px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Details im Shop
           </Link>
         </div>
       </section>
