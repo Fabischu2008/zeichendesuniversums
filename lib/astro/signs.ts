@@ -30,6 +30,30 @@ export const ZODIAC_SYMBOLS: Record<ZodiacSign, string> = {
   Fische: "♓",
 };
 
+/** Pfade zu SVGs unter `public/Symbole/` (Dateinamen ≠ immer Sternzeichen-Label). */
+export const ZODIAC_PUBLIC_SVG: Record<ZodiacSign, string> = {
+  Widder: "/Symbole/widder.svg",
+  Stier: "/Symbole/stier.svg",
+  Zwillinge: "/Symbole/zwilling.svg",
+  Krebs: "/Symbole/krebs.svg",
+  Löwe: "/Symbole/löwe.svg",
+  Jungfrau: "/Symbole/jungfrau.svg",
+  Waage: "/Symbole/waage.svg",
+  Skorpion: "/Symbole/skorpio.svg",
+  Schütze: "/Symbole/schuetze.svg",
+  Steinbock: "/Symbole/steinbock.svg",
+  Wassermann: "/Symbole/wassermann.svg",
+  Fische: "/Symbole/fische.svg",
+};
+
+export function isZodiacSign(value: string): value is ZodiacSign {
+  return (ZODIAC_SIGNS as readonly string[]).includes(value);
+}
+
+export function publicZodiacSvgPath(sign: ZodiacSign): string {
+  return ZODIAC_PUBLIC_SVG[sign];
+}
+
 export function normalizeDegrees(deg: number) {
   const x = deg % 360;
   return x < 0 ? x + 360 : x;

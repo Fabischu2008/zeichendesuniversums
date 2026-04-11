@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
-import tzLookup from "tz-lookup";
-import { DateTime } from "luxon";
-import { ascendantLongitudeDegrees } from "@/lib/astro/ascendant";
-import { signFromEclipticLongitude } from "@/lib/astro/signs";
-import { calculateAstroProfile } from "@/lib/astro/profile";
-import * as Astronomy from "astronomy-engine";
+import { computeProfileFromBirth } from "@/lib/astro/birth-to-profile";
+
+export const runtime = "nodejs";
 
 type LocationInput = {
   name: string;
@@ -12,10 +9,6 @@ type LocationInput = {
   lon: number;
   countryCode?: string;
 };
-
-function isFiniteNumber(x: unknown): x is number {
-  return typeof x === "number" && Number.isFinite(x);
-}
 
 export async function POST(req: Request) {
   try {
@@ -31,69 +24,32 @@ export async function POST(req: Request) {
     const time = typeof body?.time === "string" ? body.time : "";
     const location = (body?.location ?? null) as LocationInput | null;
 
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) {
-      return NextResponse.json({ message: "Ungültiges Datum." }, { status: 400 });
-    }
-    if (!/^\d{2}:\d{2}$/.test(time)) {
-      return NextResponse.json({ message: "Ungültige Zeit." }, { status: 400 });
-    }
     if (
       !location ||
       typeof location.name !== "string" ||
-      !isFiniteNumber(location.lat) ||
-      !isFiniteNumber(location.lon)
+      typeof location.lat !== "number" ||
+      typeof location.lon !== "number"
     ) {
       return NextResponse.json({ message: "Ungültiger Ort." }, { status: 400 });
     }
 
-    const tz = tzLookup(location.lat, location.lon);
-    const local = DateTime.fromISO(`${date}T${time}`, { zone: tz });
-    if (!local.isValid) {
-      return NextResponse.json(
-        { message: "Zeit konnte nicht verarbeitet werden." },
-        { status: 400 },
-      );
-    }
-
-    const utc = local.toUTC();
-    const utcIso = utc.toISO();
-    if (!utcIso) {
-      return NextResponse.json(
-        { message: "UTC-Konvertierung fehlgeschlagen." },
-        { status: 400 },
-      );
-    }
-    const dateUtc = new Date(utcIso);
-
-    const t = new Astronomy.AstroTime(dateUtc);
-    const sunLon = Astronomy.SunPosition(t).elon;
-    const moonVec = Astronomy.GeoVector(Astronomy.Body.Moon, dateUtc, true);
-    const moonLon = Astronomy.Ecliptic(moonVec).elon;
-    const ascLon = ascendantLongitudeDegrees({
-      dateUtc,
-      latitudeDegrees: location.lat,
-      longitudeDegrees: location.lon,
-    });
-
-    const profile = calculateAstroProfile({
-      dateUtc,
-      ascendantLongitude: ascLon,
+    const { profile, big3, meta } = computeProfileFromBirth({
+      date,
+      time,
+      location,
     });
 
     return NextResponse.json({
-      big3: {
-        sun: signFromEclipticLongitude(sunLon),
-        moon: signFromEclipticLongitude(moonLon),
-        ascendant: signFromEclipticLongitude(ascLon),
-      },
+      big3,
       profile,
-      meta: { tz, utc: utcIso },
+      meta,
     });
   } catch (e) {
     const message = e instanceof Error ? e.message : "Unbekannter Serverfehler.";
+    const status = message.startsWith("Ungült") ? 400 : 500;
     return NextResponse.json(
       { message: `Serverfehler bei Profil-Berechnung: ${message}` },
-      { status: 500 },
+      { status },
     );
   }
 }

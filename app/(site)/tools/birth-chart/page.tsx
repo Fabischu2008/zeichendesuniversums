@@ -2,6 +2,8 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
+import { Big3PlacementCard } from "@/components/Big3PlacementCard";
+import { BirthChartVollreportUpsell } from "@/components/BirthChartVollreportUpsell";
 import { AstroProfileDisplay } from "@/components/AstroProfileDisplay";
 import type { AstroProfileResult } from "@/lib/astro/profile";
 
@@ -64,6 +66,7 @@ export default function BirthChartToolPage() {
   }>(null);
   const [profile, setProfile] = useState<AstroProfileResult | null>(null);
 
+  const resultRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -108,6 +111,12 @@ export default function BirthChartToolPage() {
 
     return () => clearTimeout(t);
   }, [query]);
+
+  useEffect(() => {
+    if (big3 && resultRef.current) {
+      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  }, [big3]);
 
   const canCalculate = useMemo(() => {
     return Boolean(
@@ -212,18 +221,43 @@ export default function BirthChartToolPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-10">
-      <header className="space-y-3">
+    <div className="mx-auto max-w-3xl space-y-12">
+      <Link
+        href="/tools"
+        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
+      >
+        ← Zur Themenwahl
+      </Link>
+
+      <header className="space-y-4">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
+          Mehr über dich · Geburtshoroskop
+        </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Birth Chart Tool (Big 3)
+          Dein Geburtshoroskop – vom ersten Eindruck bis zum Vollreport
         </h1>
-        <p className="text-black/70 dark:text-white/70">
-          Exakt berechnet: Sonne, Mond und Aszendent (DACH).
+        <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
+          Schritt für Schritt: Daten eingeben →{" "}
+          <strong className="font-medium text-black dark:text-white">
+            Big 3
+          </strong>{" "}
+          sehen → optional technische Vorschau → wenn du Klarheit und Tiefe
+          willst:{" "}
+          <strong className="font-medium text-black dark:text-white">
+            Vollreport im Shop freischalten
+          </strong>
+          .
         </p>
       </header>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-        <div className="grid gap-6 md:grid-cols-2">
+        <h2 className="text-lg font-semibold tracking-tight">
+          Schritt 1 · Geburtsdaten
+        </h2>
+        <p className="mt-1 text-sm text-black/60 dark:text-white/60">
+          Für exakte Berechnung brauchen wir Datum, Uhrzeit und Ort (DACH).
+        </p>
+        <div className="mt-6 grid gap-6 md:grid-cols-2">
           <label className="space-y-2">
             <span className="text-sm font-medium">Geburtsdatum</span>
             <input
@@ -254,7 +288,7 @@ export default function BirthChartToolPage() {
                 setQuery(e.target.value);
                 setPlace(null);
               }}
-              placeholder="z.B. Kaiserslautern"
+              placeholder="z. B. Kaiserslautern"
               className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:focus:border-white/30"
             />
           </label>
@@ -297,69 +331,66 @@ export default function BirthChartToolPage() {
           ) : null}
         </div>
 
-        <div className="mt-6">
-          <div className="grid gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              disabled={!canCalculate || calcLoading}
-              onClick={() => void calculate()}
-              className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              {calcLoading ? "Berechne…" : "Big 3 berechnen"}
-            </button>
-            <button
-              type="button"
-              disabled={!canCalculate || profileLoading}
-              onClick={() => void calculateProfile()}
-              className="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-black/10 bg-white px-5 text-sm font-medium text-black hover:bg-black/5 disabled:opacity-60 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-            >
-              {profileLoading ? "Erstelle…" : "Vollprofil erstellen"}
-            </button>
-          </div>
-          <p className="mt-2 text-xs text-black/50 dark:text-white/50">
-            Für exakte Ergebnisse brauchen wir Datum, Uhrzeit und Ort.
+        <div className="mt-8 space-y-3">
+          <button
+            type="button"
+            disabled={!canCalculate || calcLoading}
+            onClick={() => void calculate()}
+            className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-semibold text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
+          >
+            {calcLoading ? "Berechne…" : "Big 3 jetzt berechnen"}
+          </button>
+          <button
+            type="button"
+            disabled={!canCalculate || profileLoading}
+            onClick={() => void calculateProfile()}
+            className="inline-flex h-12 w-full items-center justify-center rounded-2xl border border-black/12 bg-white px-5 text-sm font-medium text-black hover:bg-black/[0.04] disabled:opacity-60 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+          >
+            {profileLoading
+              ? "Lade Vorschau…"
+              : "Technische Chart-Vorschau laden (kostenlos, Beta)"}
+          </button>
+          <p className="text-center text-xs text-black/45 dark:text-white/45">
+            Tipp: Erst Big 3 – dann entscheidest du, ob du tiefer gehst oder den
+            Vollreport holst.
           </p>
         </div>
       </section>
 
-      <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-2xl font-semibold tracking-tight">Ergebnis</h2>
+      <section
+        ref={resultRef}
+        className="scroll-mt-24 space-y-8 rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
+      >
+        <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
+          Schritt 2 · Dein Ergebnis
+        </h2>
         {calcError ? (
-          <p className="mt-3 text-sm text-red-600 dark:text-red-400">
-            {calcError}
-          </p>
+          <p className="text-sm text-red-600 dark:text-red-400">{calcError}</p>
         ) : null}
 
         {big3 ? (
-          <div className="mt-4 space-y-3">
+          <div className="space-y-6">
             <p className="text-sm text-black/70 dark:text-white/70">
-              Deine Big 3:
+              Deine <strong className="font-medium">Big 3</strong> – Sonne, Mond
+              und Aszendent – exakt zu deinem Geburtszeitpunkt und Ort.
             </p>
 
             <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-2xl bg-black/5 p-4 text-sm dark:bg-white/10">
-                <p className="text-xs text-black/60 dark:text-white/60">Sonne</p>
-                <p className="mt-1 text-lg font-semibold">{big3.sun}</p>
-                <p className="mt-2 text-xs text-black/70 dark:text-white/70">
-                  {blurb(big3.sun)}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-black/5 p-4 text-sm dark:bg-white/10">
-                <p className="text-xs text-black/60 dark:text-white/60">Mond</p>
-                <p className="mt-1 text-lg font-semibold">{big3.moon}</p>
-                <p className="mt-2 text-xs text-black/70 dark:text-white/70">
-                  {blurb(big3.moon)}
-                </p>
-              </div>
-              <div className="rounded-2xl bg-black/5 p-4 text-sm dark:bg-white/10">
-                <p className="text-xs text-black/60 dark:text-white/60">
-                  Aszendent
-                </p>
-                <p className="mt-1 text-lg font-semibold">{big3.ascendant}</p>
-                <p className="mt-2 text-xs text-black/70 dark:text-white/70">
-                  {blurb(big3.ascendant)}
-                </p>
-              </div>
+              <Big3PlacementCard
+                label="Sonne"
+                sign={big3.sun}
+                description={blurb(big3.sun)}
+              />
+              <Big3PlacementCard
+                label="Mond"
+                sign={big3.moon}
+                description={blurb(big3.moon)}
+              />
+              <Big3PlacementCard
+                label="Aszendent"
+                sign={big3.ascendant}
+                description={blurb(big3.ascendant)}
+              />
             </div>
 
             {big3.meta?.tz ? (
@@ -368,96 +399,27 @@ export default function BirthChartToolPage() {
               </p>
             ) : null}
 
-            <div className="mt-6 rounded-3xl border border-black/10 bg-white p-6 text-sm dark:border-white/15 dark:bg-transparent">
-              <p className="font-medium">🔒 Vollreport ist gesperrt</p>
-              <p className="mt-1 text-black/70 dark:text-white/70">
-                Du siehst die Big 3 – die echte Klarheit kommt im Vollreport:
-                <span className="font-medium">
-                  {" "}
-                  Trigger, Beziehungsmuster und konkrete Next Steps
-                </span>{" "}
-                passend zu dir.
-              </p>
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl bg-black/5 p-4 dark:bg-white/10">
-                  <p className="text-xs font-medium text-black/60 dark:text-white/60">
-                    Was dich blockiert
-                  </p>
-                  <div className="mt-2 h-3 w-4/5 rounded bg-black/10 dark:bg-white/10" />
-                  <div className="mt-2 h-3 w-3/5 rounded bg-black/10 dark:bg-white/10" />
-                </div>
-                <div className="rounded-2xl bg-black/5 p-4 dark:bg-white/10">
-                  <p className="text-xs font-medium text-black/60 dark:text-white/60">
-                    Was du brauchst
-                  </p>
-                  <div className="mt-2 h-3 w-5/6 rounded bg-black/10 dark:bg-white/10" />
-                  <div className="mt-2 h-3 w-2/3 rounded bg-black/10 dark:bg-white/10" />
-                </div>
-                <div className="rounded-2xl bg-black/5 p-4 dark:bg-white/10">
-                  <p className="text-xs font-medium text-black/60 dark:text-white/60">
-                    Dein Plan (7 Tage)
-                  </p>
-                  <div className="mt-2 h-3 w-3/4 rounded bg-black/10 dark:bg-white/10" />
-                  <div className="mt-2 h-3 w-1/2 rounded bg-black/10 dark:bg-white/10" />
-                </div>
-              </div>
-            </div>
-
-            <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-              <Link
-                href="/shop/astro-vollprofil"
-                className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-              >
-                Vollreport freischalten
-              </Link>
-              <Link
-                href="/tools/birth-chart/profile"
-                className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-              >
-                Profil-Seite öffnen
-              </Link>
-              <Link
-                href="/freebie"
-                className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-              >
-                Kostenloser Guide
-              </Link>
-            </div>
+            <BirthChartVollreportUpsell />
           </div>
         ) : (
-          <p className="mt-3 text-sm text-black/70 dark:text-white/70">
-            Gib Datum, Uhrzeit und Ort ein und starte die Berechnung.
+          <p className="text-sm text-black/65 dark:text-white/65">
+            Sobald du die Big 3 berechnet hast, erscheint hier dein Ergebnis und
+            der Vorschlag für den Vollreport.
           </p>
         )}
-      </section>
-
-      <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Astrologisches Vollprofil (Beta)
-        </h2>
-        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Archetyp, Element-Balken, Häuser, Planeten-Glyphen, Knoten, Lilith &
-          Glückspunkt.
-        </p>
 
         {profileError ? (
-          <p className="mt-3 text-sm text-red-600 dark:text-red-400">
+          <p className="mt-6 text-sm text-red-600 dark:text-red-400">
             {profileError}
           </p>
         ) : null}
 
         {profile ? (
-          <div className="mt-5">
+          <div className="mt-8">
             <AstroProfileDisplay profile={profile} variant="embedded" />
           </div>
-        ) : (
-          <p className="mt-3 text-sm text-black/70 dark:text-white/70">
-            Klicke auf „Vollprofil erstellen“, um die ausführliche Auswertung zu
-            sehen.
-          </p>
-        )}
+        ) : null}
       </section>
     </div>
   );
 }
-

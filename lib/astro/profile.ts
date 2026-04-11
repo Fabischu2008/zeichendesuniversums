@@ -1,4 +1,5 @@
 import * as Astronomy from "astronomy-engine";
+import { buildElementAnalysis } from "@/lib/astro/element-analysis";
 import {
   signFromEclipticLongitude,
   symbolFromSign,
@@ -422,6 +423,8 @@ export function calculateAstroProfile(input: {
   }));
   elementBalance.sort((a, b) => b.count - a.count);
 
+  const elementAnalysis = buildElementAnalysis(elementBalance);
+
   const houseCounts = new Map<number, number>();
   for (const p of planets) {
     houseCounts.set(p.house, (houseCounts.get(p.house) ?? 0) + 1);
@@ -474,6 +477,7 @@ export function calculateAstroProfile(input: {
     specialPoints,
     dominantPlanets: ["sun", "moon", "ascendant"] as const,
     elementBalance,
+    elementAnalysis,
     houseFocus,
     archetype,
     narrative: {

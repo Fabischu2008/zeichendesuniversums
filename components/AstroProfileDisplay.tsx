@@ -1,4 +1,6 @@
 import type { AstroProfileResult } from "@/lib/astro/profile";
+import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
+import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
 
 const ELEMENT_BAR: Record<string, string> = {
   Feuer: "bg-orange-500/85",
@@ -56,6 +58,33 @@ export function AstroProfileDisplay({
               </div>
             </div>
           ))}
+        </div>
+
+        <div className="mt-8 border-t border-black/8 pt-8 dark:border-white/10">
+          <h4 className="text-sm font-semibold uppercase tracking-wide text-black/50 dark:text-white/50">
+            Element-Analyse
+          </h4>
+          <p className="mt-3 text-sm leading-relaxed text-black/75 dark:text-white/75">
+            {profile.elementAnalysis.intro}
+          </p>
+          <div className="mt-6 space-y-8">
+            {profile.elementAnalysis.blocks.map((block) => (
+              <div key={block.element}>
+                <p className="text-sm font-semibold text-black dark:text-white">
+                  {block.title}
+                  <span className="ml-2 font-normal text-black/50 dark:text-white/50">
+                    ({block.count} Planet{block.count === 1 ? "" : "en"} ·{" "}
+                    {block.percentage}%)
+                  </span>
+                </p>
+                <div className="mt-2 space-y-2 text-sm leading-relaxed text-black/75 dark:text-white/75">
+                  {block.paragraphs.map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -124,14 +153,15 @@ export function AstroProfileDisplay({
               key={p.key}
               className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm dark:border-white/15 dark:bg-white/5"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-2xl tabular-nums" aria-hidden>
+              <div className="flex items-center gap-3">
+                <span className="shrink-0 text-2xl tabular-nums" aria-hidden>
                   {p.glyph}
                 </span>
-                <div>
+                <ZodiacSignIcon sign={p.sign} sizeClassName="h-9 w-9" />
+                <div className="min-w-0">
                   <p className="font-medium">{p.name}</p>
                   <p className="text-xs text-black/60 dark:text-white/60">
-                    {p.signSymbol} {p.sign} · {p.degreeInSign}
+                    {p.sign} · {p.degreeInSign}
                   </p>
                 </div>
               </div>
@@ -155,14 +185,15 @@ export function AstroProfileDisplay({
               key={p.key}
               className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm dark:border-white/15 dark:bg-white/5"
             >
-              <div className="flex items-center gap-2">
-                <span className="text-xl" aria-hidden>
+              <div className="flex items-center gap-3">
+                <span className="shrink-0 text-xl" aria-hidden>
                   {p.glyph}
                 </span>
-                <div>
+                <ZodiacSignIcon sign={p.sign} sizeClassName="h-9 w-9" />
+                <div className="min-w-0">
                   <p className="font-medium leading-tight">{p.name}</p>
                   <p className="text-xs text-black/60 dark:text-white/60">
-                    {p.signSymbol} {p.sign} · {p.degreeInSign}
+                    {p.sign} · {p.degreeInSign}
                   </p>
                 </div>
               </div>
@@ -178,6 +209,8 @@ export function AstroProfileDisplay({
           ))}
         </div>
       </section>
+
+      <VollreportCoachingCta />
     </div>
   );
 }
