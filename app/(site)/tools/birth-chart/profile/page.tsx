@@ -280,12 +280,26 @@ export default function BirthChartProfilePage() {
     vollreportAccess !== true ||
     (!profile && !profileLoading);
 
+  const showReportOnly = vollreportAccess === true && profile !== null;
+  const showVollLoading =
+    vollreportAccess === true && !profile && profileLoading;
+
   return (
     <div className="mx-auto max-w-5xl space-y-8">
       <Suspense fallback={null}>
         <ProfileUnlockQueryHandler />
       </Suspense>
 
+      {showReportOnly ? null : showVollLoading ? (
+        <section className="rounded-3xl border border-black/5 bg-white/60 p-8 text-center dark:border-white/10 dark:bg-white/5">
+          <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
+            Dein astrologisches Profil
+          </h1>
+          <p className="mt-4 text-sm text-black/70 dark:text-white/70">
+            Vollreport wird geladen…
+          </p>
+        </section>
+      ) : (
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Dein astrologisches Profil
@@ -402,6 +416,7 @@ export default function BirthChartProfilePage() {
           </button>
         ) : null}
       </section>
+      )}
 
       {profileError ? (
         <section className="rounded-3xl border border-red-200 bg-red-50 p-6 text-sm text-red-700 dark:border-red-900/40 dark:bg-red-950/30 dark:text-red-300">

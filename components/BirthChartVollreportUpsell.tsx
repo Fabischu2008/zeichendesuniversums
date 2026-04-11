@@ -1,12 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
-import {
-  checkoutHrefForProduct,
-  PRICE_ASTRO_VOLLPROFIL,
-  PRODUCT_ID_ASTRO_VOLLPROFIL,
-} from "@/lib/cms";
+import { PRICE_ASTRO_VOLLPROFIL, PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
 
 type Place = {
   id: string;
@@ -38,7 +35,8 @@ export function BirthChartVollreportUpsell({
 }) {
   const price = PRICE_ASTRO_VOLLPROFIL;
   const title = "Astrologisches Vollprofil";
-  const checkoutHref = checkoutHrefForProduct(PRODUCT_ID_ASTRO_VOLLPROFIL);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
 
   function persistBeforeCheckout() {
     if (!place || !/^\d{4}-\d{2}-\d{2}$/.test(birthdate) || !/^\d{2}:\d{2}$/.test(birthtime)) {
@@ -50,6 +48,61 @@ export function BirthChartVollreportUpsell({
       place,
       big3: big3 ?? null,
     });
+  }
+
+  function safeJsonParse(raw: string): unknown {
+    if (!raw) return {};
+    try {
+      return JSON.parse(raw) as unknown;
+    } catch {
+      return { _nonJson: true, raw };
+    }
+  }
+
+  async function goToCheckout() {
+    persistBeforeCheckout();
+    setCheckoutError(null);
+    setCheckoutLoading(true);
+    try {
+      const hasAstro =
+        place &&
+        /^\d{4}-\d{2}-\d{2}$/.test(birthdate) &&
+        /^\d{2}:\d{2}$/.test(birthtime);
+      const res = await fetch("/api/create-checkout-session", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          productId: PRODUCT_ID_ASTRO_VOLLPROFIL,
+          ...(hasAstro && place
+            ? {
+                astro: {
+                  birthdate,
+                  birthtime,
+                  place,
+                },
+              }
+            : {}),
+        }),
+      });
+      const raw = await res.text();
+      const parsed = safeJsonParse(raw);
+      const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
+        url?: string;
+        message?: string;
+      };
+      if (!res.ok || !data.url) {
+        throw new Error(
+          data.message ||
+            `Checkout konnte nicht gestartet werden (HTTP ${res.status}).`,
+        );
+      }
+      window.location.href = data.url;
+    } catch (e) {
+      setCheckoutError(
+        e instanceof Error ? e.message : "Checkout konnte nicht gestartet werden.",
+      );
+      setCheckoutLoading(false);
+    }
   }
 
   const reportBullets = [
@@ -125,13 +178,14 @@ export function BirthChartVollreportUpsell({
         </div>
 
         <div className="mt-8 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
-          <Link
-            href={checkoutHref}
-            onClick={persistBeforeCheckout}
-            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+          <button
+            type="button"
+            onClick={() => void goToCheckout()}
+            disabled={checkoutLoading}
+            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
-            Jetzt zahlen – Profil &amp; Link erhalten
-          </Link>
+            {checkoutLoading ? "Weiter zu Stripe…" : "Jetzt zahlen – Profil & Link erhalten"}
+          </button>
           <Link
             href="/freebie"
             className="inline-flex h-12 items-center justify-center rounded-full border border-black/12 bg-white/80 px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
@@ -139,14 +193,14 @@ export function BirthChartVollreportUpsell({
             Kostenlosen Guide holen
           </Link>
         </div>
+        {checkoutError ? (
+          <p className="mt-2 text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
+        ) : null}
         <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-          Vor der Zahlung sichern wir deine Geburtsdaten in diesem Browser. Nach
-          dem Kauf findest du auf der Bestätigungsseite deinen{" "}
-          <strong className="font-medium text-black/70 dark:text-white/70">
-            persönlichen Profil-Link
-          </strong>
-          – damit öffnest du die vollständige Auswertung; vorher bleibt es bei der
-          Demo hier oben.
+          Deine Geburtsdaten werden für die Berechnung mit der Zahlung sicher an
+          Stripe übergeben und stecken im persönlichen Profil-Link – damit die
+          Auswertung auch auf dem Handy oder im Privatmodus ohne erneute Eingabe
+          funktioniert. Zusätzlich bleiben Daten in diesem Browser gespeichert.
         </p>
       </div>
     </section>

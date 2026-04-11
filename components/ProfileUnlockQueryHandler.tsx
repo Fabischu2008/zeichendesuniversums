@@ -2,10 +2,24 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
+import type { ProfileTokenBirthPayload } from "@/lib/profile-access-token";
 import {
+  mergeAstroSession,
   setVollreportUnlocked,
   VOLLREPORT_UNLOCK_STORAGE_EVENT,
 } from "@/lib/astro/profile-client-storage";
+
+function placeFromTokenBirth(b: ProfileTokenBirthPayload) {
+  return {
+    id: b.id?.slice(0, 120) ?? "zd:token",
+    label: b.lb,
+    city: b.ci ?? b.lb,
+    country: b.co ?? "",
+    countryCode: b.cc,
+    lat: b.lat,
+    lon: b.lon,
+  };
+}
 
 /**
  * Verarbeitet ?unlock=… vom E-Mail- / Wiederherstellungslink und schaltet
@@ -31,6 +45,7 @@ export function ProfileUnlockQueryHandler() {
         const data = (await res.json().catch(() => ({}))) as {
           ok?: boolean;
           message?: string;
+          birth?: ProfileTokenBirthPayload | null;
         };
         if (!res.ok || !data.ok) {
           setError(data.message || "Link ungültig oder abgelaufen.");
@@ -46,6 +61,15 @@ export function ProfileUnlockQueryHandler() {
           return;
         }
         succeeded.current = true;
+        const birth = data.birth ?? null;
+        if (birth) {
+          mergeAstroSession({
+            birthdate: birth.d,
+            birthtime: birth.t,
+            place: placeFromTokenBirth(birth),
+            big3: null,
+          });
+        }
         setVollreportUnlocked(true);
         router.replace("/tools/birth-chart/profile#vollreport");
       } catch {

@@ -43,12 +43,12 @@ export default async function SuccessPage({
   const isProfileProduct = productId === PRODUCT_ID_ASTRO_VOLLPROFIL;
   const product = getProducts().find((p) => p.id === productId);
 
-  const { mayIssue, stripeCustomerEmail } = await resolveProfileAccessForSuccess(
-    isProfileProduct,
-    sessionId,
-  );
+  const { mayIssue, stripeCustomerEmail, birthPayload } =
+    await resolveProfileAccessForSuccess(isProfileProduct, sessionId);
 
-  const token = mayIssue ? createProfileAccessToken() : null;
+  const token = mayIssue
+    ? createProfileAccessToken(365, birthPayload ?? undefined)
+    : null;
   const profileAccessUrl =
     token !== null
       ? `${getSiteUrl()}/tools/birth-chart/profile?unlock=${encodeURIComponent(token)}#vollreport`

@@ -1,3 +1,4 @@
+import type { ProfileTokenBirthPayload } from "@/lib/profile-access-token";
 import { getPaidProfileCheckoutSessionInfo } from "@/lib/stripe-checkout-session";
 
 /**
@@ -9,25 +10,27 @@ export async function resolveProfileAccessForSuccess(
 ): Promise<{
   mayIssue: boolean;
   stripeCustomerEmail: string | null;
+  birthPayload: ProfileTokenBirthPayload | null;
 }> {
   if (!isProfileProduct) {
-    return { mayIssue: false, stripeCustomerEmail: null };
+    return { mayIssue: false, stripeCustomerEmail: null, birthPayload: null };
   }
 
   const sid = typeof sessionId === "string" ? sessionId.trim() : "";
   if (!sid) {
-    return { mayIssue: true, stripeCustomerEmail: null };
+    return { mayIssue: true, stripeCustomerEmail: null, birthPayload: null };
   }
 
   const hasStripe = Boolean(process.env.STRIPE_SECRET_KEY?.trim());
   if (!hasStripe) {
-    return { mayIssue: true, stripeCustomerEmail: null };
+    return { mayIssue: true, stripeCustomerEmail: null, birthPayload: null };
   }
 
   const info = await getPaidProfileCheckoutSessionInfo(sid);
   return {
     mayIssue: info.ok,
     stripeCustomerEmail: info.customerEmail,
+    birthPayload: info.birthPayload,
   };
 }
 
