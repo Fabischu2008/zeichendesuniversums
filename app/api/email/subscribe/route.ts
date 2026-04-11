@@ -1,10 +1,7 @@
 import { NextResponse } from "next/server";
 import { Resend } from "resend";
-import {
-  buildLeadEmailBodies,
-  defaultResendFrom,
-  leadEmailSubject,
-} from "@/lib/email-lead";
+import { buildLeadEmailBodies, leadEmailSubject } from "@/lib/email-lead";
+import { getResendFromForProfileMail } from "@/lib/email-resend-from";
 
 export const runtime = "nodejs";
 
@@ -18,7 +15,7 @@ const DEFAULT_LEAD_TO_EMAIL = "zeichendesuniversums.info@gmail.com";
 /**
  * Leads per E-Mail (Resend).
  * .env.local: RESEND_API_KEY=re_… (https://resend.com → API Keys)
- * Optional: LEAD_TO_EMAIL, RESEND_FROM (Default-Absender: siehe defaultResendFrom in lib/email-lead.ts)
+ * Optional: LEAD_TO_EMAIL, RESEND_FROM (Absender: getResendFromForProfileMail in lib/email-resend-from.ts)
  *
  * Hinweis: Mit onboarding@resend.dev darfst du testweise nur an die Adresse
  * senden, mit der du bei Resend registriert bist (hier: zeichendesuniversums.info@gmail.com).
@@ -68,7 +65,7 @@ export async function POST(req: Request) {
   const to = (
     process.env.LEAD_TO_EMAIL?.trim() || DEFAULT_LEAD_TO_EMAIL
   ).toLowerCase();
-  const from = process.env.RESEND_FROM?.trim() || defaultResendFrom();
+  const from = getResendFromForProfileMail();
 
   if (!apiKey) {
     // Kein harter Fehler: Nutzer soll trotzdem zum PDF. E-Mail nur, wenn Key gesetzt ist.
