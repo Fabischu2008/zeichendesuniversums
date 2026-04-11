@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 export const metadata: Metadata = {
   title: "Tools – Dein Einstieg",
   description:
-    "Wähle: Persönlichkeit & Geburtshoroskop – oder Paar-Kompatibilität (Synastry). Kostenlos testen.",
+    "Geburtshoroskop, Kompatibilität oder Bewusstseins-Stufen – kostenlos ausprobieren.",
 };
 
 const pathDu = {
@@ -31,6 +31,18 @@ const pathPaar = {
   cta: "Zur Kompatibilität",
 };
 
+const pathBewusstsein = {
+  href: "/tools/bewusstsein",
+  title: "Bewusstsein & Entwicklung",
+  subtitle: "Stufen der Bewusstheit",
+  points: [
+    "Zwölf Lebensbühnen mit je acht Stufen",
+    "Selbsteinschätzung und nächste Schritte",
+    "Ohne Geburtsort – nur Sternzeichen wählen",
+  ],
+  cta: "Zum Bewusstseins-Tool",
+};
+
 export default function ToolsPage() {
   return (
     <div className="space-y-12 sm:space-y-16">
@@ -42,17 +54,21 @@ export default function ToolsPage() {
           Was willst du gerade klären?
         </h1>
         <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
-          Kein Zufall: Du entscheidest, ob es um{" "}
+          Drei Einstiege:{" "}
           <strong className="font-medium text-black dark:text-white">dich</strong>{" "}
-          geht oder um{" "}
+          klären,{" "}
           <strong className="font-medium text-black dark:text-white">
-            die Dynamik zwischen zwei Menschen
-          </strong>
-          . Beide Tools sind kostenlos zum Ausprobieren.
+            Beziehung
+          </strong>{" "}
+          verstehen oder{" "}
+          <strong className="font-medium text-black dark:text-white">
+            Bewusstsein
+          </strong>{" "}
+          einordnen – kostenlos zum Ausprobieren.
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-2 lg:gap-8">
+      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
         <Link
           href={pathDu.href}
           className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.12] via-white/80 to-sky-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-violet-500/35 hover:shadow-md dark:from-violet-500/20 dark:via-white/5 dark:to-sky-500/10 dark:hover:border-violet-400/40 sm:p-10"
@@ -121,6 +137,43 @@ export default function ToolsPage() {
           </ul>
           <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-rose-900 group-hover:gap-3 dark:text-rose-100">
             {pathPaar.cta}
+            <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
+              →
+            </span>
+          </span>
+        </Link>
+
+        <Link
+          href={pathBewusstsein.href}
+          className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.1] via-white/80 to-violet-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-emerald-500/35 hover:shadow-md dark:from-emerald-500/[0.12] dark:via-white/5 dark:to-violet-500/10 dark:hover:border-emerald-400/40 sm:p-10 md:col-span-2 lg:col-span-1"
+        >
+          <span
+            className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/90 text-lg shadow-sm dark:bg-white/10"
+            aria-hidden
+          >
+            ◎
+          </span>
+          <span className="text-xs font-semibold uppercase tracking-wider text-emerald-800 dark:text-emerald-200">
+            {pathBewusstsein.subtitle}
+          </span>
+          <h2 className="mt-3 pr-14 text-2xl font-semibold tracking-tight sm:text-[1.65rem]">
+            {pathBewusstsein.title}
+          </h2>
+          <ul className="mt-6 flex flex-1 flex-col gap-3 text-sm leading-relaxed text-black/75 dark:text-white/75">
+            {pathBewusstsein.points.map((line) => (
+              <li key={line} className="flex gap-2.5">
+                <span
+                  className="mt-0.5 shrink-0 text-emerald-600 dark:text-emerald-400"
+                  aria-hidden
+                >
+                  ✓
+                </span>
+                <span>{line}</span>
+              </li>
+            ))}
+          </ul>
+          <span className="mt-8 inline-flex items-center gap-2 text-sm font-semibold text-emerald-900 group-hover:gap-3 dark:text-emerald-100">
+            {pathBewusstsein.cta}
             <span aria-hidden className="transition-transform group-hover:translate-x-0.5">
               →
             </span>

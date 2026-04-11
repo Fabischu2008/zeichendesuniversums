@@ -21,6 +21,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
     },
+    {
+      url: absoluteUrl("/tools/bewusstsein"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    {
+      url: absoluteUrl("/tools/bewusstsein/stufen"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
     { url: absoluteUrl("/reading"), lastModified: now, changeFrequency: "monthly" },
     { url: absoluteUrl("/impressum"), lastModified: now, changeFrequency: "yearly" },
     { url: absoluteUrl("/datenschutz"), lastModified: now, changeFrequency: "yearly" },
