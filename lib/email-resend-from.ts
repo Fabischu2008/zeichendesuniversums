@@ -1,32 +1,42 @@
-import { CANONICAL_SITE_ORIGIN, EMAIL_FROM_DISPLAY } from "@/lib/brand";
+import { EMAIL_FROM_DISPLAY } from "@/lib/brand";
 import { defaultResendFrom } from "@/lib/email-lead";
 import { getSiteUrl } from "@/lib/site";
 
-function isApprovedMailHost(host: string): boolean {
-  const canonical = new URL(CANONICAL_SITE_ORIGIN).hostname;
-  return host === canonical || host.endsWith(`.${canonical}`);
+function isLocalOrPreviewHost(host: string): boolean {
+  return (
+    !host ||
+    host === "localhost" ||
+    host.endsWith(".vercel.app") ||
+    host.endsWith(".now.sh")
+  );
 }
 
 /**
  * Absender für Profil-Mails.
- * - `RESEND_FROM` in Vercel hat Vorrang (empfohlen).
- * - Sonst: `noreply@…` auf der Live-Domain, damit Resend nicht im „nur Test-E-Mail“-Modus
- *   mit `onboarding@resend.dev` bleibt (Domain muss bei Resend verifiziert sein).
- * - Preview (`*.vercel.app`) / localhost: Fallback wie bisher.
+ * - `RESEND_FROM` hat Vorrang.
+ * - `ZD_MAIL_DOMAIN` (nur Hostname, z. B. zeichendesuniversums.com): feste Domain, falls
+ *   Site-URL und bei Resend verifizierte Domain nicht zusammenpassen (.com vs .info o. Ä.).
+ * - Sonst: `noreply@` + Hostname aus `getSiteUrl()` (ohne www), außer localhost / Preview.
+ *   Die Domain muss bei Resend unter demselben Account wie der API-Key verifiziert sein.
  */
 export function getResendFromForProfileMail(): string {
   const explicit = process.env.RESEND_FROM?.trim();
   if (explicit) return explicit;
 
-  try {
-    const host = new URL(getSiteUrl()).hostname;
-    if (host && isApprovedMailHost(host)) {
-      const fromDomain = host.startsWith("www.") ? host.slice(4) : host;
-      return `${EMAIL_FROM_DISPLAY} <noreply@${fromDomain}>`;
-    }
-  } catch {
-    /* */
+  const domainOverride = process.env.ZD_MAIL_DOMAIN?.trim();
+  if (domainOverride) {
+    const clean = domainOverride.replace(/^https?:\/\//, "").split("/")[0];
+    return `${EMAIL_FROM_DISPLAY} <noreply@${clean}>`;
   }
 
-  return defaultResendFrom();
+  try {
+    const host = new URL(getSiteUrl()).hostname;
+    if (isLocalOrPreviewHost(host)) {
+      return defaultResendFrom();
+    }
+    const fromDomain = host.startsWith("www.") ? host.slice(4) : host;
+    return `${EMAIL_FROM_DISPLAY} <noreply@${fromDomain}>`;
+  } catch {
+    return defaultResendFrom();
+  }
 }

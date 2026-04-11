@@ -23,8 +23,8 @@ function mapResendErrorToUserMessage(raw: string): string {
     lower.includes("testing emails")
   ) {
     return [
-      "Resend erlaubt im Testmodus oft nur Mails an die Adresse deines Resend-Kontos.",
-      "Für beliebige Empfänger: Domain unter resend.com/domains verifizieren und in Vercel RESEND_FROM auf eine Adresse dieser Domain setzen (z. B. noreply@deine-domain.de).",
+      "Resend blockiert den Versand: meist falscher Absender (muss eine Adresse auf deiner bei Resend verifizierten Domain sein).",
+      "In Vercel: RESEND_FROM=Zeichen des Universums <noreply@DEINE-DOMAIN> oder ZD_MAIL_DOMAIN=DEINE-DOMAIN setzen (Domain exakt wie in resend.com/domains), dann Redeploy.",
       `Technische Meldung: ${raw}`,
     ].join(" ");
   }
