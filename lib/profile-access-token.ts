@@ -1,14 +1,39 @@
-import { createHmac, timingSafeEqual } from "node:crypto";
+import { createHash, createHmac, timingSafeEqual } from "node:crypto";
+import { getSiteUrl } from "@/lib/site";
 
 const SCOPE = "astro-vollprofil" as const;
 
+/** Fallback, wenn `PROFILE_ACCESS_SECRET` fehlt: deterministisch aus Stripe-Serverkey (nur Server). */
+function derivedSecretFromStripe(): string {
+  const stripe = process.env.STRIPE_SECRET_KEY?.trim();
+  if (!stripe) return "";
+  return createHash("sha256")
+    .update(stripe, "utf8")
+    .update("|zd:profile-access-derived-v1|", "utf8")
+    .digest("hex");
+}
+
+/**
+ * Letzter Fallback ohne Stripe und ohne eigenes Secret: aus kanonischer Site-URL.
+ * Damit funktioniert die Signatur auf Vercel auch ohne env (nur Server; schwächer als eigenes Secret).
+ */
+function derivedSecretFromSite(): string {
+  const base = getSiteUrl();
+  return createHash("sha256")
+    .update(base, "utf8")
+    .update("|zd:profile-access-site-v1|", "utf8")
+    .digest("hex");
+}
+
 function getSecret(): string {
-  const s = process.env.PROFILE_ACCESS_SECRET?.trim();
-  if (s) return s;
+  const explicit = process.env.PROFILE_ACCESS_SECRET?.trim();
+  if (explicit) return explicit;
   if (process.env.NODE_ENV === "development") {
     return "dev-only-profile-access-secret";
   }
-  return "";
+  const fromStripe = derivedSecretFromStripe();
+  if (fromStripe) return fromStripe;
+  return derivedSecretFromSite();
 }
 
 /**

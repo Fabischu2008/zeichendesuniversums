@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getProducts } from "@/lib/cms";
+import { createCheckoutSessionForProduct } from "@/lib/stripe/create-checkout-session";
 
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as
@@ -7,22 +7,11 @@ export async function POST(req: Request) {
     | null;
   const productId = typeof body?.productId === "string" ? body.productId : "";
 
-  const product = getProducts().find((p) => p.id === productId);
-  if (!product) {
-    return NextResponse.json(
-      { message: "Unbekanntes Produkt." },
-      { status: 400 },
-    );
+  const result = await createCheckoutSessionForProduct(productId);
+  if ("error" in result) {
+    const status = result.error.includes("Unbekanntes Produkt") ? 400 : 503;
+    return NextResponse.json({ message: result.error }, { status });
   }
 
-  /**
-   * MVP: Weiterleitung zum Checkout-Stub. Mit Stripe z. B.:
-   * `sessions.create` mit
-   * `success_url: ${getSiteUrl()}/success?session_id={CHECKOUT_SESSION_ID}&productId=…`,
-   * `metadata: { cms_product_id: product.id }` – dann wird auf /success der
-   * Wiederherstellungslink für das Vollprofil ausgestellt.
-   */
-  const url = `/checkout?productId=${encodeURIComponent(product.id)}`;
-  return NextResponse.json({ url });
+  return NextResponse.json({ url: result.url });
 }
-
