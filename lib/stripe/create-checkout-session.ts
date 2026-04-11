@@ -4,6 +4,10 @@ import {
   PRICE_ASTRO_VOLLPROFIL,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
 } from "@/lib/cms";
+import {
+  encodeAstroSuccessPack,
+  type ProfileTokenBirthPayload,
+} from "@/lib/profile-access-token";
 import { getSiteUrl } from "@/lib/site";
 
 /** Geburtsdaten für Stripe metadata + später signiertes Profil-Token (mobiler Link ohne localStorage). */
@@ -20,6 +24,22 @@ export type CheckoutAstroPayload = {
     lon: number;
   };
 };
+
+function checkoutAstroToBirthPayload(
+  a: CheckoutAstroPayload,
+): ProfileTokenBirthPayload {
+  return {
+    d: a.birthdate,
+    t: a.birthtime,
+    lat: a.place.lat,
+    lon: a.place.lon,
+    cc: a.place.countryCode,
+    lb: a.place.label,
+    id: a.place.id,
+    ci: a.place.city,
+    co: a.place.country,
+  };
+}
 
 function stripeMetadataAstroJson(a: CheckoutAstroPayload): string {
   const o = {
@@ -88,9 +108,23 @@ export async function createCheckoutSessionForProduct(
 
   const stripe = getStripe();
   if (!stripe) {
-    return {
-      url: `/success?productId=${encodeURIComponent(product.id)}`,
-    };
+    let url = `/success?productId=${encodeURIComponent(product.id)}`;
+    const astro = options?.astro;
+    if (
+      product.id === PRODUCT_ID_ASTRO_VOLLPROFIL &&
+      astro &&
+      /^\d{4}-\d{2}-\d{2}$/.test(astro.birthdate) &&
+      /^\d{2}:\d{2}$/.test(astro.birthtime) &&
+      astro.place &&
+      typeof astro.place.lat === "number" &&
+      typeof astro.place.lon === "number"
+    ) {
+      const ap = encodeAstroSuccessPack(checkoutAstroToBirthPayload(astro));
+      if (ap) {
+        url += `&ap=${encodeURIComponent(ap)}`;
+      }
+    }
+    return { url };
   }
 
   const site = getSiteUrl();

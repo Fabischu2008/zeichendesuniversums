@@ -149,3 +149,53 @@ export function createProfileAccessToken(
 export function verifyProfileAccessToken(token: string): boolean {
   return decodeProfileAccessToken(token).ok;
 }
+
+const SUCCESS_PACK_SCOPE = "zd-success-ap-v1" as const;
+
+/**
+ * Geburtsdaten für die Success-URL, wenn kein Stripe (MVP): signiert, gleiches Secret wie Profil-Token.
+ */
+export function encodeAstroSuccessPack(
+  birth: ProfileTokenBirthPayload,
+): string | null {
+  const secret = getSecret();
+  if (!secret) return null;
+  const inner = JSON.stringify({ s: SUCCESS_PACK_SCOPE, b: birth });
+  const sig = createHmac("sha256", secret).update(inner).digest("base64url");
+  const innerB64 = Buffer.from(inner, "utf8").toString("base64url");
+  return `${innerB64}.${sig}`;
+}
+
+export function decodeAstroSuccessPack(
+  packed: string,
+): ProfileTokenBirthPayload | null {
+  const secret = getSecret();
+  if (!secret || !packed.trim()) return null;
+  const parts = packed.split(".");
+  if (parts.length !== 2) return null;
+  const [innerB64, sig] = parts;
+  if (!innerB64 || !sig) return null;
+  let inner: string;
+  try {
+    inner = Buffer.from(innerB64, "base64url").toString("utf8");
+  } catch {
+    return null;
+  }
+  const expected = createHmac("sha256", secret).update(inner).digest("base64url");
+  try {
+    const a = Buffer.from(sig, "utf8");
+    const b = Buffer.from(expected, "utf8");
+    if (a.length !== b.length) return null;
+    if (!timingSafeEqual(a, b)) return null;
+  } catch {
+    return null;
+  }
+  try {
+    const parsed = JSON.parse(inner) as { s?: string; b?: unknown };
+    if (parsed.s !== SUCCESS_PACK_SCOPE) return null;
+    if (!isValidBirthPayload(parsed.b)) return null;
+    return parsed.b;
+  } catch {
+    return null;
+  }
+}

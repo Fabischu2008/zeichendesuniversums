@@ -7,7 +7,11 @@ import {
   isValidProfileEmail,
   sendProfileAccessEmail,
 } from "@/lib/email-profile-access";
-import { createProfileAccessToken } from "@/lib/profile-access-token";
+import {
+  createProfileAccessToken,
+  decodeAstroSuccessPack,
+} from "@/lib/profile-access-token";
+import { buildProfileAccessWithUnlockUrl } from "@/lib/profile-unlock-url";
 import { resolveProfileAccessForSuccess } from "@/lib/profile-access-policy";
 import { getSiteUrl } from "@/lib/site";
 
@@ -28,6 +32,7 @@ export default async function SuccessPage({
     productId?: string;
     session_id?: string;
     email?: string;
+    ap?: string;
   }>;
 }) {
   const sp = await searchParams;
@@ -39,6 +44,8 @@ export default async function SuccessPage({
       : undefined;
   const rawQueryEmail =
     sp?.email && typeof sp.email === "string" ? sp.email.trim() : "";
+  const apParam =
+    sp?.ap && typeof sp.ap === "string" ? sp.ap.trim() : "";
 
   const isProfileProduct = productId === PRODUCT_ID_ASTRO_VOLLPROFIL;
   const product = getProducts().find((p) => p.id === productId);
@@ -46,13 +53,15 @@ export default async function SuccessPage({
   const { mayIssue, stripeCustomerEmail, birthPayload } =
     await resolveProfileAccessForSuccess(isProfileProduct, sessionId);
 
+  const birthFromNoStripe =
+    isProfileProduct && apParam ? decodeAstroSuccessPack(apParam) : null;
+  const birthForToken = birthPayload ?? birthFromNoStripe ?? undefined;
+
   const token = mayIssue
-    ? createProfileAccessToken(365, birthPayload ?? undefined)
+    ? createProfileAccessToken(365, birthForToken)
     : null;
   const profileAccessUrl =
-    token !== null
-      ? `${getSiteUrl()}/tools/birth-chart/profile?unlock=${encodeURIComponent(token)}#vollreport`
-      : null;
+    token !== null ? buildProfileAccessWithUnlockUrl(getSiteUrl(), token) : null;
 
   const queryEmailRecipient =
     rawQueryEmail && isValidProfileEmail(rawQueryEmail) ? rawQueryEmail : null;
@@ -81,7 +90,7 @@ export default async function SuccessPage({
             customerEmail={stripeCustomerEmail!}
           />
         ) : null}
-        {rawQueryEmail ? <StripSuccessEmailQuery /> : null}
+        {rawQueryEmail || apParam ? <StripSuccessEmailQuery /> : null}
         <ProfileAccessLinkCard
           profileUrl={profileAccessUrl}
           defaultEmail={stripeCustomerEmail}

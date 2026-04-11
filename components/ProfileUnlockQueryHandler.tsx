@@ -8,6 +8,7 @@ import {
   setVollreportUnlocked,
   VOLLREPORT_UNLOCK_STORAGE_EVENT,
 } from "@/lib/astro/profile-client-storage";
+import { readUnlockTokenFromBrowser } from "@/lib/profile-unlock-url";
 
 function placeFromTokenBirth(b: ProfileTokenBirthPayload) {
   return {
@@ -22,18 +23,20 @@ function placeFromTokenBirth(b: ProfileTokenBirthPayload) {
 }
 
 /**
- * Verarbeitet ?unlock=… vom E-Mail- / Wiederherstellungslink und schaltet
+ * Verarbeitet ?unlock=… bzw. Hash &zd-u=… (Mail-Client-Fallback) und schaltet
  * den Vollzugriff im Browser frei.
  */
 export function ProfileUnlockQueryHandler() {
   const searchParams = useSearchParams();
+  const queryString = searchParams.toString();
   const router = useRouter();
   const succeeded = useRef(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const raw = searchParams.get("unlock");
-    if (!raw || succeeded.current) return;
+    function redeem() {
+      const raw = readUnlockTokenFromBrowser()?.trim();
+      if (!raw || succeeded.current) return;
 
     void (async () => {
       try {
@@ -85,7 +88,12 @@ export function ProfileUnlockQueryHandler() {
         }
       }
     })();
-  }, [searchParams, router]);
+    }
+
+    redeem();
+    window.addEventListener("hashchange", redeem);
+    return () => window.removeEventListener("hashchange", redeem);
+  }, [queryString, router]);
 
   if (!error) return null;
   return (
