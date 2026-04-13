@@ -11,6 +11,19 @@ export function buildProfileAccessWithUnlockUrl(
   return `${base}/tools/birth-chart/profile?unlock=${enc}#vollreport&zd-u=${enc}`;
 }
 
+/** Gleiches Token-Schema für weitere Unlock-Ziele (z. B. Compatibility). */
+export function buildUnlockUrlForPath(
+  siteOrigin: string,
+  path: string,
+  token: string,
+  hash = "vollreport",
+): string {
+  const base = siteOrigin.replace(/\/+$/, "");
+  const cleanPath = path.startsWith("/") ? path : `/${path}`;
+  const enc = encodeURIComponent(token);
+  return `${base}${cleanPath}?unlock=${enc}#${hash}&zd-u=${enc}`;
+}
+
 /**
  * Liest den Freischalt-Token aus ?unlock= oder aus dem Hash (#…&zd-u=…).
  */

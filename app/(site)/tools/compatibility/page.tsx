@@ -3,6 +3,7 @@
 import Link from "next/link";
 import type { Dispatch, SetStateAction } from "react";
 import { useMemo, useState } from "react";
+import { ZODIAC_SIGNS, type ZodiacSign } from "@/lib/astro/signs";
 import type { SynastryReport } from "@/lib/astro/synastry";
 import { useGeoPlaces, type GeoPlace } from "@/hooks/useGeoPlaces";
 
@@ -21,6 +22,10 @@ type PersonForm = {
   query: string;
   place: GeoPlace | null;
 };
+
+type LinkPair = { a: string; b: string };
+
+type FunnelStage = "preview" | "exact" | "result";
 
 const emptyPerson = (): PersonForm => ({
   birthdate: "",
@@ -129,6 +134,9 @@ function PersonFields({
 }
 
 export default function CompatibilityToolPage() {
+  const [stage, setStage] = useState<FunnelStage>("preview");
+  const [previewA, setPreviewA] = useState<ZodiacSign>("Widder");
+  const [previewB, setPreviewB] = useState<ZodiacSign>("Waage");
   const [a, setA] = useState<PersonForm>(emptyPerson);
   const [b, setB] = useState<PersonForm>(emptyPerson);
 
@@ -137,6 +145,8 @@ export default function CompatibilityToolPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [links, setLinks] = useState<LinkPair | null>(null);
+  const [copiedKey, setCopiedKey] = useState<"a" | "b" | null>(null);
   const [report, setReport] = useState<null | {
     synastry: SynastryReport;
     a: { big3: { sun: string; moon: string; ascendant: string } };
@@ -159,6 +169,7 @@ export default function CompatibilityToolPage() {
     setLoading(true);
     setError(null);
     setReport(null);
+    setLinks(null);
     try {
       const res = await fetch("/api/tools/synastry", {
         method: "POST",
@@ -200,12 +211,69 @@ export default function CompatibilityToolPage() {
         );
       }
       setReport({ synastry: data.synastry, a: data.a, b: data.b });
+
+      const linkRes = await fetch("/api/tools/compatibility/access-links", {
+        method: "POST",
+        headers: { "content-type": "application/json" },
+        body: JSON.stringify({
+          a: {
+            birthdate: a.birthdate,
+            birthtime: a.birthtime,
+            place: a.place,
+          },
+          b: {
+            birthdate: b.birthdate,
+            birthtime: b.birthtime,
+            place: b.place,
+          },
+        }),
+      });
+      const linkRaw = await linkRes.text();
+      const linkParsed = safeJsonParse(linkRaw);
+      const linkData = (linkParsed && typeof linkParsed === "object"
+        ? linkParsed
+        : {}) as {
+        links?: LinkPair;
+      };
+      if (linkRes.ok && linkData.links) {
+        setLinks(linkData.links);
+      }
+      setStage("result");
     } catch (e) {
       setError(e instanceof Error ? e.message : "Unbekannter Fehler");
     } finally {
       setLoading(false);
     }
   }
+
+  async function copyLink(value: string, key: "a" | "b") {
+    try {
+      await navigator.clipboard.writeText(value);
+      setCopiedKey(key);
+      setTimeout(() => setCopiedKey(null), 1800);
+    } catch {
+      setError("Kopieren nicht möglich. Bitte Link manuell markieren.");
+    }
+  }
+
+  const previewCopy = useMemo(() => {
+    const fire = ["Widder", "Löwe", "Schütze"];
+    const earth = ["Stier", "Jungfrau", "Steinbock"];
+    const air = ["Zwillinge", "Waage", "Wassermann"];
+    const water = ["Krebs", "Skorpion", "Fische"];
+    const pair = [previewA, previewB];
+    const inGroup = (g: string[]) => pair.every((s) => g.includes(s));
+    if (inGroup(fire) || inGroup(earth) || inGroup(air) || inGroup(water)) {
+      return "Starker natürlicher Gleichklang. Ihr versteht euren Grundrhythmus meist intuitiv – achtet nur darauf, nicht dieselben blinden Flecken zu teilen.";
+    }
+    if (
+      (fire.includes(previewA) && air.includes(previewB)) ||
+      (air.includes(previewA) && fire.includes(previewB))
+    ) {
+      return "Hohe Dynamik und Inspiration: viel Bewegung, Ideen und Anziehung. Klärt früh, wer Struktur in Entscheidungen bringt.";
+    }
+    return "Spannende Ergänzung mit Reibungsfläche: genau hier liegt Potenzial. Für belastbare Aussagen braucht ihr die exakte Synastry mit Uhrzeit und Ort.";
+  }, [previewA, previewB]);
 
   return (
     <div className="mx-auto max-w-3xl space-y-10">
@@ -225,41 +293,113 @@ export default function CompatibilityToolPage() {
         </p>
       </header>
 
-      <div className="grid gap-6 lg:grid-cols-1">
-        <PersonFields
-          title="Person A"
-          form={a}
-          setForm={setA}
-          places={geoA.places}
-          placesLoading={geoA.loading}
-          placesError={geoA.error}
-        />
-        <PersonFields
-          title="Person B"
-          form={b}
-          setForm={setB}
-          places={geoB.places}
-          placesLoading={geoB.loading}
-          placesError={geoB.error}
-        />
-      </div>
+      {stage === "preview" ? (
+        <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+            Schritt 1 · Vorgeschmack
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+            Schneller Check ohne Geburtszeit
+          </h2>
+          <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+            Für den Einstieg reicht je ein Sternzeichen. Danach kannst du die exakte
+            Paaranalyse mit vollständigen Daten freischalten.
+          </p>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2">
+            <label className="space-y-2">
+              <span className="text-sm font-medium">Person A – Sternzeichen</span>
+              <select
+                value={previewA}
+                onChange={(e) => setPreviewA(e.target.value as ZodiacSign)}
+                className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
+              >
+                {ZODIAC_SIGNS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
+            <label className="space-y-2">
+              <span className="text-sm font-medium">Person B – Sternzeichen</span>
+              <select
+                value={previewB}
+                onChange={(e) => setPreviewB(e.target.value as ZodiacSign)}
+                className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
+              >
+                {ZODIAC_SIGNS.map((s) => (
+                  <option key={s} value={s}>
+                    {s}
+                  </option>
+                ))}
+              </select>
+            </label>
+          </div>
+          <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
+            <p className="font-medium">
+              {previewA} × {previewB}
+            </p>
+            <p className="mt-1.5">{previewCopy}</p>
+          </div>
+          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <button
+              type="button"
+              onClick={() => setStage("exact")}
+              className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black"
+            >
+              Exakte Paaranalyse freischalten
+            </button>
+          </div>
+        </section>
+      ) : null}
 
-      <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-        <button
-          type="button"
-          disabled={!canSubmit || loading}
-          onClick={() => void runSynastry()}
-          className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-        >
-          {loading ? "Berechne Synastry…" : "Paar-Analyse berechnen"}
-        </button>
-        <Link
-          href="/tools"
-          className="text-center text-sm text-black/60 hover:text-black dark:text-white/60 dark:hover:text-white sm:text-left"
-        >
-          ← Zur Themenwahl
-        </Link>
-      </div>
+      {stage !== "preview" ? (
+        <>
+          <section className="rounded-3xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-950 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100">
+            <p className="font-medium">Schritt 2 · Exakte Analyse</p>
+            <p className="mt-1">
+              Für präzise Synastry (Mond, Aszendent, Häuser und Aspekt-Orbs) werden
+              für beide Personen Geburtsdatum, Zeit und Ort benötigt.
+            </p>
+          </section>
+          <div className="grid gap-6 lg:grid-cols-1">
+            <PersonFields
+              title="Person A"
+              form={a}
+              setForm={setA}
+              places={geoA.places}
+              placesLoading={geoA.loading}
+              placesError={geoA.error}
+            />
+            <PersonFields
+              title="Person B"
+              form={b}
+              setForm={setB}
+              places={geoB.places}
+              placesLoading={geoB.loading}
+              placesError={geoB.error}
+            />
+          </div>
+
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+            <button
+              type="button"
+              disabled={!canSubmit || loading}
+              onClick={() => void runSynastry()}
+              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              {loading ? "Berechne Synastry…" : "Exakte Paar-Analyse starten"}
+            </button>
+            <button
+              type="button"
+              onClick={() => setStage("preview")}
+              className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            >
+              Zurück zum Vorgeschmack
+            </button>
+          </div>
+        </>
+      ) : null}
 
       {error ? (
         <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
@@ -267,6 +407,42 @@ export default function CompatibilityToolPage() {
 
       {report ? (
         <div className="space-y-8">
+          {links ? (
+            <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/[0.08] p-6 sm:p-8 dark:border-emerald-400/20 dark:bg-emerald-500/10">
+              <h2 className="text-xl font-semibold tracking-tight">
+                Profile für später gespeichert
+              </h2>
+              <p className="mt-2 text-sm text-black/75 dark:text-white/75">
+                Hier sind die zwei persönlichen Profil-Links (wie im ersten Tool). Du
+                kannst beide separat öffnen und danach jederzeit miteinander vergleichen.
+              </p>
+              <div className="mt-5 space-y-4">
+                {(["a", "b"] as const).map((k) => (
+                  <div
+                    key={k}
+                    className="rounded-2xl border border-black/10 bg-white/85 p-3 dark:border-white/15 dark:bg-black/20"
+                  >
+                    <p className="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/45">
+                      Profil-Link {k === "a" ? "Person A" : "Person B"}
+                    </p>
+                    <div className="mt-2 flex flex-col gap-2 sm:flex-row">
+                      <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-black/10 bg-white px-3 py-2 text-xs leading-relaxed break-all line-clamp-3 dark:border-white/15 dark:bg-black/20">
+                        {links[k]}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() => void copyLink(links[k], k)}
+                        className="inline-flex h-11 items-center justify-center rounded-xl border border-black/10 bg-white px-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+                      >
+                        {copiedKey === k ? "Kopiert" : "Link kopieren"}
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          ) : null}
+
           <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
             <h2 className="text-2xl font-semibold tracking-tight">
               Eure Big 3
@@ -437,11 +613,11 @@ export default function CompatibilityToolPage() {
             </Link>
           </div>
         </div>
-      ) : (
+      ) : stage === "result" ? (
         <p className="text-sm text-black/60 dark:text-white/60">
           Fülle beide Profile vollständig aus und starte die Berechnung.
         </p>
-      )}
+      ) : null}
     </div>
   );
 }
