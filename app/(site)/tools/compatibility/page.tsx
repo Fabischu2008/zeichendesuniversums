@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { AstroProfileResult } from "@/lib/astro/profile";
@@ -417,7 +417,6 @@ export default function CompatibilityToolPage() {
       big3: { sun: string; moon: string; ascendant: string };
     };
   }>(null);
-  const searchParams = useSearchParams();
   const router = useRouter();
   const redeemRef = useRef(false);
 
@@ -600,7 +599,7 @@ export default function CompatibilityToolPage() {
       }
     }
     void redeem();
-  }, [searchParams, router]);
+  }, [router]);
 
   const previewCopy = useMemo(() => {
     const fire = ["Widder", "Löwe", "Schütze"];
