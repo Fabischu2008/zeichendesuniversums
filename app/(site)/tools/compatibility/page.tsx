@@ -405,7 +405,6 @@ export default function CompatibilityToolPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [pairLink, setPairLink] = useState<string | null>(null);
   const [report, setReport] = useState<null | {
     synastry: SynastryReport;
     deepComparison: DeepCompatibilityReport;
@@ -437,7 +436,6 @@ export default function CompatibilityToolPage() {
     setLoading(true);
     setError(null);
     setReport(null);
-    setPairLink(null);
     try {
       const res = await fetch("/api/tools/synastry", {
         method: "POST",
@@ -527,7 +525,6 @@ export default function CompatibilityToolPage() {
           "Zugangsseite konnte nicht erstellt werden. Bitte erneut versuchen.",
         );
       }
-      setPairLink(nextPairLink);
       if (typeof window !== "undefined") {
         window.location.href = nextPairLink;
         return;
@@ -586,7 +583,6 @@ export default function CompatibilityToolPage() {
           a: { profile: data.a.profile, big3: data.a.big3 },
           b: { profile: data.b.profile, big3: data.b.big3 },
         });
-        setPairLink(typeof window !== "undefined" ? window.location.href : null);
         setStage("result");
         router.replace("/tools/compatibility#paaranalyse");
       } catch (e) {
@@ -643,7 +639,7 @@ export default function CompatibilityToolPage() {
       {stage === "preview" ? (
         <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-            Schritt 1 · Vorgeschmack
+            Schritt 2 · Vorgeschmack
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">
             Schneller Check ohne Geburtszeit
@@ -716,7 +712,7 @@ export default function CompatibilityToolPage() {
                 </div>
                 <div className="relative">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
-                    Schritt 2 · Ergebnis & Demo
+                    Schritt 3 · Ergebnis & Demo
                   </p>
                   <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
                     So sieht die vollständige Paaranalyse aus
@@ -854,7 +850,7 @@ export default function CompatibilityToolPage() {
       {stage === "exact" ? (
         <>
           <section className="rounded-3xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-950 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100">
-            <p className="font-medium">Schritt 2 · Exakte Analyse</p>
+            <p className="font-medium">Schritt 3 · Exakte Analyse</p>
             <p className="mt-1">
               Für präzise Synastry (Mond, Aszendent, Häuser und Aspekt-Orbs) werden
               für beide Personen Geburtsdatum, Zeit und Ort benötigt.
@@ -907,7 +903,7 @@ export default function CompatibilityToolPage() {
         <div className="space-y-8">
           <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              Schritt 3 · Erst die zwei Profile
+              Schritt 4 · Erst die zwei Profile
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
               Eure Vollprofile im Überblick
@@ -932,7 +928,7 @@ export default function CompatibilityToolPage() {
 
           <section className="rounded-3xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-emerald-500/10 p-6 sm:p-8 dark:border-violet-400/20">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              Schritt 4 · Komplexe Vergleichsanalyse
+              Schritt 5 · Komplexe Vergleichsanalyse
             </p>
             <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>

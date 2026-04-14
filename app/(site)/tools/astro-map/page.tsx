@@ -510,7 +510,7 @@ export default function AstroMapToolPage() {
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <h2 className="text-lg font-semibold tracking-tight">
-          Schritt 1 · Geburtsdaten eingeben
+          Schritt 2 · Geburtsdaten eingeben
         </h2>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <label className="space-y-2">
@@ -596,7 +596,7 @@ export default function AstroMapToolPage() {
         className="scroll-mt-24 space-y-6 rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
       >
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Schritt 2 · Deine Kartenlinien
+          Schritt 3 · Deine Kartenlinien
         </h2>
 
         {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}

@@ -210,7 +210,7 @@ export default function BirthChartToolPage() {
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <h2 className="text-lg font-semibold tracking-tight">
-          Schritt 1 · Geburtsdaten
+          Schritt 2 · Geburtsdaten
         </h2>
         <p className="mt-1 text-sm text-black/60 dark:text-white/60">
           Für exakte Berechnung brauchen wir Datum, Uhrzeit und Ort (DACH).
@@ -309,7 +309,7 @@ export default function BirthChartToolPage() {
         className="scroll-mt-24 space-y-8 rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
       >
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Schritt 2 · Ergebnis &amp; Demo
+          Schritt 3 · Ergebnis &amp; Demo
         </h2>
         {calcError ? (
           <p className="text-sm text-red-600 dark:text-red-400">{calcError}</p>

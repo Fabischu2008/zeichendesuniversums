@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "eslint",
     "verify:profile": "npx tsx scripts/verify-profile-access.ts",
-    "test:resend": "npx tsx scripts/test-resend.ts"
+    "test:resend": "npx tsx scripts/test-resend.ts",
+    "test:astro-regression": "node scripts/test-astro-regression.js"
   },
   "dependencies": {
     "astronomy-engine": "^2.1.19",

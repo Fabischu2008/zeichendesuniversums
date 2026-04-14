@@ -148,7 +148,7 @@ export function AstroProfileDisplay({
   return (
     <div id="vollreport" className="scroll-mt-24 space-y-6">
       <section
-        className={`rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 ${pad} dark:border-white/10`}
+        className={`rounded-3xl border border-violet-500/30 bg-gradient-to-br from-violet-500/16 via-violet-500/10 to-fuchsia-500/10 ${pad} dark:border-violet-400/30 dark:from-violet-500/25 dark:via-violet-500/18 dark:to-fuchsia-500/16`}
       >
         <p className="text-xs font-medium uppercase tracking-wide text-black/50 dark:text-white/50">
           Astro-Archetyp
@@ -161,17 +161,17 @@ export function AstroProfileDisplay({
         </p>
         {sun && moon && ascSign ? (
           <div className="mt-5 flex flex-wrap gap-2.5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/35 dark:bg-violet-500/20 dark:text-violet-50">
-              <ZodiacSignIcon sign={sun.sign} sizeClassName="h-5 w-5" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/35 bg-violet-500/18 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/40 dark:bg-violet-500/25 dark:text-violet-50">
               Sonne: {sun.sign}
+              <ZodiacSignIcon sign={sun.sign} sizeClassName="h-5 w-5" />
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/35 dark:bg-violet-500/20 dark:text-violet-50">
-              <ZodiacSignIcon sign={moon.sign} sizeClassName="h-5 w-5" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/35 bg-violet-500/18 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/40 dark:bg-violet-500/25 dark:text-violet-50">
               Mond: {moon.sign}
+              <ZodiacSignIcon sign={moon.sign} sizeClassName="h-5 w-5" />
             </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/35 dark:bg-violet-500/20 dark:text-violet-50">
-              <ZodiacSignIcon sign={ascSign} sizeClassName="h-5 w-5" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/35 bg-violet-500/18 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/40 dark:bg-violet-500/25 dark:text-violet-50">
               Aszendent: {ascSign}
+              <ZodiacSignIcon sign={ascSign} sizeClassName="h-5 w-5" />
             </span>
           </div>
         ) : null}

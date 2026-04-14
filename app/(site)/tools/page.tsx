@@ -68,7 +68,7 @@ export default function ToolsPage() {
         </p>
       </header>
 
-      <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3 lg:gap-8">
+      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 lg:gap-8">
         <Link
           href={pathDu.href}
           className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.12] via-white/80 to-sky-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-violet-500/35 hover:shadow-md dark:from-violet-500/20 dark:via-white/5 dark:to-sky-500/10 dark:hover:border-violet-400/40 sm:p-10"

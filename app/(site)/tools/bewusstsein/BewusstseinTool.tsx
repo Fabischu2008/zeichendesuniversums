@@ -117,7 +117,7 @@ export function BewusstseinTool() {
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div>
             <h2 className="text-lg font-semibold tracking-tight">
-              1 · Dein Sternzeichen
+              Schritt 2 · Dein Sternzeichen
             </h2>
             <p className="mt-1 text-sm text-black/60 dark:text-white/60">
               Orientierung am Sonnenzeichen (Geburtsdatum).
@@ -155,7 +155,7 @@ export function BewusstseinTool() {
       {sign && profil && fragen && aktuelleFrage && berechneteStufe === null ? (
         <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/45">
-            2 · Fragebogen · {frageIndex + 1} / {fragen.length}
+            Schritt 3 · Fragebogen · {frageIndex + 1} / {fragen.length}
           </p>
           <p className="mt-2 text-sm text-black/65 dark:text-white/65">
             <span className="font-medium text-black dark:text-white">{profil.sign}</span>{" "}
@@ -197,7 +197,7 @@ export function BewusstseinTool() {
           className="scroll-mt-24 space-y-6 rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.08] via-white to-amber-500/10 p-6 sm:p-8 dark:border-white/10 dark:from-violet-500/15 dark:via-white/5 dark:to-amber-500/10"
         >
           <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-            Deine Auswertung
+            Schritt 4 · Deine Auswertung
           </h2>
 
           {mittelwert !== null ? (
