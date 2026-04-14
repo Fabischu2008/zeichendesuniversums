@@ -90,7 +90,7 @@ export function CompatibilityAccessLinksCard({
           </li>
         </ol>
         <p className="mt-3 text-black/75 dark:text-white/75">
-          Du kannst die Links direkt kopieren oder dir den Paaranalyse-Link per
+          Du kannst die Links direkt kopieren oder dir alle drei Links per
           E-Mail senden.
         </p>
       </div>

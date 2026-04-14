@@ -396,6 +396,7 @@ export default function CompatibilityToolPage() {
   const [stage, setStage] = useState<FunnelStage>("preview");
   const [previewA, setPreviewA] = useState<ZodiacSign>("Widder");
   const [previewB, setPreviewB] = useState<ZodiacSign>("Waage");
+  const [miniPreviewReady, setMiniPreviewReady] = useState(false);
   const [a, setA] = useState<PersonForm>(emptyPerson);
   const [b, setB] = useState<PersonForm>(emptyPerson);
 
@@ -649,7 +650,10 @@ export default function CompatibilityToolPage() {
               <span className="text-sm font-medium">Person A – Sternzeichen</span>
               <select
                 value={previewA}
-                onChange={(e) => setPreviewA(e.target.value as ZodiacSign)}
+                onChange={(e) => {
+                  setPreviewA(e.target.value as ZodiacSign);
+                  setMiniPreviewReady(false);
+                }}
                 className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
               >
                 {ZODIAC_SIGNS.map((s) => (
@@ -663,7 +667,10 @@ export default function CompatibilityToolPage() {
               <span className="text-sm font-medium">Person B – Sternzeichen</span>
               <select
                 value={previewB}
-                onChange={(e) => setPreviewB(e.target.value as ZodiacSign)}
+                onChange={(e) => {
+                  setPreviewB(e.target.value as ZodiacSign);
+                  setMiniPreviewReady(false);
+                }}
                 className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
               >
                 {ZODIAC_SIGNS.map((s) => (
@@ -674,21 +681,157 @@ export default function CompatibilityToolPage() {
               </select>
             </label>
           </div>
-          <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
-            <p className="font-medium">
-              {previewA} × {previewB}
-            </p>
-            <p className="mt-1.5">{previewCopy}</p>
-          </div>
-          <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+          <div className="mt-6">
             <button
               type="button"
-              onClick={() => setStage("exact")}
-              className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black"
+              onClick={() => setMiniPreviewReady(true)}
+              className="inline-flex h-12 items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 px-6 text-sm font-semibold text-violet-900 hover:bg-violet-500/15 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-100"
             >
-              Exakte Paaranalyse freischalten
+              Kleine Paaranalyse erstellen
             </button>
           </div>
+
+          {miniPreviewReady ? (
+            <>
+              <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
+                <p className="font-medium">
+                  {previewA} × {previewB} · Mini-Analyse
+                </p>
+                <p className="mt-1.5">{previewCopy}</p>
+              </div>
+
+              <section className="relative mt-6 overflow-hidden rounded-3xl border border-dashed border-black/20 bg-white p-5 sm:p-6 dark:border-white/20 dark:bg-white/5">
+                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(0,0,0,0.03)_100%)] dark:bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.04)_100%)]" />
+                <div className="pointer-events-none absolute right-3 top-3">
+                  <span className="rounded-full border border-black/15 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black/60 shadow-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
+                    Demo · keine exakten Synastry-Texte
+                  </span>
+                </div>
+                <div className="relative">
+                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
+                    Schritt 2 · Ergebnis & Demo
+                  </p>
+                  <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
+                    So sieht die vollständige Paaranalyse aus
+                  </h3>
+                  <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+                    In der Vollversion werden beide Horoskope komplett berechnet und
+                    dann im Vergleich ausgewertet (Aspekte, Dimensionen, Profiltexte).
+                  </p>
+
+                  <div className="mt-6 grid gap-4 lg:grid-cols-2">
+                    <div className="rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
+                        Profilvergleich (A/B)
+                      </p>
+                      <p className="mt-2 text-sm font-medium text-black/45 dark:text-white/50">
+                        Archetyp und Beziehungsstil · demo
+                      </p>
+                      <p className="mt-1 text-xs text-black/55 dark:text-white/55">
+                        In der exakten Analyse seht ihr Big 3, Hausfokus, Narrative und
+                        die Unterschiede zwischen Person A und B.
+                      </p>
+                    </div>
+                    <div className="rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
+                        Oktagon-Matrix
+                      </p>
+                      <div className="mt-3 grid grid-cols-4 gap-2">
+                        {[
+                          "Kommunikation",
+                          "Anziehung",
+                          "Emotion",
+                          "Vertrauen",
+                          "Konflikt",
+                          "Wachstum",
+                          "Vision",
+                          "Langfristigkeit",
+                        ].map((x) => (
+                          <div
+                            key={x}
+                            className="rounded-lg border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px] text-black/40 dark:border-white/10 dark:bg-white/10 dark:text-white/45"
+                          >
+                            {x}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="mt-4 rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
+                    <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
+                      Synastry-Aspekte · Auszug
+                    </p>
+                    <div className="mt-2 space-y-2">
+                      {[
+                        "Venus (A) – Mars (B) · Konjunktion · gemischt",
+                        "Mond (A) – Mond (B) · Trigon · harmonisch",
+                        "Saturn (A) – Sonne (B) · Quadrat · herausfordernd",
+                      ].map((line) => (
+                        <p
+                          key={line}
+                          className="rounded-xl border border-black/10 bg-black/[0.02] px-3 py-2 text-xs text-black/45 dark:border-white/10 dark:bg-white/10 dark:text-white/50"
+                        >
+                          {line}
+                        </p>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
+                    <div className="rounded-2xl border border-black/8 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
+                        Im kostenlosen Vorgeschmack
+                      </p>
+                      <ul className="mt-3 space-y-2 text-sm text-black/75 dark:text-white/75">
+                        <li className="flex gap-2">
+                          <span className="text-emerald-600 dark:text-emerald-400">✓</span>
+                          Mini-Eindruck auf Basis Sternzeichen
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-emerald-600 dark:text-emerald-400">✓</span>
+                          Demo-Ansicht der Paaranalyse
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-black/35 dark:text-white/35">—</span>
+                          Keine exakten A/B-Profile und keine echten Aspekttexte
+                        </li>
+                      </ul>
+                    </div>
+                    <div className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.08] p-4 dark:border-violet-400/25 dark:bg-violet-500/10">
+                      <p className="text-xs font-semibold uppercase tracking-wider text-violet-900 dark:text-violet-100">
+                        Exakte Paaranalyse
+                      </p>
+                      <ul className="mt-3 space-y-2 text-sm text-black/85 dark:text-white/85">
+                        <li className="flex gap-2">
+                          <span className="text-violet-700 dark:text-violet-300">✓</span>
+                          Vollprofil für Person A und B (inkl. Planeten/Häuser)
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-violet-700 dark:text-violet-300">✓</span>
+                          Komplettes Oktagon + Analyse je Dimension
+                        </li>
+                        <li className="flex gap-2">
+                          <span className="text-violet-700 dark:text-violet-300">✓</span>
+                          Persönliche Zugangslinks (Paaranalyse + beide Profile)
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+
+                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+                    <button
+                      type="button"
+                      onClick={() => setStage("exact")}
+                      className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black"
+                    >
+                      Exakte Paaranalyse freischalten
+                    </button>
+                  </div>
+                </div>
+              </section>
+            </>
+          ) : null}
         </section>
       ) : null}
 
