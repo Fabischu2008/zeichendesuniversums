@@ -47,6 +47,33 @@ function sessionHasChart(s: StoredAstroSessionV1): boolean {
   return Boolean(profile && typeof profile === "object" && profile.chart);
 }
 
+function normalizedDegrees(deg: number): number {
+  let x = deg % 360;
+  if (x < 0) x += 360;
+  return x;
+}
+
+function angularDistance(a: number, b: number): number {
+  const d = Math.abs(normalizedDegrees(a) - normalizedDegrees(b));
+  return d > 180 ? 360 - d : d;
+}
+
+/**
+ * Alte Chart-Versionen nutzten MC ≈ ASC + 270° als Platzhalter.
+ * Diese erkennen wir und triggern eine Neuberechnung mit echtem MC/IC.
+ */
+function sessionHasLegacyChartModel(s: StoredAstroSessionV1): boolean {
+  const profile = s.profile as
+    | (AstroProfileResult & { chart?: { angles?: { asc?: number; mc?: number } } })
+    | null
+    | undefined;
+  const asc = profile?.chart?.angles?.asc;
+  const mc = profile?.chart?.angles?.mc;
+  if (typeof asc !== "number" || typeof mc !== "number") return false;
+  const approxMc = normalizedDegrees(asc + 270);
+  return angularDistance(mc, approxMc) < 0.01;
+}
+
 export default function BirthChartProfilePage() {
   const [birthdate, setBirthdate] = useState("");
   const [birthtime, setBirthtime] = useState("");
@@ -128,7 +155,12 @@ export default function BirthChartProfilePage() {
       setBirthtime(s.birthtime);
       setQuery(s.place.label);
       setPlace(s.place as Place);
-        if (unlocked && s.profile && sessionHasChart(s)) {
+        if (
+          unlocked &&
+          s.profile &&
+          sessionHasChart(s) &&
+          !sessionHasLegacyChartModel(s)
+        ) {
         setProfile(s.profile);
       }
     }
@@ -170,7 +202,11 @@ export default function BirthChartProfilePage() {
   useEffect(() => {
     if (vollreportAccess !== true || profile || autoFetchDone.current) return;
     const s = readAstroSession();
-    if (s && sessionCanCalculate(s) && (!s.profile || !sessionHasChart(s))) {
+    if (
+      s &&
+      sessionCanCalculate(s) &&
+      (!s.profile || !sessionHasChart(s) || sessionHasLegacyChartModel(s))
+    ) {
       autoFetchDone.current = true;
       void fetchProfileFromSession(s);
     }

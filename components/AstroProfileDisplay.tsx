@@ -2,7 +2,7 @@ import type { AstroProfileResult } from "@/lib/astro/profile";
 import { AstroRadixChart } from "@/components/AstroRadixChart";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
 import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
-import { signFromEclipticLongitude } from "@/lib/astro/signs";
+import { signFromEclipticLongitude, symbolFromSign } from "@/lib/astro/signs";
 
 const ELEMENT_BAR: Record<string, string> = {
   Feuer: "bg-orange-500/85",
@@ -10,6 +10,53 @@ const ELEMENT_BAR: Record<string, string> = {
   Luft: "bg-sky-500/75",
   Wasser: "bg-blue-600/75",
 };
+
+function formatLongitudeDms(longitude: number) {
+  const normalized = ((longitude % 360) + 360) % 360;
+  const degTotal = normalized % 30;
+  const deg = Math.floor(degTotal);
+  const minFloat = (degTotal - deg) * 60;
+  const min = Math.floor(minFloat);
+  const sec = Math.round((minFloat - min) * 60);
+  const secSafe = sec === 60 ? 59 : sec;
+  return `${String(deg).padStart(2, "0")}°${String(min).padStart(2, "0")}'${String(secSafe).padStart(2, "0")}"`;
+}
+
+function objectCode(key: string): string {
+  const map: Record<string, string> = {
+    sun: "SU",
+    moon: "MO",
+    mercury: "ME",
+    venus: "VE",
+    mars: "MA",
+    jupiter: "JU",
+    saturn: "SA",
+    uranus: "UR",
+    neptune: "NE",
+    pluto: "PL",
+    north_node: "NN",
+    south_node: "SN",
+    chiron: "CH",
+    lilith: "LI",
+    part_of_fortune: "PF",
+    asc: "AC",
+    dsc: "DC",
+    mc: "MC",
+    ic: "IC",
+  };
+  return map[key] ?? key.slice(0, 2).toUpperCase();
+}
+
+function normalizeDegrees(deg: number) {
+  const x = deg % 360;
+  return x < 0 ? x + 360 : x;
+}
+
+function wholeSignHouseFromAsc(ascLon: number, pointLon: number) {
+  const ascSignIndex = Math.floor(normalizeDegrees(ascLon) / 30);
+  const pointSignIndex = Math.floor(normalizeDegrees(pointLon) / 30);
+  return ((pointSignIndex - ascSignIndex + 12) % 12) + 1;
+}
 
 export function AstroProfileDisplay({
   profile,
@@ -26,6 +73,77 @@ export function AstroProfileDisplay({
   const ascSign = chart
     ? signFromEclipticLongitude(chart.angles.asc)
     : null;
+  const overviewRows = chart
+    ? [
+        ...profile.planets.map((p) => ({
+          key: p.key,
+          name: p.name,
+          glyph: objectCode(p.key),
+          dms: formatLongitudeDms(p.longitude),
+          sign: p.sign,
+          signSymbol: p.signSymbol,
+          house: p.house,
+        })),
+        ...profile.specialPoints.map((p) => ({
+          key: p.key,
+          name: p.name,
+          glyph: objectCode(p.key),
+          dms: formatLongitudeDms(p.longitude),
+          sign: p.sign,
+          signSymbol: p.signSymbol,
+          house: p.house,
+        })),
+        {
+          key: "asc",
+          name: "Aszendent",
+          glyph: "AC",
+          dms: formatLongitudeDms(chart.angles.asc),
+          sign: signFromEclipticLongitude(chart.angles.asc),
+          signSymbol: symbolFromSign(signFromEclipticLongitude(chart.angles.asc)),
+          house: 1,
+        },
+        {
+          key: "dsc",
+          name: "Deszendent",
+          glyph: "DC",
+          dms: formatLongitudeDms(chart.angles.dsc),
+          sign: signFromEclipticLongitude(chart.angles.dsc),
+          signSymbol: symbolFromSign(signFromEclipticLongitude(chart.angles.dsc)),
+          house: 7,
+        },
+        {
+          key: "mc",
+          name: "Medium Coeli",
+          glyph: "MC",
+          dms: formatLongitudeDms(chart.angles.mc),
+          sign: signFromEclipticLongitude(chart.angles.mc),
+          signSymbol: symbolFromSign(signFromEclipticLongitude(chart.angles.mc)),
+          house: wholeSignHouseFromAsc(chart.angles.asc, chart.angles.mc),
+        },
+        {
+          key: "ic",
+          name: "Imum Coeli",
+          glyph: "IC",
+          dms: formatLongitudeDms(chart.angles.ic),
+          sign: signFromEclipticLongitude(chart.angles.ic),
+          signSymbol: symbolFromSign(signFromEclipticLongitude(chart.angles.ic)),
+          house: wholeSignHouseFromAsc(chart.angles.asc, chart.angles.ic),
+        },
+      ]
+    : [];
+  const extraOrder = ["north_node", "south_node", "lilith", "part_of_fortune", "asc", "dsc", "mc", "ic"];
+  const extraRows = extraOrder
+    .map((k) => overviewRows.find((row) => row.key === k))
+    .filter((row): row is NonNullable<(typeof overviewRows)[number]> => Boolean(row));
+  const specialPointByKey = new Map<string, (typeof profile.specialPoints)[number]>(
+    profile.specialPoints.map((p) => [p.key, p]),
+  );
+  const angleNotes: Record<string, string> = {
+    asc: "Persönlicher Ausdruck und Erstwirkung: wie du spontan in Erscheinung trittst.",
+    dsc: "Beziehungsachse: wie du Partnerschaft, Spiegelung und Ergänzung erlebst.",
+    mc: "Berufung und Außenwirkung: Richtung, Sichtbarkeit und gesellschaftliche Rolle.",
+    ic: "Innere Basis und Herkunft: emotionales Fundament, Zuhause und Verwurzelung.",
+  };
 
   return (
     <div id="vollreport" className="scroll-mt-24 space-y-6">
@@ -42,17 +160,17 @@ export function AstroProfileDisplay({
           {profile.archetype.subtitle}
         </p>
         {sun && moon && ascSign ? (
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 bg-white/80 px-3 py-1 text-xs font-semibold dark:border-white/20 dark:bg-black/30">
-              <ZodiacSignIcon sign={sun.sign} sizeClassName="h-4 w-4" />
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/35 dark:bg-violet-500/20 dark:text-violet-50">
+              <ZodiacSignIcon sign={sun.sign} sizeClassName="h-5 w-5" />
               Sonne: {sun.sign}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 bg-white/80 px-3 py-1 text-xs font-semibold dark:border-white/20 dark:bg-black/30">
-              <ZodiacSignIcon sign={moon.sign} sizeClassName="h-4 w-4" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/35 dark:bg-violet-500/20 dark:text-violet-50">
+              <ZodiacSignIcon sign={moon.sign} sizeClassName="h-5 w-5" />
               Mond: {moon.sign}
             </span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 bg-white/80 px-3 py-1 text-xs font-semibold dark:border-white/20 dark:bg-black/30">
-              <ZodiacSignIcon sign={ascSign} sizeClassName="h-4 w-4" />
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/30 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/35 dark:bg-violet-500/20 dark:text-violet-50">
+              <ZodiacSignIcon sign={ascSign} sizeClassName="h-5 w-5" />
               Aszendent: {ascSign}
             </span>
           </div>
@@ -73,6 +191,93 @@ export function AstroProfileDisplay({
           <div className="mt-6 flex justify-center">
             <AstroRadixChart chart={chart} />
           </div>
+        </section>
+      ) : null}
+
+      {overviewRows.length ? (
+        <section
+          className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
+        >
+          <h3 className="text-xl font-semibold tracking-tight">Astrologische Übersicht</h3>
+          <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+            Alle relevanten Positionen auf einen Blick: Grad, Zeichen und Haus.
+          </p>
+          <div className="mt-5 overflow-x-auto rounded-2xl border border-violet-500/20 bg-violet-500/[0.06] dark:border-violet-400/20 dark:bg-violet-500/10">
+            <table className="min-w-full text-left text-sm">
+              <thead className="bg-black/[0.03] text-xs uppercase tracking-wide text-black/60 dark:bg-white/[0.06] dark:text-white/60">
+                <tr>
+                  <th className="px-3 py-2 font-semibold">Objekt</th>
+                  <th className="px-3 py-2 font-semibold">Grad</th>
+                  <th className="px-3 py-2 font-semibold">Zeichen</th>
+                  <th className="px-3 py-2 font-semibold">Haus</th>
+                </tr>
+              </thead>
+              <tbody>
+                {overviewRows.map((row) => (
+                  <tr
+                    key={row.key}
+                    className="border-t border-black/8 dark:border-white/10"
+                  >
+                    <td className="px-3 py-2">
+                      <span className="inline-flex items-center gap-2">
+                        <span className="text-xs font-semibold">{row.glyph}</span>
+                        <span>{row.name}</span>
+                      </span>
+                    </td>
+                    <td className="px-3 py-2 tabular-nums">{row.dms}</td>
+                    <td className="px-3 py-2">
+                      <span className="inline-flex items-center gap-1.5">
+                        <ZodiacSignIcon sign={row.sign} sizeClassName="h-5 w-5" />
+                        <span>{row.sign}</span>
+                      </span>
+                    </td>
+                    <td className="px-3 py-2">Haus {row.house}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+
+          {extraRows.length ? (
+            <div className="mt-6">
+              <h4 className="text-sm font-semibold uppercase tracking-wide text-black/50 dark:text-white/50">
+                Erweiterte zusätzliche Punkte
+              </h4>
+              <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                {extraRows.map((row) => {
+                  const specialPoint = specialPointByKey.get(row.key);
+                  const note = specialPoint?.note ?? angleNotes[row.key] ?? null;
+                  return (
+                    <article
+                      key={`extra-${row.key}`}
+                      className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm dark:border-white/15 dark:bg-white/5"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="shrink-0 text-xl font-semibold" aria-hidden>
+                          {row.glyph}
+                        </span>
+                        <ZodiacSignIcon sign={row.sign} sizeClassName="h-9 w-9" />
+                        <div className="min-w-0">
+                          <p className="font-medium leading-tight">{row.name}</p>
+                          <p className="text-xs text-black/60 dark:text-white/60">
+                            {row.sign} · {row.dms}
+                          </p>
+                        </div>
+                      </div>
+                      <p className="mt-2 text-xs text-black/65 dark:text-white/65">
+                        Haus {row.house}
+                      </p>
+                      {note ? (
+                        <p className="mt-2 text-xs text-black/55 dark:text-white/55">
+                          {note}
+                        </p>
+                      ) : null}
+                    </article>
+                  );
+                })}
+              </div>
+            </div>
+          ) : null}
         </section>
       ) : null}
 
@@ -179,73 +384,6 @@ export function AstroProfileDisplay({
           {profile.narrative.chironInsight ? (
             <p>{profile.narrative.chironInsight}</p>
           ) : null}
-        </div>
-      </section>
-
-      <section
-        className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
-      >
-        <h3 className="text-xl font-semibold tracking-tight">Planeten</h3>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {profile.planets.map((p) => (
-            <div
-              key={p.key}
-              className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm dark:border-white/15 dark:bg-white/5"
-            >
-              <div className="flex items-center gap-3">
-                <span className="shrink-0 text-2xl tabular-nums" aria-hidden>
-                  {p.glyph}
-                </span>
-                <ZodiacSignIcon sign={p.sign} sizeClassName="h-9 w-9" />
-                <div className="min-w-0">
-                  <p className="font-medium">{p.name}</p>
-                  <p className="text-xs text-black/60 dark:text-white/60">
-                    {p.sign} · {p.degreeInSign}
-                  </p>
-                </div>
-              </div>
-              <p className="mt-2 text-xs text-black/65 dark:text-white/65">
-                {p.element} · Haus {p.house}
-              </p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <section
-        className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
-      >
-        <h3 className="text-xl font-semibold tracking-tight">
-          Zusätzliche Punkte
-        </h3>
-        <div className="mt-4 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {profile.specialPoints.map((p) => (
-            <div
-              key={p.key}
-              className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 text-sm dark:border-white/15 dark:bg-white/5"
-            >
-              <div className="flex items-center gap-3">
-                <span className="shrink-0 text-xl" aria-hidden>
-                  {p.glyph}
-                </span>
-                <ZodiacSignIcon sign={p.sign} sizeClassName="h-9 w-9" />
-                <div className="min-w-0">
-                  <p className="font-medium leading-tight">{p.name}</p>
-                  <p className="text-xs text-black/60 dark:text-white/60">
-                    {p.sign} · {p.degreeInSign}
-                  </p>
-                </div>
-              </div>
-              <p className="mt-2 text-xs text-black/65 dark:text-white/65">
-                {p.element} · Haus {p.house}
-              </p>
-              {p.note ? (
-                <p className="mt-2 text-xs text-black/55 dark:text-white/55">
-                  {p.note}
-                </p>
-              ) : null}
-            </div>
-          ))}
         </div>
       </section>
 

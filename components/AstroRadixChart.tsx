@@ -1,6 +1,5 @@
 import type { AstroChartData } from "@/lib/astro/profile";
-
-const ZODIAC_GLYPHS = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
+import { publicZodiacSvgPath, signFromEclipticLongitude } from "@/lib/astro/signs";
 
 function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
   const a = ((angleDeg - 90) * Math.PI) / 180;
@@ -9,6 +8,27 @@ function polarToCartesian(cx: number, cy: number, r: number, angleDeg: number) {
 
 function chartAngleFromLongitude(longitude: number, asc: number) {
   return (longitude - asc + 180 + 360) % 360;
+}
+
+function pointCode(key: string): string {
+  const map: Record<string, string> = {
+    sun: "SU",
+    moon: "MO",
+    mercury: "ME",
+    venus: "VE",
+    mars: "MA",
+    jupiter: "JU",
+    saturn: "SA",
+    uranus: "UR",
+    neptune: "NE",
+    pluto: "PL",
+    north_node: "NN",
+    south_node: "SN",
+    chiron: "CH",
+    lilith: "LI",
+    part_of_fortune: "PF",
+  };
+  return map[key] ?? key.slice(0, 2).toUpperCase();
 }
 
 export function AstroRadixChart({ chart }: { chart: AstroChartData }) {
@@ -75,19 +95,21 @@ export function AstroRadixChart({ chart }: { chart: AstroChartData }) {
       })}
 
       {Array.from({ length: 12 }).map((_, idx) => {
-        const angle = idx * 30 + 15;
+        // Align zodiac sector icons to the actual whole-sign house cusps.
+        const sectorStartLon = chart.houseCusps[idx] ?? idx * 30;
+        const angle = chartAngleFromLongitude(sectorStartLon + 15, asc);
         const p = polarToCartesian(c, c, (rOuter + rSignsInner) / 2, angle);
+        const sign = signFromEclipticLongitude(sectorStartLon + 15);
         return (
-          <text
+          <image
             key={`sign-${idx}`}
-            x={p.x}
-            y={p.y}
-            textAnchor="middle"
-            dominantBaseline="middle"
-            className="fill-black/75 text-[20px] dark:fill-white/80"
-          >
-            {ZODIAC_GLYPHS[idx]}
-          </text>
+            href={publicZodiacSvgPath(sign)}
+            x={p.x - 11}
+            y={p.y - 11}
+            width={22}
+            height={22}
+            opacity={0.95}
+          />
         );
       })}
 
@@ -102,9 +124,9 @@ export function AstroRadixChart({ chart }: { chart: AstroChartData }) {
               y={p.y}
               textAnchor="middle"
               dominantBaseline="central"
-              className="fill-white text-[10px] dark:fill-black"
+              className="fill-white text-[8px] font-semibold dark:fill-black"
             >
-              {pt.glyph}
+              {pointCode(pt.key)}
             </text>
           </g>
         );
