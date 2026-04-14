@@ -1,7 +1,10 @@
 import tzLookup from "tz-lookup";
 import { DateTime } from "luxon";
 import * as Astronomy from "astronomy-engine";
-import { ascendantLongitudeDegrees } from "@/lib/astro/ascendant";
+import {
+  ascendantLongitudeDegrees,
+  midheavenLongitudeDegrees,
+} from "@/lib/astro/ascendant";
 import { signFromEclipticLongitude } from "@/lib/astro/signs";
 import {
   calculateAstroProfile,
@@ -68,10 +71,15 @@ export function computeProfileFromBirth(input: {
     latitudeDegrees: location.lat,
     longitudeDegrees: location.lon,
   });
+  const mcLon = midheavenLongitudeDegrees({
+    dateUtc,
+    longitudeDegrees: location.lon,
+  });
 
   const profile = calculateAstroProfile({
     dateUtc,
     ascendantLongitude: ascLon,
+    midheavenLongitude: mcLon,
   });
 
   return {

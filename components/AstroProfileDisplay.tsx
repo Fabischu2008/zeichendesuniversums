@@ -2,6 +2,7 @@ import type { AstroProfileResult } from "@/lib/astro/profile";
 import { AstroRadixChart } from "@/components/AstroRadixChart";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
 import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
+import { signFromEclipticLongitude } from "@/lib/astro/signs";
 
 const ELEMENT_BAR: Record<string, string> = {
   Feuer: "bg-orange-500/85",
@@ -20,6 +21,11 @@ export function AstroProfileDisplay({
   const pad = variant === "page" ? "p-6 sm:p-8" : "p-4 sm:p-5";
   const chart = (profile as AstroProfileResult & { chart?: AstroProfileResult["chart"] })
     .chart;
+  const sun = profile.planets.find((p) => p.key === "sun");
+  const moon = profile.planets.find((p) => p.key === "moon");
+  const ascSign = chart
+    ? signFromEclipticLongitude(chart.angles.asc)
+    : null;
 
   return (
     <div id="vollreport" className="scroll-mt-24 space-y-6">
@@ -35,6 +41,22 @@ export function AstroProfileDisplay({
         <p className="mt-2 text-sm text-black/75 dark:text-white/75">
           {profile.archetype.subtitle}
         </p>
+        {sun && moon && ascSign ? (
+          <div className="mt-4 flex flex-wrap gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 bg-white/80 px-3 py-1 text-xs font-semibold dark:border-white/20 dark:bg-black/30">
+              <ZodiacSignIcon sign={sun.sign} sizeClassName="h-4 w-4" />
+              Sonne: {sun.sign}
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 bg-white/80 px-3 py-1 text-xs font-semibold dark:border-white/20 dark:bg-black/30">
+              <ZodiacSignIcon sign={moon.sign} sizeClassName="h-4 w-4" />
+              Mond: {moon.sign}
+            </span>
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-black/15 bg-white/80 px-3 py-1 text-xs font-semibold dark:border-white/20 dark:bg-black/30">
+              <ZodiacSignIcon sign={ascSign} sizeClassName="h-4 w-4" />
+              Aszendent: {ascSign}
+            </span>
+          </div>
+        ) : null}
         <p className="mt-4 text-xs text-black/50 dark:text-white/50">
           {profile.meta.model}
         </p>

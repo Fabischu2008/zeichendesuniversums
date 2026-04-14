@@ -310,6 +310,7 @@ function partOfFortuneLongitude(input: {
 export function calculateAstroProfile(input: {
   dateUtc: Date;
   ascendantLongitude: number;
+  midheavenLongitude?: number;
 }) {
   const t = new Astronomy.AstroTime(input.dateUtc);
 
@@ -498,9 +499,8 @@ export function calculateAstroProfile(input: {
 
   const asc = normalizeDegrees(input.ascendantLongitude);
   const dsc = normalizeDegrees(asc + 180);
-  // Whole-sign charts don't force MC=10th cusp; for wheel orientation we use a
-  // practical axis marker aligned to the 10th house sector.
-  const mc = normalizeDegrees(asc + 270);
+  // Whole-sign houses stay intact; MC/IC are true astronomical angles if supplied.
+  const mc = normalizeDegrees(input.midheavenLongitude ?? asc + 270);
   const ic = normalizeDegrees(mc + 180);
   const houseCusps = buildWholeSignHouseCusps(asc);
 

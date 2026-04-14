@@ -33,3 +33,22 @@ export function ascendantLongitudeDegrees(input: {
   return normalizeDegrees(rad2deg(ac));
 }
 
+/**
+ * Tropical Midheaven (MC) ecliptic longitude from local sidereal time.
+ * Uses true obliquity of date, consistent with astronomy-engine inputs.
+ */
+export function midheavenLongitudeDegrees(input: {
+  dateUtc: Date;
+  longitudeDegrees: number;
+}) {
+  const time = Astronomy.MakeTime(input.dateUtc);
+  const gstHours = Astronomy.SiderealTime(time);
+  const ramcDeg = normalizeDegrees(gstHours * 15 + input.longitudeDegrees);
+  const eps = deg2rad(Astronomy.e_tilt(time).tobl);
+  const ramc = deg2rad(ramcDeg);
+
+  // λ_MC from right ascension of meridian and obliquity
+  const mc = Math.atan2(Math.sin(ramc) / Math.cos(eps), Math.cos(ramc));
+  return normalizeDegrees(rad2deg(mc));
+}
+
