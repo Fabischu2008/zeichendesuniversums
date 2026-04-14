@@ -1,7 +1,6 @@
 export type ProductCategory =
   | "guide"
-  | "compatibility"
-  | "manifestation";
+  | "compatibility";
 
 export type Product = {
   id: string;
@@ -26,7 +25,7 @@ export type Post = {
 
 /** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). Nicht im Shop-Katalog. */
 export const PRODUCT_ID_ASTRO_VOLLPROFIL = "p_birth_profile" as const;
-export const PRICE_ASTRO_VOLLPROFIL = 19;
+export const PRICE_ASTRO_VOLLPROFIL = 11.11;
 
 export function checkoutHrefForProduct(productId: string): string {
   return `/checkout?productId=${encodeURIComponent(productId)}`;
@@ -34,43 +33,30 @@ export function checkoutHrefForProduct(productId: string): string {
 
 const products: Product[] = [
   {
-    id: "p_guide_aries",
-    name: "Sternzeichen Guide: Widder (Mini-Report)",
-    slug: "guide-widder",
-    price: 9,
+    id: PRODUCT_ID_ASTRO_VOLLPROFIL,
+    name: "Geburtshoroskop Vollreport",
+    slug: "geburtshoroskop-vollreport",
+    price: PRICE_ASTRO_VOLLPROFIL,
     description:
-      "Klartext über Antrieb, Trigger und Beziehungen – kompakt & umsetzbar.",
-    image: "/images/product-guide.jpg",
+      "Dein vollständiges Geburtshoroskop mit Big 3, Planeten, Häusern und persönlicher Deutung.",
+    image: "/auge.jpg",
     category: "guide",
     content:
-      "Du bekommst einen kompakten Report mit Persönlichkeit, Stärken, Schattenseiten und 5 konkreten Alltag-Impulsen.",
-    fileUrl: "/downloads/guide-widder.pdf",
+      "Exakte Berechnung auf Basis von Datum, Uhrzeit und Ort. Enthält Archetyp, Lebensfokus, Beziehungsstil und klare Handlungsimpulse.",
+    fileUrl: "/downloads/geburtshoroskop-vollreport.pdf",
   },
   {
     id: "p_compat_full",
-    name: "Compatibility Vollanalyse (2 Zeichen)",
+    name: "Kompatibilität Vollanalyse",
     slug: "compatibility-vollanalyse",
-    price: 9,
+    price: 22.22,
     description:
-      "Die komplette Beziehungsanalyse mit Stärken, Reibungspunkten und Lösungen.",
-    image: "/images/product-compat.jpg",
+      "Die komplette Paaranalyse für Beziehung, Partnerschaft und Dynamik zwischen zwei Profilen.",
+    image: "/auge.jpg",
     category: "compatibility",
     content:
-      "Ideal für Dating, Beziehung oder Freundschaft – inkl. Kommunikations- und Konflikt-Guide.",
+      "Mit Synastry-Aspekten, Dimensionsanalyse und konkreten Empfehlungen zu Kommunikation, Vertrauen und Langfristigkeit.",
     fileUrl: "/downloads/compatibility.pdf",
-  },
-  {
-    id: "p_manifest",
-    name: "Manifestation Blueprint",
-    slug: "manifestation-blueprint",
-    price: 19,
-    description:
-      "Ein strukturierter Plan, der zu deinem Zeichen passt – statt 100 Methoden gleichzeitig.",
-    image: "/images/product-manifest.jpg",
-    category: "manifestation",
-    content:
-      "Du bekommst Rituale, Fokus-Framework und Wochenplan – abgestimmt auf deinen Stil.",
-    fileUrl: "/downloads/manifestation.pdf",
   },
 ];
 

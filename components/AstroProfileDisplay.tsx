@@ -1,4 +1,5 @@
 import type { AstroProfileResult } from "@/lib/astro/profile";
+import { AstroRadixChart } from "@/components/AstroRadixChart";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
 import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
 
@@ -17,6 +18,8 @@ export function AstroProfileDisplay({
   variant?: "page" | "embedded";
 }) {
   const pad = variant === "page" ? "p-6 sm:p-8" : "p-4 sm:p-5";
+  const chart = (profile as AstroProfileResult & { chart?: AstroProfileResult["chart"] })
+    .chart;
 
   return (
     <div id="vollreport" className="scroll-mt-24 space-y-6">
@@ -36,6 +39,20 @@ export function AstroProfileDisplay({
           {profile.meta.model}
         </p>
       </section>
+
+      {chart ? (
+        <section
+          className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
+        >
+          <h3 className="text-xl font-semibold tracking-tight">Dein Chart</h3>
+          <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+            Radix-Darstellung mit Whole-Sign-Häusern, Planeten und sensitiven Punkten.
+          </p>
+          <div className="mt-6 flex justify-center">
+            <AstroRadixChart chart={chart} />
+          </div>
+        </section>
+      ) : null}
 
       <section
         className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}

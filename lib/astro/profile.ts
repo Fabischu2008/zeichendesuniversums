@@ -80,6 +80,28 @@ export type SpecialPointPlacement = {
   note?: string;
 };
 
+export type AstroChartPoint = {
+  key: string;
+  name: string;
+  glyph: string;
+  longitude: number;
+  sign: (typeof ZODIAC_SIGNS)[number];
+  house: number;
+  isSpecial?: boolean;
+};
+
+export type AstroChartData = {
+  ascendantLongitude: number;
+  houseCusps: number[];
+  angles: {
+    asc: number;
+    dsc: number;
+    mc: number;
+    ic: number;
+  };
+  points: AstroChartPoint[];
+};
+
 const PLANETS: Array<{ key: PlanetKey; name: string; body: Astronomy.Body }> = [
   { key: "sun", name: "Sonne", body: Astronomy.Body.Sun },
   { key: "moon", name: "Mond", body: Astronomy.Body.Moon },
@@ -96,6 +118,11 @@ const PLANETS: Array<{ key: PlanetKey; name: string; body: Astronomy.Body }> = [
 function normalizeDegrees(deg: number) {
   const x = deg % 360;
   return x < 0 ? x + 360 : x;
+}
+
+function buildWholeSignHouseCusps(ascLon: number): number[] {
+  const ascSignStart = Math.floor(normalizeDegrees(ascLon) / 30) * 30;
+  return Array.from({ length: 12 }, (_, i) => normalizeDegrees(ascSignStart + i * 30));
 }
 
 function degreeWithinSign(longitude: number) {
@@ -469,6 +496,39 @@ export function calculateAstroProfile(input: {
     ? `Chiron in ${chironPoint.sign} (Haus ${chironPoint.house}) kann zeigen, wo Verletzlichkeit zu Empathie und Beratung werden kann – für dich und andere.`
     : undefined;
 
+  const asc = normalizeDegrees(input.ascendantLongitude);
+  const dsc = normalizeDegrees(asc + 180);
+  // Whole-sign charts don't force MC=10th cusp; for wheel orientation we use a
+  // practical axis marker aligned to the 10th house sector.
+  const mc = normalizeDegrees(asc + 270);
+  const ic = normalizeDegrees(mc + 180);
+  const houseCusps = buildWholeSignHouseCusps(asc);
+
+  const chart: AstroChartData = {
+    ascendantLongitude: asc,
+    houseCusps,
+    angles: { asc, dsc, mc, ic },
+    points: [
+      ...planets.map((p) => ({
+        key: p.key,
+        name: p.name,
+        glyph: p.glyph,
+        longitude: p.longitude,
+        sign: p.sign,
+        house: p.house,
+      })),
+      ...specialPoints.map((p) => ({
+        key: p.key,
+        name: p.name,
+        glyph: p.glyph,
+        longitude: p.longitude,
+        sign: p.sign,
+        house: p.house,
+        isSpecial: true,
+      })),
+    ],
+  };
+
   return {
     meta: {
       model: "Whole-Sign-Häuser, mittlerer Mondknoten, mittleres Lilith (Apogäum), Pars Fortunae klassisch Tag/Nacht.",
@@ -489,6 +549,7 @@ export function calculateAstroProfile(input: {
       fortuneInsight,
       chironInsight,
     },
+    chart,
   };
 }
 

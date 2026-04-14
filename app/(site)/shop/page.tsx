@@ -5,14 +5,13 @@ import { getProducts, type ProductCategory } from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Shop",
-  description: "Guides, Compatibility und Manifestation – digitale Produkte.",
+  description: "Geburtshoroskop und Kompatibilitätsanalyse – digitale Produkte.",
 };
 
 const filters: Array<{ label: string; value?: ProductCategory }> = [
   { label: "Alle" },
-  { label: "Sternzeichen Guides", value: "guide" },
+  { label: "Geburtshoroskop", value: "guide" },
   { label: "Beziehungen", value: "compatibility" },
-  { label: "Manifestation", value: "manifestation" },
 ];
 
 export default async function ShopPage({
@@ -25,7 +24,7 @@ export default async function ShopPage({
   const category = typeof sp?.category === "string" ? sp.category : undefined;
 
   const filtered =
-    category && ["guide", "compatibility", "manifestation"].includes(category)
+    category && ["guide", "compatibility"].includes(category)
       ? products.filter((p) => p.category === category)
       : products;
 

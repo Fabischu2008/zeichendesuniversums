@@ -179,6 +179,7 @@ export default function ToolsPage() {
             </span>
           </span>
         </Link>
+
       </div>
 
       <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">

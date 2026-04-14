@@ -238,13 +238,13 @@ export function BewusstseinTool() {
                 setBerechneteStufe(null);
                 setMittelwert(null);
               }}
-              className="inline-flex h-11 items-center justify-center rounded-full border border-black/12 px-5 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:text-white dark:hover:bg-white/10"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
             >
               Fragebogen wiederholen
             </button>
             <Link
               href="/tools/bewusstsein/stufen"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-violet-600 px-5 text-sm font-medium text-white transition hover:bg-violet-700 dark:bg-violet-500 dark:hover:bg-violet-400"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
               Alle Stufen nachlesen
             </Link>

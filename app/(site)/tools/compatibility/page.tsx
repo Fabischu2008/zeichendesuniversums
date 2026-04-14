@@ -623,6 +623,13 @@ export default function CompatibilityToolPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-10">
+      <Link
+        href="/tools"
+        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
+      >
+        ← Zur Themenwahl
+      </Link>
+
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Kompatibilität (Synastry)
@@ -715,8 +722,9 @@ export default function CompatibilityToolPage() {
                     So sieht die vollständige Paaranalyse aus
                   </h3>
                   <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-                    In der Vollversion werden beide Horoskope komplett berechnet und
-                    dann im Vergleich ausgewertet (Aspekte, Dimensionen, Profiltexte).
+                    Kein Rätselraten mehr: In der Vollversion werden beide Horoskope
+                    vollständig berechnet und dann glasklar verglichen
+                    (Aspekte, Dimensionen, Profiltexte).
                   </p>
 
                   <div className="mt-6 grid gap-4 lg:grid-cols-2">
@@ -725,11 +733,11 @@ export default function CompatibilityToolPage() {
                         Profilvergleich (A/B)
                       </p>
                       <p className="mt-2 text-sm font-medium text-black/45 dark:text-white/50">
-                        Archetyp und Beziehungsstil · demo
+                        Wer bringt was in die Beziehung? · Demo
                       </p>
                       <p className="mt-1 text-xs text-black/55 dark:text-white/55">
-                        In der exakten Analyse seht ihr Big 3, Hausfokus, Narrative und
-                        die Unterschiede zwischen Person A und B.
+                        In der exakten Analyse siehst du Big 3, Hausfokus, Narrative
+                        und die echten Unterschiede zwischen Person A und B.
                       </p>
                     </div>
                     <div className="rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
@@ -755,6 +763,10 @@ export default function CompatibilityToolPage() {
                           </div>
                         ))}
                       </div>
+                      <p className="mt-2 text-xs text-black/55 dark:text-white/55">
+                        Auf einen Blick: wo ihr stark harmoniert und wo ihr bewusst
+                        nachschärfen solltet.
+                      </p>
                     </div>
                   </div>
 
@@ -776,6 +788,10 @@ export default function CompatibilityToolPage() {
                         </p>
                       ))}
                     </div>
+                    <p className="mt-2 text-xs text-black/55 dark:text-white/55">
+                      Das ist der Kern: konkrete astrologische Verbindungspunkte statt
+                      oberflächlicher Standardtexte.
+                    </p>
                   </div>
 
                   <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
@@ -786,15 +802,15 @@ export default function CompatibilityToolPage() {
                       <ul className="mt-3 space-y-2 text-sm text-black/75 dark:text-white/75">
                         <li className="flex gap-2">
                           <span className="text-emerald-600 dark:text-emerald-400">✓</span>
-                          Mini-Eindruck auf Basis Sternzeichen
+                          Schneller Mini-Eindruck auf Basis Sternzeichen
                         </li>
                         <li className="flex gap-2">
                           <span className="text-emerald-600 dark:text-emerald-400">✓</span>
-                          Demo-Ansicht der Paaranalyse
+                          Demo-Vorschau der großen Paaranalyse
                         </li>
                         <li className="flex gap-2">
                           <span className="text-black/35 dark:text-white/35">—</span>
-                          Keine exakten A/B-Profile und keine echten Aspekttexte
+                          Keine exakten A/B-Profile, keine personalisierten Aspekttexte
                         </li>
                       </ul>
                     </div>
@@ -805,15 +821,15 @@ export default function CompatibilityToolPage() {
                       <ul className="mt-3 space-y-2 text-sm text-black/85 dark:text-white/85">
                         <li className="flex gap-2">
                           <span className="text-violet-700 dark:text-violet-300">✓</span>
-                          Vollprofil für Person A und B (inkl. Planeten/Häuser)
+                          Vollprofil für Person A und B (inkl. Planeten + Häuser)
                         </li>
                         <li className="flex gap-2">
                           <span className="text-violet-700 dark:text-violet-300">✓</span>
-                          Komplettes Oktagon + Analyse je Dimension
+                          Komplettes Oktagon + Klartext-Analyse je Dimension
                         </li>
                         <li className="flex gap-2">
                           <span className="text-violet-700 dark:text-violet-300">✓</span>
-                          Persönliche Zugangslinks (Paaranalyse + beide Profile)
+                          Persönliche Zugangslinks (Paaranalyse + beide Einzelprofile)
                         </li>
                       </ul>
                     </div>

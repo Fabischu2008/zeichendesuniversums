@@ -294,7 +294,7 @@ export default function BirthChartToolPage() {
             type="button"
             disabled={!canCalculate || calcLoading}
             onClick={() => void calculate()}
-            className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-semibold text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            className="inline-flex h-12 w-full items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 px-6 text-sm font-semibold text-violet-900 hover:bg-violet-500/15 disabled:cursor-not-allowed disabled:border-violet-500/20 disabled:bg-violet-500/5 disabled:text-violet-900/60 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-100 dark:hover:bg-violet-500/20 dark:disabled:border-violet-400/20 dark:disabled:bg-violet-500/10 dark:disabled:text-violet-100/60"
           >
             {calcLoading ? "Berechne…" : "Big 3 jetzt berechnen"}
           </button>

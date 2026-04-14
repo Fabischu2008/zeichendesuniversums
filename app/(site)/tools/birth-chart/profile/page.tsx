@@ -42,6 +42,11 @@ function sessionCanCalculate(s: StoredAstroSessionV1): boolean {
   );
 }
 
+function sessionHasChart(s: StoredAstroSessionV1): boolean {
+  const profile = s.profile as (AstroProfileResult & { chart?: unknown }) | null | undefined;
+  return Boolean(profile && typeof profile === "object" && profile.chart);
+}
+
 export default function BirthChartProfilePage() {
   const [birthdate, setBirthdate] = useState("");
   const [birthtime, setBirthtime] = useState("");
@@ -118,12 +123,12 @@ export default function BirthChartProfilePage() {
       setVollreportAccess(unlocked);
     }
     const s = readAstroSession();
-    if (s) {
+      if (s) {
       setBirthdate(s.birthdate);
       setBirthtime(s.birthtime);
       setQuery(s.place.label);
       setPlace(s.place as Place);
-      if (unlocked && s.profile) {
+        if (unlocked && s.profile && sessionHasChart(s)) {
         setProfile(s.profile);
       }
     }
@@ -165,7 +170,7 @@ export default function BirthChartProfilePage() {
   useEffect(() => {
     if (vollreportAccess !== true || profile || autoFetchDone.current) return;
     const s = readAstroSession();
-    if (!s?.profile && s && sessionCanCalculate(s)) {
+    if (s && sessionCanCalculate(s) && (!s.profile || !sessionHasChart(s))) {
       autoFetchDone.current = true;
       void fetchProfileFromSession(s);
     }
