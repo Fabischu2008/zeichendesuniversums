@@ -114,3 +114,94 @@ export async function sendProfileAccessEmail(params: {
     };
   }
 }
+
+/** Sendet den Zugangslink zur Paaranalyse (Vergleichsseite) per Resend. */
+export async function sendCompatibilityAccessEmail(params: {
+  to: string;
+  compatibilityUrl: string;
+  profileUrlA: string;
+  profileUrlB: string;
+}): Promise<{ ok: true } | { ok: false; message: string }> {
+  const { to, compatibilityUrl, profileUrlA, profileUrlB } = params;
+  if (!to || !isValidProfileEmail(to)) {
+    return { ok: false, message: "Bitte eine gültige E-Mail eingeben." };
+  }
+  if (!compatibilityUrl.startsWith("http")) {
+    return { ok: false, message: "Ungültiger Paaranalyse-Link." };
+  }
+  if (!profileUrlA.startsWith("http") || !profileUrlB.startsWith("http")) {
+    return { ok: false, message: "Ungültige Profil-Links." };
+  }
+
+  const apiKey = getResendApiKeyForProfileMail();
+  const from = getResendFromForProfileMail();
+  if (!apiKey) {
+    return {
+      ok: false,
+      message:
+        "E-Mail-Versand ist nicht konfiguriert (RESEND_API_KEY). Alternativ Link kopieren.",
+    };
+  }
+
+  const resend = new Resend(apiKey);
+  const subject = "Dein Zugang zur exakten Paaranalyse";
+  const text = [
+    "Hallo,",
+    "",
+    "hier sind deine drei Zugangslinks:",
+    "",
+    "Paaranalyse-Link:",
+    compatibilityUrl,
+    "",
+    "Profil-Link Person A:",
+    profileUrlA,
+    "",
+    "Profil-Link Person B:",
+    profileUrlB,
+    "",
+    "So nutzt du ihn:",
+    "1) Paaranalyse-Link öffnen -> beide Profile + Vergleich direkt laden",
+    "2) Profil-Link A/B nur bei Bedarf einzeln öffnen",
+    "3) Du kannst diese Mail beliebig oft an weitere Adressen senden (z. B. Person A und B)",
+    "",
+    "Viele Grüße",
+  ].join("\n");
+
+  const hrefAttr = compatibilityUrl.replace(/"/g, "&quot;");
+  const hrefA = profileUrlA.replace(/"/g, "&quot;");
+  const hrefB = profileUrlB.replace(/"/g, "&quot;");
+  const html = `
+    <p>Hallo,</p>
+    <p>hier sind deine <strong>drei Zugangslinks</strong>:</p>
+    <p><strong>Paaranalyse-Link:</strong><br /><a href="${hrefAttr}">${escapeHtml(compatibilityUrl)}</a></p>
+    <p><strong>Profil-Link Person A:</strong><br /><a href="${hrefA}">${escapeHtml(profileUrlA)}</a></p>
+    <p><strong>Profil-Link Person B:</strong><br /><a href="${hrefB}">${escapeHtml(profileUrlB)}</a></p>
+    <p><strong>So nutzt du sie:</strong></p>
+    <ol>
+      <li>Paaranalyse-Link öffnen - beide Profile und Vergleich werden direkt geladen</li>
+      <li>Profil-Link A/B nur bei Bedarf einzeln öffnen</li>
+      <li>Du kannst diese Mail beliebig oft an weitere Adressen senden (z. B. Person A und B)</li>
+    </ol>
+  `;
+
+  try {
+    const result = await resend.emails.send({
+      from,
+      to: [to],
+      subject,
+      text,
+      html,
+    });
+    if (result.error) {
+      const raw = result.error.message || "Versand fehlgeschlagen.";
+      return { ok: false, message: mapResendErrorToUserMessage(raw) };
+    }
+    return { ok: true };
+  } catch (e) {
+    console.error("[email-compatibility-access]", e);
+    return {
+      ok: false,
+      message: "Versand fehlgeschlagen. Bitte später erneut versuchen.",
+    };
+  }
+}

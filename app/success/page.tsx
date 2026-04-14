@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { AccessBrandHeader } from "@/components/AccessBrandHeader";
 import { ProfileAccessLinkCard } from "@/components/ProfileAccessLinkCard";
 import { StripeProfileEmailOnce } from "@/components/StripeProfileEmailOnce";
 import { StripSuccessEmailQuery } from "@/components/StripSuccessEmailQuery";
@@ -82,51 +83,66 @@ export default async function SuccessPage({
       !queryEmailRecipient;
 
     return (
-      <div className="mx-auto max-w-2xl">
-        {showStripeClientMail ? (
-          <StripeProfileEmailOnce
-            sessionId={sessionId!}
-            profileUrl={profileAccessUrl}
-            customerEmail={stripeCustomerEmail!}
-          />
-        ) : null}
-        {rawQueryEmail || apParam ? <StripSuccessEmailQuery /> : null}
-        <ProfileAccessLinkCard
-          profileUrl={profileAccessUrl}
-          defaultEmail={stripeCustomerEmail}
-          queryEmailNotice={queryEmailNotice}
-        />
-      </div>
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl">
+            {showStripeClientMail ? (
+              <StripeProfileEmailOnce
+                sessionId={sessionId!}
+                profileUrl={profileAccessUrl}
+                customerEmail={stripeCustomerEmail!}
+              />
+            ) : null}
+            {rawQueryEmail || apParam ? <StripSuccessEmailQuery /> : null}
+            <ProfileAccessLinkCard
+              profileUrl={profileAccessUrl}
+              defaultEmail={stripeCustomerEmail}
+              queryEmailNotice={queryEmailNotice}
+            />
+          </div>
+        </main>
+      </>
     );
   }
 
   if (isProfileProduct && !profileAccessUrl) {
     return (
-      <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 text-sm text-black/75 dark:border-white/10 dark:bg-white/5 dark:text-white/75">
-        <p className="font-medium text-black dark:text-white">
-          Persönlicher Link nicht verfügbar
-        </p>
-        <p className="mt-2">
-          Der Zugangslink konnte nicht erstellt werden (z. B. fehlende
-          Konfiguration). Bitte den Support kontaktieren oder es später erneut
-          versuchen.
-        </p>
-      </div>
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 text-sm text-black/75 dark:border-white/10 dark:bg-white/5 dark:text-white/75">
+            <p className="font-medium text-black dark:text-white">
+              Persönlicher Link nicht verfügbar
+            </p>
+            <p className="mt-2">
+              Der Zugangslink konnte nicht erstellt werden (z. B. fehlende
+              Konfiguration). Bitte den Support kontaktieren oder es später erneut
+              versuchen.
+            </p>
+          </div>
+        </main>
+      </>
     );
   }
 
   return (
-    <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-      <h1 className="text-2xl font-semibold tracking-tight">Danke für deinen Kauf</h1>
-      <p className="mt-3 text-sm text-black/70 dark:text-white/70">
-        {product ? `Produkt: ${product.name}` : "Dein Produkt ist bereit."}
-      </p>
-      <a
-        href={product?.fileUrl || "/downloads/demo.pdf"}
-        className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-      >
-        Download
-      </a>
-    </div>
+    <>
+      <AccessBrandHeader />
+      <main className="mx-auto w-full max-w-4xl px-4 py-8">
+        <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+          <h1 className="text-2xl font-semibold tracking-tight">Danke für deinen Kauf</h1>
+          <p className="mt-3 text-sm text-black/70 dark:text-white/70">
+            {product ? `Produkt: ${product.name}` : "Dein Produkt ist bereit."}
+          </p>
+          <a
+            href={product?.fileUrl || "/downloads/demo.pdf"}
+            className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+          >
+            Download
+          </a>
+        </div>
+      </main>
+    </>
   );
 }

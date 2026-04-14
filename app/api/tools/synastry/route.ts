@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { computeProfileFromBirth } from "@/lib/astro/birth-to-profile";
 import {
+  buildDeepCompatibilityReport,
   buildSynastryReport,
   computeSynastryAspects,
 } from "@/lib/astro/synastry";
@@ -80,17 +81,25 @@ export async function POST(req: Request) {
       moonA: resA.big3.moon,
       moonB: resB.big3.moon,
     });
+    const deep = buildDeepCompatibilityReport({
+      profileA: resA.profile,
+      profileB: resB.profile,
+      synastry: report,
+    });
 
     return NextResponse.json({
       a: {
+        profile: resA.profile,
         big3: resA.big3,
         meta: resA.meta,
       },
       b: {
+        profile: resB.profile,
         big3: resB.big3,
         meta: resB.meta,
       },
       synastry: report,
+      deepComparison: deep,
     });
   } catch (e) {
     const message =

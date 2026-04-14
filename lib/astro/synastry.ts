@@ -1,4 +1,8 @@
-import type { PlanetKey, PlanetPlacement } from "@/lib/astro/profile";
+import type {
+  AstroProfileResult,
+  PlanetKey,
+  PlanetPlacement,
+} from "@/lib/astro/profile";
 
 export type AspectKind =
   | "conjunction"
@@ -256,5 +260,177 @@ export function buildSynastryReport(input: {
     aspectTexts,
     sections,
     disclaimer,
+  };
+}
+
+export type DeepCompatibilitySection = {
+  title: string;
+  body: string;
+};
+
+export type DeepCompatibilityReport = {
+  headline: string;
+  fitScore: number;
+  focusAxis: string[];
+  dimensions: Array<{ key: string; label: string; score: number }>;
+  sections: DeepCompatibilitySection[];
+};
+
+function dominantElement(profile: AstroProfileResult): string {
+  const sorted = [...profile.elementBalance].sort((a, b) => b.count - a.count);
+  return sorted[0]?.element ?? "Unbekannt";
+}
+
+function topHouseTheme(profile: AstroProfileResult): string {
+  const top = [...profile.houseFocus].sort((a, b) => b.count - a.count)[0];
+  return top?.theme ?? "Kernbereich";
+}
+
+function signOverlapScore(a: AstroProfileResult, b: AstroProfileResult): number {
+  const signA = new Set(a.planets.map((p) => p.sign));
+  const signB = new Set(b.planets.map((p) => p.sign));
+  let overlap = 0;
+  for (const s of signA) if (signB.has(s)) overlap += 1;
+  return overlap;
+}
+
+function clamp(min: number, value: number, max: number): number {
+  return Math.max(min, Math.min(max, value));
+}
+
+export function buildDeepCompatibilityReport(input: {
+  profileA: AstroProfileResult;
+  profileB: AstroProfileResult;
+  synastry: SynastryReport;
+}): DeepCompatibilityReport {
+  const { profileA, profileB, synastry } = input;
+  const domA = dominantElement(profileA);
+  const domB = dominantElement(profileB);
+  const overlap = signOverlapScore(profileA, profileB);
+  const harmonic = synastry.aspects.filter((a) => a.tone === "harmonisch").length;
+  const hard = synastry.aspects.filter((a) => a.tone === "herausfordernd").length;
+  const mixed = synastry.aspects.filter((a) => a.tone === "gemischt").length;
+
+  let fit = Math.round(
+    synastry.harmonyScore * 0.55 +
+      Math.max(0, 45 - hard * 4 + harmonic * 3 + mixed),
+  );
+  fit += overlap * 2;
+  if (domA === domB) fit += 3;
+  fit = Math.max(15, Math.min(97, fit));
+
+  const focusAxis = [
+    `Elementdynamik: ${domA} × ${domB}`,
+    `Leitthema A: ${topHouseTheme(profileA)}`,
+    `Leitthema B: ${topHouseTheme(profileB)}`,
+  ];
+
+  const communication = `Kommunikation entsteht bei euch über ${profileA.narrative.summary} und ${profileB.narrative.summary}. In der Synastry sind ${harmonic} unterstützende und ${hard} herausfordernde Hauptaspekte sichtbar. Praktisch heißt das: Gespräche laufen gut, wenn ihr Erwartungen explizit macht und Reibung nicht personalisiert, sondern als Muster versteht.`;
+
+  const intimacy = `In Nähe und Bindung zeigt Person A den Stil: ${profileA.narrative.relationshipStyle} Person B bringt: ${profileB.narrative.relationshipStyle} Eure Paarchemie trägt besonders dort, wo ihr Stabilität (Rituale, gemeinsame Zeit) mit Spielraum für Unterschiede kombiniert.`;
+
+  const growth = `Entwicklungspfad als Paar: ${profileA.narrative.growthPath} und ${profileB.narrative.growthPath} In Kombination spricht das für eine Beziehung, die wächst, wenn ihr bewusst Rollen wechselt: mal Halt geben, mal führen, mal loslassen.`;
+
+  const relAspects = synastry.aspects;
+  const supportive = relAspects.filter((x) => x.tone === "harmonisch").length;
+  const challenging = relAspects.filter(
+    (x) => x.tone === "herausfordernd",
+  ).length;
+
+  const commAspects = relAspects.filter(
+    (x) =>
+      x.planetA === "mercury" ||
+      x.planetB === "mercury" ||
+      x.planetA === "moon" ||
+      x.planetB === "moon",
+  );
+  const intimacyAspects = relAspects.filter(
+    (x) =>
+      (x.planetA === "venus" && x.planetB === "mars") ||
+      (x.planetA === "mars" && x.planetB === "venus") ||
+      x.planetA === "venus" ||
+      x.planetB === "venus",
+  );
+  const conflictAspects = relAspects.filter(
+    (x) =>
+      x.aspect === "square" ||
+      x.aspect === "opposition" ||
+      x.planetA === "mars" ||
+      x.planetB === "mars",
+  );
+  const stabilityAspects = relAspects.filter(
+    (x) => x.planetA === "saturn" || x.planetB === "saturn",
+  );
+  const visionAspects = relAspects.filter(
+    (x) => x.planetA === "jupiter" || x.planetB === "jupiter",
+  );
+
+  const communicationScore = clamp(
+    30,
+    Math.round(52 + commAspects.length * 3 + (supportive - challenging) * 2),
+    95,
+  );
+  const intimacyScore = clamp(
+    28,
+    Math.round(50 + intimacyAspects.length * 3 + supportive * 2 - challenging),
+    95,
+  );
+  const growthScore = clamp(
+    30,
+    Math.round(48 + challenging * 3 + mixed * 2 + supportive),
+    95,
+  );
+  const trustScore = clamp(
+    25,
+    Math.round(50 + stabilityAspects.length * 4 + supportive * 2 - hard * 2),
+    95,
+  );
+  const conflictScore = clamp(
+    20,
+    Math.round(55 + conflictAspects.length * 2 - challenging * 2 + mixed),
+    95,
+  );
+  const longTermScore = clamp(
+    25,
+    Math.round(45 + stabilityAspects.length * 5 + overlap * 2),
+    95,
+  );
+  const purposeScore = clamp(
+    25,
+    Math.round(46 + visionAspects.length * 4 + overlap * 2 + supportive),
+    95,
+  );
+  const emotionalScore = clamp(
+    25,
+    Math.round(49 + supportive * 2 - hard + commAspects.length),
+    95,
+  );
+
+  const dimensions = [
+    { key: "communication", label: "Kommunikation", score: communicationScore },
+    { key: "intimacy", label: "Anziehung", score: intimacyScore },
+    { key: "emotional", label: "Emotionale Sicherheit", score: emotionalScore },
+    { key: "trust", label: "Vertrauen", score: trustScore },
+    { key: "conflict", label: "Konfliktkompetenz", score: conflictScore },
+    { key: "growth", label: "Entwicklungspotenzial", score: growthScore },
+    { key: "purpose", label: "Vision/Meaning", score: purposeScore },
+    { key: "longterm", label: "Langfristigkeit", score: longTermScore },
+  ];
+
+  return {
+    headline:
+      fit >= 75
+        ? "Hohe Entwicklungs-Kompatibilität"
+        : fit >= 55
+          ? "Tragfähige Kompatibilität mit Lernfeldern"
+          : "Intensive Dynamik mit klarem Entwicklungsauftrag",
+    fitScore: fit,
+    focusAxis,
+    dimensions,
+    sections: [
+      { title: "Kommunikationsmatrix", body: communication },
+      { title: "Bindung & Intimität", body: intimacy },
+      { title: "Wachstumshebel als Paar", body: growth },
+    ],
   };
 }

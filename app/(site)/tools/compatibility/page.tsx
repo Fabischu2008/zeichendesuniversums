@@ -1,11 +1,17 @@
 "use client";
 
 import Link from "next/link";
+import { useRouter, useSearchParams } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import type { AstroProfileResult } from "@/lib/astro/profile";
 import { ZODIAC_SIGNS, type ZodiacSign } from "@/lib/astro/signs";
-import type { SynastryReport } from "@/lib/astro/synastry";
+import type {
+  DeepCompatibilityReport,
+  SynastryReport,
+} from "@/lib/astro/synastry";
 import { useGeoPlaces, type GeoPlace } from "@/hooks/useGeoPlaces";
+import { readUnlockTokenFromBrowser } from "@/lib/profile-unlock-url";
 
 function safeJsonParse(raw: string): unknown {
   if (!raw) return {};
@@ -22,8 +28,6 @@ type PersonForm = {
   query: string;
   place: GeoPlace | null;
 };
-
-type LinkPair = { a: string; b: string };
 
 type FunnelStage = "preview" | "exact" | "result";
 
@@ -133,6 +137,261 @@ function PersonFields({
   );
 }
 
+function CompactProfileCard({
+  label,
+  profile,
+  big3,
+}: {
+  label: string;
+  profile: AstroProfileResult;
+  big3: { sun: string; moon: string; ascendant: string };
+}) {
+  const topHouses = [...profile.houseFocus]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, 2);
+  return (
+    <section className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5">
+      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+        {label}
+      </p>
+      <h3 className="mt-2 text-xl font-semibold tracking-tight">
+        {profile.archetype.title}
+      </h3>
+      <p className="mt-1 text-sm text-black/70 dark:text-white/70">
+        {profile.archetype.subtitle}
+      </p>
+      <ul className="mt-4 grid gap-1 text-sm sm:grid-cols-3">
+        <li>
+          <span className="text-black/55 dark:text-white/55">Sonne: </span>
+          <span className="font-medium">{big3.sun}</span>
+        </li>
+        <li>
+          <span className="text-black/55 dark:text-white/55">Mond: </span>
+          <span className="font-medium">{big3.moon}</span>
+        </li>
+        <li>
+          <span className="text-black/55 dark:text-white/55">Asz: </span>
+          <span className="font-medium">{big3.ascendant}</span>
+        </li>
+      </ul>
+      <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        {topHouses.map((h) => (
+          <div
+            key={`${label}-${h.house}`}
+            className="rounded-2xl border border-black/8 bg-black/[0.03] px-3 py-2 text-xs dark:border-white/10 dark:bg-white/10"
+          >
+            <p className="font-semibold">Haus {h.house}</p>
+            <p className="mt-0.5 text-black/65 dark:text-white/65">{h.theme}</p>
+          </div>
+        ))}
+      </div>
+      <p className="mt-4 text-sm text-black/75 dark:text-white/75">
+        {profile.narrative.relationshipStyle}
+      </p>
+    </section>
+  );
+}
+
+function CompatibilityOctagon({
+  dimensions,
+}: {
+  dimensions?: DeepCompatibilityReport["dimensions"];
+}) {
+  const fallbackDimensions: NonNullable<DeepCompatibilityReport["dimensions"]> = [
+    { key: "communication", label: "Kommunikation", score: 50 },
+    { key: "intimacy", label: "Anziehung", score: 50 },
+    { key: "emotional", label: "Emotionale Sicherheit", score: 50 },
+    { key: "trust", label: "Vertrauen", score: 50 },
+    { key: "conflict", label: "Konfliktkompetenz", score: 50 },
+    { key: "growth", label: "Entwicklungspotenzial", score: 50 },
+    { key: "purpose", label: "Vision/Meaning", score: 50 },
+    { key: "longterm", label: "Langfristigkeit", score: 50 },
+  ];
+  const axes =
+    Array.isArray(dimensions) && dimensions.length > 2
+      ? dimensions
+      : fallbackDimensions;
+
+  const size = 460;
+  const center = size / 2;
+  const radius = 150;
+  const rings = [0.25, 0.5, 0.75, 1];
+  const angleFor = (i: number) =>
+    -Math.PI / 2 + (i * (Math.PI * 2)) / axes.length;
+  const pointFor = (idx: number, r: number) => {
+    const a = angleFor(idx);
+    return {
+      x: center + Math.cos(a) * r,
+      y: center + Math.sin(a) * r,
+    };
+  };
+  const polygon = axes
+    .map((d, idx) => {
+      const p = pointFor(idx, radius * (d.score / 100));
+      return `${p.x},${p.y}`;
+    })
+    .join(" ");
+
+  return (
+    <div className="flex flex-col items-center gap-5">
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="h-[380px] w-[380px] max-w-full"
+        aria-label="Kompatibilitäts-Oktagon"
+      >
+        {rings.map((r) => (
+          <polygon
+            key={r}
+            points={axes
+              .map((_, idx) => {
+                const p = pointFor(idx, radius * r);
+                return `${p.x},${p.y}`;
+              })
+              .join(" ")}
+            fill="none"
+            stroke="currentColor"
+            className="text-black/10 dark:text-white/20"
+            strokeWidth="1"
+          />
+        ))}
+        {axes.map((d, idx) => {
+          const p = pointFor(idx, radius);
+          return (
+            <line
+              key={d.key}
+              x1={center}
+              y1={center}
+              x2={p.x}
+              y2={p.y}
+              stroke="currentColor"
+              className="text-black/10 dark:text-white/20"
+              strokeWidth="1"
+            />
+          );
+        })}
+        <polygon
+          points={polygon}
+          fill="rgba(124,58,237,0.28)"
+          stroke="rgba(109,40,217,0.95)"
+          strokeWidth="2"
+        />
+        {axes.map((d, idx) => {
+          const p = pointFor(idx, radius * (d.score / 100));
+          const lbl = pointFor(idx, radius + 52);
+          const anchor =
+            Math.abs(lbl.x - center) < 12 ? "middle" : lbl.x > center ? "start" : "end";
+          const dx = anchor === "start" ? 8 : anchor === "end" ? -8 : 0;
+          return (
+            <g key={`dot-${d.key}`}>
+              <circle cx={p.x} cy={p.y} r="3.5" fill="rgba(91,33,182,1)" />
+              <text
+                x={lbl.x + dx}
+                y={lbl.y}
+                textAnchor={anchor}
+                className="fill-black/70 text-[12px] dark:fill-white/75"
+              >
+                {d.label}
+              </text>
+            </g>
+          );
+        })}
+      </svg>
+      <div className="grid w-full gap-2 sm:grid-cols-2">
+        {axes.map((d) => (
+          <div
+            key={d.key}
+            className="flex items-center justify-between rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-xs dark:border-white/15 dark:bg-black/20"
+          >
+            <span>{d.label}</span>
+            <span className="font-semibold tabular-nums">{d.score}/100</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function dimensionAnalysisText(
+  key: string,
+  score: number,
+): { headline: string; text: string } {
+  const level =
+    score >= 75 ? "hoch" : score >= 55 ? "mittel" : score >= 40 ? "sensibel" : "kritisch";
+  switch (key) {
+    case "communication":
+      return {
+        headline: `Kommunikation · ${level}`,
+        text:
+          score >= 70
+            ? "Ihr könnt Themen meist direkt klären. Achtet darauf, schwierige Punkte trotzdem nicht zu überspringen."
+            : "Hier entscheidet eure Qualität der Absprachen über den Verlauf. Regelmäßige Check-ins helfen enorm.",
+      };
+    case "intimacy":
+      return {
+        headline: `Anziehung · ${level}`,
+        text:
+          score >= 70
+            ? "Die chemische Spannung ist klar da. Wichtig ist, sie mit emotionaler Sicherheit zu verbinden."
+            : "Anziehung braucht bei euch bewusstes Nähren über Zeit, Sprache und gemeinsame Rituale.",
+      };
+    case "emotional":
+      return {
+        headline: `Emotionale Sicherheit · ${level}`,
+        text:
+          score >= 70
+            ? "Gefühle haben Raum, ohne dass sofort Rückzug oder Abwehr entsteht."
+            : "Trigger können schneller anspringen. Validierung und klare Grenzen stabilisieren.",
+      };
+    case "trust":
+      return {
+        headline: `Vertrauen · ${level}`,
+        text:
+          score >= 70
+            ? "Verbindlichkeit kann gut wachsen, wenn ihr transparent bleibt."
+            : "Vertrauen ist eher ein Aufbau-Thema: Konsistenz im Alltag ist hier der Hebel.",
+      };
+    case "conflict":
+      return {
+        headline: `Konfliktkompetenz · ${level}`,
+        text:
+          score >= 70
+            ? "Spannung kann produktiv verarbeitet werden. Ihr habt Potenzial für faire Reparaturgespräche."
+            : "Konflikte können eskalieren, wenn Tempo hoch ist. Pausen + klare Regeln entlasten.",
+      };
+    case "growth":
+      return {
+        headline: `Entwicklungspotenzial · ${level}`,
+        text:
+          score >= 70
+            ? "Diese Verbindung hat spürbar Wachstumskraft, wenn ihr bewusst reflektiert."
+            : "Lernen ist da, aber eher über Reibung. Setzt euch gemeinsame Lernziele als Paar.",
+      };
+    case "purpose":
+      return {
+        headline: `Vision/Meaning · ${level}`,
+        text:
+          score >= 70
+            ? "Ihr könnt Sinn, Zukunft und Werte gut synchronisieren."
+            : "Langfristige Ausrichtung braucht aktive Abstimmung statt stiller Annahmen.",
+      };
+    case "longterm":
+      return {
+        headline: `Langfristigkeit · ${level}`,
+        text:
+          score >= 70
+            ? "Gute Basis für Dauerhaftigkeit – vor allem mit verlässlichen Gewohnheiten."
+            : "Die Langstrecke ist möglich, braucht aber klare Strukturen und bewusste Prioritäten.",
+      };
+    default:
+      return {
+        headline: "Dimension",
+        text: "Diese Achse beschreibt einen relevanten Bereich eurer Paardynamik.",
+      };
+  }
+}
+
 export default function CompatibilityToolPage() {
   const [stage, setStage] = useState<FunnelStage>("preview");
   const [previewA, setPreviewA] = useState<ZodiacSign>("Widder");
@@ -145,13 +404,22 @@ export default function CompatibilityToolPage() {
 
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [links, setLinks] = useState<LinkPair | null>(null);
-  const [copiedKey, setCopiedKey] = useState<"a" | "b" | null>(null);
+  const [pairLink, setPairLink] = useState<string | null>(null);
   const [report, setReport] = useState<null | {
     synastry: SynastryReport;
-    a: { big3: { sun: string; moon: string; ascendant: string } };
-    b: { big3: { sun: string; moon: string; ascendant: string } };
+    deepComparison: DeepCompatibilityReport;
+    a: {
+      profile: AstroProfileResult;
+      big3: { sun: string; moon: string; ascendant: string };
+    };
+    b: {
+      profile: AstroProfileResult;
+      big3: { sun: string; moon: string; ascendant: string };
+    };
   }>(null);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const redeemRef = useRef(false);
 
   const canSubmit = useMemo(() => {
     return (
@@ -169,7 +437,7 @@ export default function CompatibilityToolPage() {
     setLoading(true);
     setError(null);
     setReport(null);
-    setLinks(null);
+    setPairLink(null);
     try {
       const res = await fetch("/api/tools/synastry", {
         method: "POST",
@@ -201,16 +469,34 @@ export default function CompatibilityToolPage() {
       const parsed = safeJsonParse(raw);
       const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
         synastry?: SynastryReport;
-        a?: { big3: { sun: string; moon: string; ascendant: string } };
-        b?: { big3: { sun: string; moon: string; ascendant: string } };
+        deepComparison?: DeepCompatibilityReport;
+        a?: {
+          profile?: AstroProfileResult;
+          big3: { sun: string; moon: string; ascendant: string };
+        };
+        b?: {
+          profile?: AstroProfileResult;
+          big3: { sun: string; moon: string; ascendant: string };
+        };
         message?: string;
       };
-      if (!res.ok || !data.synastry || !data.a || !data.b) {
+      if (
+        !res.ok ||
+        !data.synastry ||
+        !data.deepComparison ||
+        !data.a?.profile ||
+        !data.b?.profile
+      ) {
         throw new Error(
           data.message || `Analyse fehlgeschlagen (HTTP ${res.status}).`,
         );
       }
-      setReport({ synastry: data.synastry, a: data.a, b: data.b });
+      setReport({
+        synastry: data.synastry,
+        deepComparison: data.deepComparison,
+        a: { profile: data.a.profile, big3: data.a.big3 },
+        b: { profile: data.b.profile, big3: data.b.big3 },
+      });
 
       const linkRes = await fetch("/api/tools/compatibility/access-links", {
         method: "POST",
@@ -233,10 +519,18 @@ export default function CompatibilityToolPage() {
       const linkData = (linkParsed && typeof linkParsed === "object"
         ? linkParsed
         : {}) as {
-        links?: LinkPair;
+        pairLink?: string | null;
       };
-      if (linkRes.ok && linkData.links) {
-        setLinks(linkData.links);
+      const nextPairLink = linkData.pairLink || null;
+      if (!nextPairLink) {
+        throw new Error(
+          "Zugangsseite konnte nicht erstellt werden. Bitte erneut versuchen.",
+        );
+      }
+      setPairLink(nextPairLink);
+      if (typeof window !== "undefined") {
+        window.location.href = nextPairLink;
+        return;
       }
       setStage("result");
     } catch (e) {
@@ -246,15 +540,67 @@ export default function CompatibilityToolPage() {
     }
   }
 
-  async function copyLink(value: string, key: "a" | "b") {
-    try {
-      await navigator.clipboard.writeText(value);
-      setCopiedKey(key);
-      setTimeout(() => setCopiedKey(null), 1800);
-    } catch {
-      setError("Kopieren nicht möglich. Bitte Link manuell markieren.");
+  useEffect(() => {
+    async function redeem() {
+      const token = readUnlockTokenFromBrowser();
+      if (!token || redeemRef.current) return;
+      redeemRef.current = true;
+      setStage("exact");
+      setLoading(true);
+      setError(null);
+      try {
+        const res = await fetch("/api/tools/compatibility/redeem", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({ token }),
+        });
+        const data = (await res.json().catch(() => ({}))) as {
+          message?: string;
+          synastry?: SynastryReport;
+          deepComparison?: DeepCompatibilityReport;
+          a?: {
+            profile?: AstroProfileResult;
+            big3?: { sun: string; moon: string; ascendant: string };
+          };
+          b?: {
+            profile?: AstroProfileResult;
+            big3?: { sun: string; moon: string; ascendant: string };
+          };
+        };
+        if (
+          !res.ok ||
+          !data.synastry ||
+          !data.deepComparison ||
+          !data.a?.profile ||
+          !data.a?.big3 ||
+          !data.b?.profile ||
+          !data.b?.big3
+        ) {
+          throw new Error(
+            data.message || "Paaranalyse-Link ist ungültig oder abgelaufen.",
+          );
+        }
+        setReport({
+          synastry: data.synastry,
+          deepComparison: data.deepComparison,
+          a: { profile: data.a.profile, big3: data.a.big3 },
+          b: { profile: data.b.profile, big3: data.b.big3 },
+        });
+        setPairLink(typeof window !== "undefined" ? window.location.href : null);
+        setStage("result");
+        router.replace("/tools/compatibility#paaranalyse");
+      } catch (e) {
+        setError(
+          e instanceof Error
+            ? e.message
+            : "Paaranalyse-Link konnte nicht geladen werden.",
+        );
+      } finally {
+        setLoading(false);
+      }
     }
-  }
+    void redeem();
+  }, [searchParams, router]);
 
   const previewCopy = useMemo(() => {
     const fire = ["Widder", "Löwe", "Schütze"];
@@ -277,12 +623,6 @@ export default function CompatibilityToolPage() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-10">
-      <Link
-        href="/tools"
-        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
-      >
-        ← Zur Themenwahl
-      </Link>
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Kompatibilität (Synastry)
@@ -353,7 +693,7 @@ export default function CompatibilityToolPage() {
         </section>
       ) : null}
 
-      {stage !== "preview" ? (
+      {stage === "exact" ? (
         <>
           <section className="rounded-3xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-950 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100">
             <p className="font-medium">Schritt 2 · Exakte Analyse</p>
@@ -407,103 +747,101 @@ export default function CompatibilityToolPage() {
 
       {report ? (
         <div className="space-y-8">
-          {links ? (
-            <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/[0.08] p-6 sm:p-8 dark:border-emerald-400/20 dark:bg-emerald-500/10">
-              <h2 className="text-xl font-semibold tracking-tight">
-                Profile für später gespeichert
-              </h2>
-              <p className="mt-2 text-sm text-black/75 dark:text-white/75">
-                Hier sind die zwei persönlichen Profil-Links (wie im ersten Tool). Du
-                kannst beide separat öffnen und danach jederzeit miteinander vergleichen.
-              </p>
-              <div className="mt-5 space-y-4">
-                {(["a", "b"] as const).map((k) => (
-                  <div
-                    key={k}
-                    className="rounded-2xl border border-black/10 bg-white/85 p-3 dark:border-white/15 dark:bg-black/20"
-                  >
-                    <p className="text-xs font-semibold uppercase tracking-wide text-black/45 dark:text-white/45">
-                      Profil-Link {k === "a" ? "Person A" : "Person B"}
-                    </p>
-                    <div className="mt-2 flex flex-col gap-2 sm:flex-row">
-                      <div className="min-w-0 flex-1 overflow-hidden rounded-xl border border-black/10 bg-white px-3 py-2 text-xs leading-relaxed break-all line-clamp-3 dark:border-white/15 dark:bg-black/20">
-                        {links[k]}
-                      </div>
-                      <button
-                        type="button"
-                        onClick={() => void copyLink(links[k], k)}
-                        className="inline-flex h-11 items-center justify-center rounded-xl border border-black/10 bg-white px-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-                      >
-                        {copiedKey === k ? "Kopiert" : "Link kopieren"}
-                      </button>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </section>
-          ) : null}
-
-          <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Eure Big 3
+          <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+              Schritt 3 · Erst die zwei Profile
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+              Eure Vollprofile im Überblick
             </h2>
-            <div className="mt-6 grid gap-6 sm:grid-cols-2">
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-black/45 dark:text-white/45">
-                  Person A
-                </p>
-                <ul className="mt-2 space-y-1 text-sm">
-                  <li>
-                    <span className="text-black/60 dark:text-white/60">
-                      Sonne:{" "}
-                    </span>
-                    <span className="font-medium">{report.a.big3.sun}</span>
-                  </li>
-                  <li>
-                    <span className="text-black/60 dark:text-white/60">
-                      Mond:{" "}
-                    </span>
-                    <span className="font-medium">{report.a.big3.moon}</span>
-                  </li>
-                  <li>
-                    <span className="text-black/60 dark:text-white/60">
-                      Aszendent:{" "}
-                    </span>
-                    <span className="font-medium">
-                      {report.a.big3.ascendant}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-              <div>
-                <p className="text-xs font-medium uppercase tracking-wider text-black/45 dark:text-white/45">
-                  Person B
-                </p>
-                <ul className="mt-2 space-y-1 text-sm">
-                  <li>
-                    <span className="text-black/60 dark:text-white/60">
-                      Sonne:{" "}
-                    </span>
-                    <span className="font-medium">{report.b.big3.sun}</span>
-                  </li>
-                  <li>
-                    <span className="text-black/60 dark:text-white/60">
-                      Mond:{" "}
-                    </span>
-                    <span className="font-medium">{report.b.big3.moon}</span>
-                  </li>
-                  <li>
-                    <span className="text-black/60 dark:text-white/60">
-                      Aszendent:{" "}
-                    </span>
-                    <span className="font-medium">
-                      {report.b.big3.ascendant}
-                    </span>
-                  </li>
-                </ul>
-              </div>
+            <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+              Genau wie im ersten Tool: erst beide Profile sichtbar, dann daraus die
+              Vergleichsanalyse.
+            </p>
+            <div className="mt-6 grid gap-5 lg:grid-cols-2">
+              <CompactProfileCard
+                label="Profil Person A"
+                profile={report.a.profile}
+                big3={report.a.big3}
+              />
+              <CompactProfileCard
+                label="Profil Person B"
+                profile={report.b.profile}
+                big3={report.b.big3}
+              />
             </div>
           </section>
+
+          <section className="rounded-3xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-emerald-500/10 p-6 sm:p-8 dark:border-violet-400/20">
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+              Schritt 4 · Komplexe Vergleichsanalyse
+            </p>
+            <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+              <div>
+                <h2 className="text-2xl font-semibold tracking-tight">
+                  {report.deepComparison.headline}
+                </h2>
+                <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+                  Matrix aus Profilkern (Archetyp, Elemente, Hausfokus) + Synastry
+                  Aspektnetz.
+                </p>
+              </div>
+            </div>
+            <div className="mt-6">
+              <CompatibilityOctagon
+                dimensions={report.deepComparison.dimensions}
+              />
+            </div>
+            <ul className="mt-5 grid gap-2 sm:grid-cols-3">
+              {report.deepComparison.focusAxis.map((x) => (
+                <li
+                  key={x}
+                  className="rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-xs dark:border-white/15 dark:bg-black/20"
+                >
+                  {x}
+                </li>
+              ))}
+            </ul>
+          </section>
+
+          <section className="rounded-3xl border border-black/5 bg-white/80 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+            <h3 className="text-xl font-semibold tracking-tight">
+              Analyse je Dimension
+            </h3>
+            <div className="mt-5 grid gap-3 sm:grid-cols-2">
+              {report.deepComparison.dimensions.map((d) => {
+                const a = dimensionAnalysisText(d.key, d.score);
+                return (
+                  <article
+                    key={`dim-${d.key}`}
+                    className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/10 dark:bg-white/[0.03]"
+                  >
+                    <p className="text-sm font-semibold">
+                      {a.headline}
+                      <span className="ml-2 text-xs font-normal text-black/55 dark:text-white/55">
+                        ({d.score}/100)
+                      </span>
+                    </p>
+                    <p className="mt-2 text-sm leading-relaxed text-black/75 dark:text-white/75">
+                      {a.text}
+                    </p>
+                  </article>
+                );
+              })}
+            </div>
+          </section>
+
+          {report.deepComparison.sections.map((sec) => (
+            <section
+              key={sec.title}
+              className="rounded-3xl border border-black/5 bg-white/80 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
+            >
+              <h3 className="text-lg font-semibold tracking-tight">{sec.title}</h3>
+              <p className="mt-3 text-sm leading-relaxed text-black/75 dark:text-white/75">
+                {sec.body}
+              </p>
+            </section>
+          ))}
 
           <section className="rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-sky-500/10 p-6 sm:p-8 dark:from-violet-500/15 dark:to-sky-500/10">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">

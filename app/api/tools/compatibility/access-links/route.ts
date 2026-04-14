@@ -1,6 +1,10 @@
 import { NextResponse } from "next/server";
+import { createCompatibilityAccessToken } from "@/lib/compatibility-access-token";
 import { createProfileAccessToken } from "@/lib/profile-access-token";
-import { buildProfileAccessWithUnlockUrl } from "@/lib/profile-unlock-url";
+import {
+  buildProfileAccessWithUnlockUrl,
+  buildUnlockUrlForPath,
+} from "@/lib/profile-unlock-url";
 import { getSiteUrl } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -97,11 +101,45 @@ export async function POST(req: Request) {
   }
 
   const site = getSiteUrl();
+  const pairToken = createCompatibilityAccessToken(
+    {
+      d: a.birthdate,
+      t: a.birthtime,
+      lat: a.place.lat,
+      lon: a.place.lon,
+      cc: a.place.countryCode,
+      lb: a.place.label,
+      id: a.place.id,
+      ci: a.place.city,
+      co: a.place.country,
+    },
+    {
+      d: b.birthdate,
+      t: b.birthtime,
+      lat: b.place.lat,
+      lon: b.place.lon,
+      cc: b.place.countryCode,
+      lb: b.place.label,
+      id: b.place.id,
+      ci: b.place.city,
+      co: b.place.country,
+    },
+  );
+  const pairLink = pairToken
+    ? buildUnlockUrlForPath(
+        site,
+        "/tools/compatibility/access",
+        pairToken,
+        "paar-links",
+      )
+    : null;
+
   return NextResponse.json({
     ok: true,
     links: {
       a: buildProfileAccessWithUnlockUrl(site, tokenA),
       b: buildProfileAccessWithUnlockUrl(site, tokenB),
     },
+    pairLink,
   });
 }
