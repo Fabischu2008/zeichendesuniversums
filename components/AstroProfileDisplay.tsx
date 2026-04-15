@@ -212,10 +212,6 @@ export function AstroProfileDisplay({
   };
   const topHouse = profile.houseFocus[0];
   const secondHouse = profile.houseFocus[1];
-  const northNode = profile.specialPoints.find((p) => p.key === "north_node");
-  const southNode = profile.specialPoints.find((p) => p.key === "south_node");
-  const lilith = profile.specialPoints.find((p) => p.key === "lilith");
-  const fortune = profile.specialPoints.find((p) => p.key === "part_of_fortune");
   const coreSummary =
     sun && moon && ascSign
       ? `Im Kern wirkst du mit Sonne in ${sun.sign} aus ${signCoreKeyword(sun.sign)}. Emotional reagierst du mit Mond in ${moon.sign} eher ${signEmotionKeyword(moon.sign)}. Nach außen erscheinst du durch den Aszendenten in ${ascSign} meist ${signAscKeyword(ascSign)}.`
@@ -227,10 +223,6 @@ export function AstroProfileDisplay({
           : ""
       }`
     : profile.narrative.growthPath;
-  const extraPointsSummary =
-    northNode && southNode && lilith && fortune
-      ? `Deine Entwicklungsachse läuft von Südknoten in ${southNode.sign} (Haus ${southNode.house}) hin zu Nordknoten in ${northNode.sign} (Haus ${northNode.house}): weg von alten Automatismen, hin zu bewusst gelebter Reifung. Lilith in ${lilith.sign} (Haus ${lilith.house}) zeigt, wo du kompromisslos echt sein willst. Der Glückspunkt in ${fortune.sign} (Haus ${fortune.house}) markiert den Bereich, in dem du am leichtesten in Flow, Erfüllung und innere Stimmigkeit kommst.`
-      : profile.narrative.nodesInsight;
 
   return (
     <div id="vollreport" className="scroll-mt-24 space-y-6">
@@ -457,20 +449,6 @@ export function AstroProfileDisplay({
         <p className="mt-2 text-sm text-black/75 dark:text-white/75">
           {lifeFocusSummary}
         </p>
-      </section>
-
-      <section
-        className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
-      >
-        <h3 className="text-xl font-semibold tracking-tight">
-          Knoten, Lilith & Glückspunkt
-        </h3>
-        <div className="mt-4 space-y-3 text-sm text-black/75 dark:text-white/75">
-          <p>{extraPointsSummary}</p>
-          {profile.narrative.chironInsight ? (
-            <p>{profile.narrative.chironInsight}</p>
-          ) : null}
-        </div>
       </section>
 
       <VollreportCoachingCta />
