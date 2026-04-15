@@ -150,17 +150,18 @@ export default function BirthChartProfilePage() {
       setVollreportAccess(unlocked);
     }
     const s = readAstroSession();
-      if (s) {
+    if (s) {
       setBirthdate(s.birthdate);
       setBirthtime(s.birthtime);
       setQuery(s.place.label);
       setPlace(s.place as Place);
-        if (
-          unlocked &&
-          s.profile &&
-          sessionHasChart(s) &&
-          !sessionHasLegacyChartModel(s)
-        ) {
+      if (
+        !hasUnlockParam &&
+        unlocked &&
+        s.profile &&
+        sessionHasChart(s) &&
+        !sessionHasLegacyChartModel(s)
+      ) {
         setProfile(s.profile);
       }
     }
