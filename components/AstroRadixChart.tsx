@@ -39,6 +39,22 @@ export function AstroRadixChart({ chart }: { chart: AstroChartData }) {
   const rHousesInner = 120;
   const rPoints = 160;
   const asc = chart.angles.asc;
+  const plottedPoints = (() => {
+    const angular = chart.points
+      .map((pt) => ({ pt, angle: chartAngleFromLongitude(pt.longitude, asc) }))
+      .sort((a, b) => a.angle - b.angle);
+    return angular.map(({ pt, angle }, idx) => {
+      const lane =
+        angular
+          .slice(0, idx)
+          .filter((prev) => Math.abs(angle - prev.angle) < 8).length % 4;
+      return {
+        pt,
+        angle,
+        radius: rPoints + lane * 12,
+      };
+    });
+  })();
 
   return (
     <svg
@@ -113,9 +129,8 @@ export function AstroRadixChart({ chart }: { chart: AstroChartData }) {
         );
       })}
 
-      {chart.points.map((pt) => {
-        const angle = chartAngleFromLongitude(pt.longitude, asc);
-        const p = polarToCartesian(c, c, rPoints, angle);
+      {plottedPoints.map(({ pt, angle, radius }) => {
+        const p = polarToCartesian(c, c, radius, angle);
         return (
           <g key={`pt-${pt.key}`} opacity={pt.isSpecial ? 0.82 : 1}>
             <circle cx={p.x} cy={p.y} r={pt.isSpecial ? 8 : 9} fill="currentColor" className="text-violet-600/85 dark:text-violet-300/85" />

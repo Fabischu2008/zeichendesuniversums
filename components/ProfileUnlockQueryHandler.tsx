@@ -71,6 +71,7 @@ export function ProfileUnlockQueryHandler() {
             birthtime: birth.t,
             place: placeFromTokenBirth(birth),
             big3: null,
+            profile: null,
           });
         }
         setVollreportUnlocked(true);

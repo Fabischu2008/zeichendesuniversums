@@ -366,7 +366,7 @@ export function calculateAstroProfile(input: {
       signSymbol: symbolFromSign(northNodeSign),
       element: ELEMENT_BY_SIGN[northNodeSign],
       house: wholeSignHouseFromAsc(input.ascendantLongitude, northNodeLon),
-      note: "Wachstumsrichtung: hier darfst du dich bewusst weiterentwickeln.",
+      note: "Entwicklungsrichtung: Dieses Haus zeigt, welche neuen Qualitäten du aktiv aufbauen solltest.",
     },
     {
       key: "south_node",
@@ -378,7 +378,7 @@ export function calculateAstroProfile(input: {
       signSymbol: symbolFromSign(southNodeSign),
       element: ELEMENT_BY_SIGN[southNodeSign],
       house: wholeSignHouseFromAsc(input.ascendantLongitude, southNodeLon),
-      note: "Vertrautes Muster: Stärke, aber leicht zu überziehen.",
+      note: "Gewohnheitsmuster: Hier bist du sicher, kannst aber leicht im Alten stecken bleiben.",
     },
     {
       key: "lilith",
@@ -390,7 +390,7 @@ export function calculateAstroProfile(input: {
       signSymbol: symbolFromSign(lilithSign),
       element: ELEMENT_BY_SIGN[lilithSign],
       house: wholeSignHouseFromAsc(input.ascendantLongitude, lilithLon),
-      note: "Thema Autonomie, Tabus und rohe Ehrlichkeit – nicht als Drama, sondern als Kraftquelle lesen.",
+      note: "Rohes Wahrheits-Thema: Wo du nichts beschonigen willst und klare innere Grenzen brauchst.",
     },
     {
       key: "part_of_fortune",
@@ -404,8 +404,8 @@ export function calculateAstroProfile(input: {
       house: wholeSignHouseFromAsc(input.ascendantLongitude, fortuneLon),
       note:
         sun.house >= 7 && sun.house <= 12
-          ? "Tageshoroskop-Formel: Aszendent + Mond − Sonne."
-          : "Nacht-Formel: Aszendent + Sonne − Mond.",
+          ? "Flow-Punkt im Tageshoroskop: Wo Einsatz oft leichter belohnt wird."
+          : "Flow-Punkt im Nachthoroskop: Wo sich stimmige Entscheidungen besonders lohnen.",
     },
   ];
 
@@ -428,7 +428,7 @@ export function calculateAstroProfile(input: {
         signSymbol: symbolFromSign(chironSign),
         element: ELEMENT_BY_SIGN[chironSign],
         house: wholeSignHouseFromAsc(input.ascendantLongitude, chironLon),
-        note: "Heilungs- und Lehrthema: wo alte Wunden zu Kompetenz werden können.",
+        note: "Heilungsthema: Ein sensibler Bereich, der mit Zeit zu Stärke und Wissen reift.",
       });
     } catch {
       /* ignore */

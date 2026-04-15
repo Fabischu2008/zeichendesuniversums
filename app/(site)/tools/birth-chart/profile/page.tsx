@@ -144,7 +144,7 @@ export default function BirthChartProfilePage() {
       typeof window !== "undefined" &&
       Boolean(new URLSearchParams(window.location.search).get("unlock"));
     const unlocked = hasVollreportUnlocked();
-    if (hasUnlockParam && !unlocked) {
+    if (hasUnlockParam) {
       setVollreportAccess(null);
     } else {
       setVollreportAccess(unlocked);

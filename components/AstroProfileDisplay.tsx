@@ -58,6 +58,60 @@ function wholeSignHouseFromAsc(ascLon: number, pointLon: number) {
   return ((pointSignIndex - ascSignIndex + 12) % 12) + 1;
 }
 
+function signCoreKeyword(sign: string) {
+  const map: Record<string, string> = {
+    Widder: "direktem Vorwärtsdrang",
+    Stier: "ruhiger Beständigkeit",
+    Zwillinge: "geistiger Beweglichkeit",
+    Krebs: "emotionaler Feinwahrnehmung",
+    Löwe: "kreativer Strahlkraft",
+    Jungfrau: "analytischer Präzision",
+    Waage: "ausgleichender Beziehungsintelligenz",
+    Skorpion: "tiefer Intensität",
+    Schütze: "sinnorientierter Weite",
+    Steinbock: "zielklarer Struktur",
+    Wassermann: "unabhängiger Zukunftssicht",
+    Fische: "intuitiver Durchlässigkeit",
+  };
+  return map[sign] ?? "eigener Kernenergie";
+}
+
+function signEmotionKeyword(sign: string) {
+  const map: Record<string, string> = {
+    Widder: "schnell, ehrlich und spontan",
+    Stier: "ruhig, stabil und über Sicherheit",
+    Zwillinge: "über Austausch und Verstehen",
+    Krebs: "über Nähe, Vertrauen und Schutz",
+    Löwe: "warmherzig und mit großem Ausdruck",
+    Jungfrau: "über Ordnung, Klarheit und Sinnhaftigkeit",
+    Waage: "über Harmonie und Beziehungsgleichgewicht",
+    Skorpion: "tief, intensiv und transformierend",
+    Schütze: "optimistisch, frei und zukunftsgerichtet",
+    Steinbock: "kontrolliert, verlässlich und ernsthaft",
+    Wassermann: "unabhängig, distanziert und geistig",
+    Fische: "mitfühlend, weich und intuitiv",
+  };
+  return map[sign] ?? "auf eigene Weise";
+}
+
+function signAscKeyword(sign: string) {
+  const map: Record<string, string> = {
+    Widder: "aktiv, mutig und initiativ",
+    Stier: "ruhig, verlässlich und bodenständig",
+    Zwillinge: "wach, neugierig und kommunikativ",
+    Krebs: "sensibel, beschützend und vorsichtig",
+    Löwe: "präsent, kreativ und selbstbewusst",
+    Jungfrau: "geordnet, aufmerksam und präzise",
+    Waage: "freundlich, verbindend und diplomatisch",
+    Skorpion: "intensiv, fokussiert und magnetisch",
+    Schütze: "offen, optimistisch und freiheitsliebend",
+    Steinbock: "ernsthaft, klar und verantwortungsvoll",
+    Wassermann: "eigenständig, originell und unkonventionell",
+    Fische: "weich, intuitiv und feinfühlig",
+  };
+  return map[sign] ?? "authentisch und eigen";
+}
+
 export function AstroProfileDisplay({
   profile,
   variant = "page",
@@ -138,12 +192,45 @@ export function AstroProfileDisplay({
   const specialPointByKey = new Map<string, (typeof profile.specialPoints)[number]>(
     profile.specialPoints.map((p) => [p.key, p]),
   );
-  const angleNotes: Record<string, string> = {
-    asc: "Persönlicher Ausdruck und Erstwirkung: wie du spontan in Erscheinung trittst.",
-    dsc: "Beziehungsachse: wie du Partnerschaft, Spiegelung und Ergänzung erlebst.",
-    mc: "Berufung und Außenwirkung: Richtung, Sichtbarkeit und gesellschaftliche Rolle.",
-    ic: "Innere Basis und Herkunft: emotionales Fundament, Zuhause und Verwurzelung.",
+  const specialNotes: Record<string, string> = {
+    north_node:
+      "Entwicklungsrichtung: Dieses Haus zeigt, welche neuen Qualitäten du aktiv aufbauen solltest.",
+    south_node:
+      "Gewohnheitsmuster: Hier bist du sicher, kannst aber leicht im Alten stecken bleiben.",
+    lilith:
+      "Rohes Wahrheits-Thema: Wo du nichts beschonigen willst und klare innere Grenzen brauchst.",
+    part_of_fortune:
+      "Glückspunkt: Wenn du diese Qualität lebst, geht deine Energie in den erlösten Zustand – oft mit intensivem Flow, tiefer Erfüllung und einem Höhepunkt von Glücksgefühlen.",
+    chiron:
+      "Heilungsthema: Ein sensibler Bereich, der mit Zeit zu Stärke und Wissen reift.",
   };
+  const angleNotes: Record<string, string> = {
+    asc: "Aszendent: Deine unmittelbare Außenwirkung, dein spontaner Auftakt und die Art, wie du neue Situationen beginnst. Andere lesen darüber oft zuerst dein Temperament, deine Ausstrahlung und deinen natürlichen Grundmodus.",
+    dsc: "Beziehungsstil: Welche Eigenschaften du in Partnerschaften suchst und aktivierst.",
+    mc: "Berufungsachse: Wie du sichtbar wirst und wofür man dich öffentlich wahrnimmt.",
+    ic: "Innere Basis: Was dir emotional Halt gibt und sich nach Zuhause anfühlt.",
+  };
+  const topHouse = profile.houseFocus[0];
+  const secondHouse = profile.houseFocus[1];
+  const northNode = profile.specialPoints.find((p) => p.key === "north_node");
+  const southNode = profile.specialPoints.find((p) => p.key === "south_node");
+  const lilith = profile.specialPoints.find((p) => p.key === "lilith");
+  const fortune = profile.specialPoints.find((p) => p.key === "part_of_fortune");
+  const coreSummary =
+    sun && moon && ascSign
+      ? `Im Kern wirkst du mit Sonne in ${sun.sign} aus ${signCoreKeyword(sun.sign)}. Emotional reagierst du mit Mond in ${moon.sign} eher ${signEmotionKeyword(moon.sign)}. Nach außen erscheinst du durch den Aszendenten in ${ascSign} meist ${signAscKeyword(ascSign)}.`
+      : profile.narrative.summary;
+  const lifeFocusSummary = topHouse
+    ? `Dein stärkster Lebensfokus liegt aktuell in Haus ${topHouse.house} (${topHouse.theme}).${
+        secondHouse
+          ? ` Als zweiter Schwerpunkt zeigt sich Haus ${secondHouse.house} (${secondHouse.theme}).`
+          : ""
+      }`
+    : profile.narrative.growthPath;
+  const extraPointsSummary =
+    northNode && southNode && lilith && fortune
+      ? `Deine Entwicklungsachse läuft von Südknoten in ${southNode.sign} (Haus ${southNode.house}) hin zu Nordknoten in ${northNode.sign} (Haus ${northNode.house}): weg von alten Automatismen, hin zu bewusst gelebter Reifung. Lilith in ${lilith.sign} (Haus ${lilith.house}) zeigt, wo du kompromisslos echt sein willst. Der Glückspunkt in ${fortune.sign} (Haus ${fortune.house}) markiert den Bereich, in dem du am leichtesten in Flow, Erfüllung und innere Stimmigkeit kommst.`
+      : profile.narrative.nodesInsight;
 
   return (
     <div id="vollreport" className="scroll-mt-24 space-y-6">
@@ -246,7 +333,11 @@ export function AstroProfileDisplay({
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {extraRows.map((row) => {
                   const specialPoint = specialPointByKey.get(row.key);
-                  const note = specialPoint?.note ?? angleNotes[row.key] ?? null;
+                  const note =
+                    specialNotes[row.key] ??
+                    specialPoint?.note ??
+                    angleNotes[row.key] ??
+                    null;
                   return (
                     <article
                       key={`extra-${row.key}`}
@@ -359,15 +450,12 @@ export function AstroProfileDisplay({
       <section
         className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
       >
-        <h3 className="text-xl font-semibold tracking-tight">Profilkern</h3>
+        <h3 className="text-xl font-semibold tracking-tight">Gesamtbild</h3>
         <p className="mt-3 text-sm text-black/75 dark:text-white/75">
-          {profile.narrative.summary}
+          {coreSummary}
         </p>
         <p className="mt-2 text-sm text-black/75 dark:text-white/75">
-          {profile.narrative.relationshipStyle}
-        </p>
-        <p className="mt-2 text-sm text-black/75 dark:text-white/75">
-          {profile.narrative.growthPath}
+          {lifeFocusSummary}
         </p>
       </section>
 
@@ -378,9 +466,7 @@ export function AstroProfileDisplay({
           Knoten, Lilith & Glückspunkt
         </h3>
         <div className="mt-4 space-y-3 text-sm text-black/75 dark:text-white/75">
-          <p>{profile.narrative.nodesInsight}</p>
-          <p>{profile.narrative.lilithInsight}</p>
-          <p>{profile.narrative.fortuneInsight}</p>
+          <p>{extraPointsSummary}</p>
           {profile.narrative.chironInsight ? (
             <p>{profile.narrative.chironInsight}</p>
           ) : null}
