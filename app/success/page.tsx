@@ -27,6 +27,8 @@ import {
 import { buildProfileAccessWithUnlockUrl } from "@/lib/profile-unlock-url";
 import { getSiteUrl } from "@/lib/site";
 
+export const runtime = "nodejs";
+
 export const metadata: Metadata = {
   title: "Kauf erfolgreich",
   description: "Dein persönlicher Zugangslink.",
@@ -221,6 +223,7 @@ export default async function SuccessPage({
   }
 
   if (isCompatProduct && !compatLinks) {
+    const hasSession = Boolean(sessionId?.trim());
     return (
       <>
         <AccessBrandHeader />
@@ -230,15 +233,22 @@ export default async function SuccessPage({
               Paaranalyse-Links nicht verfügbar
             </p>
             <p className="mt-2">
-              Die Zugangslinks konnten nicht erstellt werden. Bitte prüfe, ob{" "}
+              Die Zugangslinks konnten nicht erstellt werden. Häufige Ursachen:{" "}
               <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
                 STRIPE_SECRET_KEY
               </code>{" "}
-              gesetzt ist und du nach dem Checkout mit{" "}
+              fehlt auf Vercel (Production) oder passt nicht zur Stripe-Umgebung (Test- vs.
+              Live-Key), die Success-URL enthält keine{" "}
               <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
                 session_id
               </code>{" "}
-              zurückgekehrt bist. Alternativ den Support kontaktieren.
+              {!hasSession ? (
+                <span className="font-medium text-amber-800 dark:text-amber-200">
+                  (aktuell fehlt sie in der Adresszeile)
+                </span>
+              ) : null}
+              , oder die Zahlung ist noch nicht als „bezahlt“ verbucht. Bitte Support
+              kontaktieren, wenn das weiterhin auftritt.
             </p>
           </div>
         </main>

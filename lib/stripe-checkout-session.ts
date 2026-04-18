@@ -3,13 +3,39 @@ import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
   PRODUCT_ID_COMPAT_PAARANALYSE,
 } from "@/lib/cms";
+import Stripe from "stripe";
 
-type StripeSessionJson = {
-  payment_status?: string;
-  metadata?: Record<string, string | undefined>;
-  customer_details?: { email?: string | null };
-  customer_email?: string | null;
-};
+function getStripe(): Stripe | null {
+  const key = process.env.STRIPE_SECRET_KEY?.trim();
+  if (!key) return null;
+  return new Stripe(key);
+}
+
+/**
+ * Nach Checkout-Redirect ist die Session meist `complete` + `paid`; seltene Zahlarten
+ * können kurz abweichen – zu strikte Prüfung bricht sonst die Success-Seite online.
+ */
+function checkoutSessionPaymentOk(session: Stripe.Checkout.Session): boolean {
+  if (
+    session.payment_status === "paid" ||
+    session.payment_status === "no_payment_required"
+  ) {
+    return true;
+  }
+  if (session.status === "complete" && session.payment_status !== "unpaid") {
+    return true;
+  }
+  return false;
+}
+
+function numish(v: unknown): number {
+  if (typeof v === "number" && Number.isFinite(v)) return v;
+  if (typeof v === "string" && v.trim() !== "") {
+    const n = Number(v);
+    if (Number.isFinite(n)) return n;
+  }
+  return Number.NaN;
+}
 
 function parseBirthFromStripeMetadataKey(
   meta: Record<string, string | undefined>,
@@ -21,8 +47,8 @@ function parseBirthFromStripeMetadataKey(
     const o = JSON.parse(raw) as Record<string, unknown>;
     const d = typeof o.d === "string" ? o.d : "";
     const t = typeof o.t === "string" ? o.t : "";
-    const lat = typeof o.lat === "number" ? o.lat : Number.NaN;
-    const lon = typeof o.lon === "number" ? o.lon : Number.NaN;
+    const lat = numish(o.lat);
+    const lon = numish(o.lon);
     const cc = typeof o.cc === "string" ? o.cc : "";
     const lb = typeof o.lb === "string" ? o.lb : "";
     if (
@@ -58,36 +84,33 @@ function parseBirthFromStripeMetadata(
   return parseBirthFromStripeMetadataKey(meta, "zd_astro");
 }
 
+async function retrieveCheckoutSession(
+  sessionId: string,
+): Promise<Stripe.Checkout.Session | null> {
+  const stripe = getStripe();
+  if (!stripe) return null;
+  try {
+    return await stripe.checkout.sessions.retrieve(sessionId);
+  } catch (e) {
+    console.error("[stripe] checkout.sessions.retrieve", sessionId, e);
+    return null;
+  }
+}
+
 /**
- * Lädt eine Checkout Session (ein Request) – bezahlt, Vollprofil-Produkt, Kunden-E-Mail.
+ * Lädt eine Checkout Session – bezahlt, Vollprofil-Produkt, Kunden-E-Mail.
  */
 export async function getPaidProfileCheckoutSessionInfo(sessionId: string): Promise<{
   ok: boolean;
   customerEmail: string | null;
   birthPayload: ProfileTokenBirthPayload | null;
 }> {
-  const key = process.env.STRIPE_SECRET_KEY?.trim();
-  if (!key || !sessionId) {
+  const session = await retrieveCheckoutSession(sessionId);
+  if (!session) {
     return { ok: false, customerEmail: null, birthPayload: null };
   }
 
-  const res = await fetch(
-    `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}`,
-    {
-      headers: {
-        Authorization: `Bearer ${key}`,
-      },
-      cache: "no-store",
-    },
-  );
-
-  if (!res.ok) {
-    return { ok: false, customerEmail: null, birthPayload: null };
-  }
-
-  const session = (await res.json()) as StripeSessionJson;
-
-  if (session.payment_status !== "paid") {
+  if (!checkoutSessionPaymentOk(session)) {
     return { ok: false, customerEmail: null, birthPayload: null };
   }
 
@@ -122,28 +145,12 @@ export async function getPaidCompatibilityCheckoutSessionInfo(sessionId: string)
   birthA: ProfileTokenBirthPayload | null;
   birthB: ProfileTokenBirthPayload | null;
 }> {
-  const key = process.env.STRIPE_SECRET_KEY?.trim();
-  if (!key || !sessionId) {
+  const session = await retrieveCheckoutSession(sessionId);
+  if (!session) {
     return { ok: false, customerEmail: null, birthA: null, birthB: null };
   }
 
-  const res = await fetch(
-    `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}`,
-    {
-      headers: {
-        Authorization: `Bearer ${key}`,
-      },
-      cache: "no-store",
-    },
-  );
-
-  if (!res.ok) {
-    return { ok: false, customerEmail: null, birthA: null, birthB: null };
-  }
-
-  const session = (await res.json()) as StripeSessionJson;
-
-  if (session.payment_status !== "paid") {
+  if (!checkoutSessionPaymentOk(session)) {
     return { ok: false, customerEmail: null, birthA: null, birthB: null };
   }
 

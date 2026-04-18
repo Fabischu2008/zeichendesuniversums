@@ -42,23 +42,63 @@ function checkoutAstroToBirthPayload(
   };
 }
 
-function stripeMetadataAstroJson(a: CheckoutAstroPayload): string {
-  const o = {
-    d: a.birthdate,
-    t: a.birthtime,
-    lat: a.place.lat,
-    lon: a.place.lon,
-    cc: a.place.countryCode,
-    lb: a.place.label.slice(0, 160),
-    id: a.place.id.slice(0, 80),
-    ci: a.place.city.slice(0, 80),
-    co: a.place.country.slice(0, 60),
-  };
-  let s = JSON.stringify(o);
-  if (s.length > 490) {
-    s = JSON.stringify({ ...o, lb: o.lb.slice(0, 40) }).slice(0, 490);
+/** Stripe erlaubt max. 500 Zeichen pro Metadaten-Wert – niemals JSON mit slice kürzen (ungültiges JSON). */
+function stripeMetadataAstroJson(
+  a: CheckoutAstroPayload,
+  maxLen = 490,
+): string {
+  const d = a.birthdate;
+  const t = a.birthtime;
+  const lat = a.place.lat;
+  const lon = a.place.lon;
+  const cc = a.place.countryCode;
+
+  let lbMax = 160;
+  let idMax = 80;
+  let ciMax = 80;
+  let coMax = 60;
+
+  for (let round = 0; round < 16; round++) {
+    const o = {
+      d,
+      t,
+      lat,
+      lon,
+      cc,
+      lb: a.place.label.slice(0, lbMax),
+      id: a.place.id.slice(0, idMax),
+      ci: a.place.city.slice(0, ciMax),
+      co: a.place.country.slice(0, coMax),
+    };
+    const s = JSON.stringify(o);
+    if (s.length <= maxLen) return s;
+    if (lbMax > 24) {
+      lbMax = Math.max(24, Math.floor(lbMax * 0.55));
+      continue;
+    }
+    if (idMax > 12) {
+      idMax = Math.max(12, Math.floor(idMax * 0.5));
+      continue;
+    }
+    if (ciMax > 12) {
+      ciMax = Math.max(12, Math.floor(ciMax * 0.5));
+      continue;
+    }
+    if (coMax > 8) {
+      coMax = Math.max(8, Math.floor(coMax * 0.5));
+      continue;
+    }
+    break;
   }
-  return s;
+
+  return JSON.stringify({
+    d,
+    t,
+    lat,
+    lon,
+    cc,
+    lb: a.place.label.slice(0, 20),
+  });
 }
 
 const VOLLPROFIL_CHECKOUT_NAME = "Astrologisches Vollprofil";
@@ -211,8 +251,8 @@ export async function createCheckoutSessionForProduct(
     typeof compat.b.place.lat === "number" &&
     typeof compat.b.place.lon === "number"
   ) {
-    metadata.zd_astro_a = stripeMetadataAstroJson(compat.a);
-    metadata.zd_astro_b = stripeMetadataAstroJson(compat.b);
+    metadata.zd_astro_a = stripeMetadataAstroJson(compat.a, 480);
+    metadata.zd_astro_b = stripeMetadataAstroJson(compat.b, 480);
   }
 
   const cancelUrl =
