@@ -27,6 +27,10 @@ export type Post = {
 export const PRODUCT_ID_ASTRO_VOLLPROFIL = "p_birth_profile" as const;
 export const PRICE_ASTRO_VOLLPROFIL = 11.11;
 
+/** Exakte Paaranalyse (Synastry) – Shop-Eintrag + später Checkout / Success wie Vollprofil. */
+export const PRODUCT_ID_COMPAT_PAARANALYSE = "p_compat_full" as const;
+export const PRICE_COMPAT_PAARANALYSE = 22.22;
+
 export function checkoutHrefForProduct(productId: string): string {
   return `/checkout?productId=${encodeURIComponent(productId)}`;
 }
@@ -46,10 +50,10 @@ const products: Product[] = [
     fileUrl: "/downloads/geburtshoroskop-vollreport.pdf",
   },
   {
-    id: "p_compat_full",
+    id: PRODUCT_ID_COMPAT_PAARANALYSE,
     name: "Kompatibilität Vollanalyse",
     slug: "compatibility-vollanalyse",
-    price: 22.22,
+    price: PRICE_COMPAT_PAARANALYSE,
     description:
       "Die komplette Paaranalyse für Beziehung, Partnerschaft und Dynamik zwischen zwei Profilen.",
     image: "/auge.jpg",

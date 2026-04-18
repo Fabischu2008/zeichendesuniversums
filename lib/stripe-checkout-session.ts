@@ -1,5 +1,8 @@
 import type { ProfileTokenBirthPayload } from "@/lib/profile-access-token";
-import { PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
+import {
+  PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_COMPAT_PAARANALYSE,
+} from "@/lib/cms";
 
 type StripeSessionJson = {
   payment_status?: string;
@@ -8,10 +11,11 @@ type StripeSessionJson = {
   customer_email?: string | null;
 };
 
-function parseBirthFromStripeMetadata(
+function parseBirthFromStripeMetadataKey(
   meta: Record<string, string | undefined>,
+  key: "zd_astro" | "zd_astro_a" | "zd_astro_b",
 ): ProfileTokenBirthPayload | null {
-  const raw = meta.zd_astro?.trim();
+  const raw = meta[key]?.trim();
   if (!raw) return null;
   try {
     const o = JSON.parse(raw) as Record<string, unknown>;
@@ -46,6 +50,12 @@ function parseBirthFromStripeMetadata(
   } catch {
     return null;
   }
+}
+
+function parseBirthFromStripeMetadata(
+  meta: Record<string, string | undefined>,
+): ProfileTokenBirthPayload | null {
+  return parseBirthFromStripeMetadataKey(meta, "zd_astro");
 }
 
 /**
@@ -101,6 +111,66 @@ export async function getPaidProfileCheckoutSessionInfo(sessionId: string): Prom
   const customerEmail = trimmed.length > 0 ? trimmed : null;
 
   return { ok: true, customerEmail, birthPayload };
+}
+
+/**
+ * Bezahlte Checkout-Session für exakte Paaranalyse: Produkt + Geburtsdaten A & B in Metadaten.
+ */
+export async function getPaidCompatibilityCheckoutSessionInfo(sessionId: string): Promise<{
+  ok: boolean;
+  customerEmail: string | null;
+  birthA: ProfileTokenBirthPayload | null;
+  birthB: ProfileTokenBirthPayload | null;
+}> {
+  const key = process.env.STRIPE_SECRET_KEY?.trim();
+  if (!key || !sessionId) {
+    return { ok: false, customerEmail: null, birthA: null, birthB: null };
+  }
+
+  const res = await fetch(
+    `https://api.stripe.com/v1/checkout/sessions/${encodeURIComponent(sessionId)}`,
+    {
+      headers: {
+        Authorization: `Bearer ${key}`,
+      },
+      cache: "no-store",
+    },
+  );
+
+  if (!res.ok) {
+    return { ok: false, customerEmail: null, birthA: null, birthB: null };
+  }
+
+  const session = (await res.json()) as StripeSessionJson;
+
+  if (session.payment_status !== "paid") {
+    return { ok: false, customerEmail: null, birthA: null, birthB: null };
+  }
+
+  const meta = session.metadata ?? {};
+  const productMatch =
+    meta.cms_product_id === PRODUCT_ID_COMPAT_PAARANALYSE ||
+    meta.productId === PRODUCT_ID_COMPAT_PAARANALYSE;
+
+  if (!productMatch) {
+    return { ok: false, customerEmail: null, birthA: null, birthB: null };
+  }
+
+  const birthA = parseBirthFromStripeMetadataKey(meta, "zd_astro_a");
+  const birthB = parseBirthFromStripeMetadataKey(meta, "zd_astro_b");
+  if (!birthA || !birthB) {
+    return { ok: false, customerEmail: null, birthA: null, birthB: null };
+  }
+
+  const raw =
+    (typeof session.customer_details?.email === "string"
+      ? session.customer_details.email
+      : null) ||
+    (typeof session.customer_email === "string" ? session.customer_email : null);
+  const trimmed = raw?.trim() ?? "";
+  const customerEmail = trimmed.length > 0 ? trimmed : null;
+
+  return { ok: true, customerEmail, birthA, birthB };
 }
 
 /**

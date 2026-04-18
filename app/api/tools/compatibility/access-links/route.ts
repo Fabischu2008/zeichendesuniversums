@@ -1,10 +1,6 @@
 import { NextResponse } from "next/server";
-import { createCompatibilityAccessToken } from "@/lib/compatibility-access-token";
-import { createProfileAccessToken } from "@/lib/profile-access-token";
-import {
-  buildProfileAccessWithUnlockUrl,
-  buildUnlockUrlForPath,
-} from "@/lib/profile-unlock-url";
+import { buildCompatibilityAccessLinks } from "@/lib/compatibility-access-links";
+import type { ProfileTokenBirthPayload } from "@/lib/profile-access-token";
 import { getSiteUrl } from "@/lib/site";
 
 export const runtime = "nodejs";
@@ -57,6 +53,20 @@ function parsePerson(raw: unknown) {
   };
 }
 
+function toBirthPayload(p: NonNullable<ReturnType<typeof parsePerson>>): ProfileTokenBirthPayload {
+  return {
+    d: p.birthdate,
+    t: p.birthtime,
+    lat: p.place.lat,
+    lon: p.place.lon,
+    cc: p.place.countryCode,
+    lb: p.place.label,
+    id: p.place.id,
+    ci: p.place.city,
+    co: p.place.country,
+  };
+}
+
 export async function POST(req: Request) {
   const body = (await req.json().catch(() => null)) as
     | { a?: unknown; b?: unknown }
@@ -70,76 +80,21 @@ export async function POST(req: Request) {
     );
   }
 
-  const tokenA = createProfileAccessToken(365, {
-    d: a.birthdate,
-    t: a.birthtime,
-    lat: a.place.lat,
-    lon: a.place.lon,
-    cc: a.place.countryCode,
-    lb: a.place.label,
-    id: a.place.id,
-    ci: a.place.city,
-    co: a.place.country,
-  });
-  const tokenB = createProfileAccessToken(365, {
-    d: b.birthdate,
-    t: b.birthtime,
-    lat: b.place.lat,
-    lon: b.place.lon,
-    cc: b.place.countryCode,
-    lb: b.place.label,
-    id: b.place.id,
-    ci: b.place.city,
-    co: b.place.country,
-  });
-
-  if (!tokenA || !tokenB) {
+  const site = getSiteUrl();
+  const links = buildCompatibilityAccessLinks(site, toBirthPayload(a), toBirthPayload(b));
+  if (!links) {
     return NextResponse.json(
       { message: "Links konnten nicht erstellt werden." },
       { status: 503 },
     );
   }
 
-  const site = getSiteUrl();
-  const pairToken = createCompatibilityAccessToken(
-    {
-      d: a.birthdate,
-      t: a.birthtime,
-      lat: a.place.lat,
-      lon: a.place.lon,
-      cc: a.place.countryCode,
-      lb: a.place.label,
-      id: a.place.id,
-      ci: a.place.city,
-      co: a.place.country,
-    },
-    {
-      d: b.birthdate,
-      t: b.birthtime,
-      lat: b.place.lat,
-      lon: b.place.lon,
-      cc: b.place.countryCode,
-      lb: b.place.label,
-      id: b.place.id,
-      ci: b.place.city,
-      co: b.place.country,
-    },
-  );
-  const pairLink = pairToken
-    ? buildUnlockUrlForPath(
-        site,
-        "/tools/compatibility/access",
-        pairToken,
-        "paar-links",
-      )
-    : null;
-
   return NextResponse.json({
     ok: true,
     links: {
-      a: buildProfileAccessWithUnlockUrl(site, tokenA),
-      b: buildProfileAccessWithUnlockUrl(site, tokenB),
+      a: links.profileLinkA,
+      b: links.profileLinkB,
     },
-    pairLink,
+    pairLink: links.pairLink,
   });
 }

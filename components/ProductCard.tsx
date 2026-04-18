@@ -5,7 +5,8 @@ function formatEUR(amount: number) {
   return new Intl.NumberFormat("de-DE", {
     style: "currency",
     currency: "EUR",
-    maximumFractionDigits: 0,
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2,
   }).format(amount);
 }
 

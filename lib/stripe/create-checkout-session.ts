@@ -3,6 +3,7 @@ import {
   getProducts,
   PRICE_ASTRO_VOLLPROFIL,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_COMPAT_PAARANALYSE,
 } from "@/lib/cms";
 import {
   encodeAstroSuccessPack,
@@ -97,13 +98,38 @@ function resolveProduct(productId: string): ResolvedCheckoutProduct | null {
  * Erstellt eine Stripe Checkout Session und gibt die Hosted-Checkout-URL zurück.
  * Ohne `STRIPE_SECRET_KEY`: MVP – Weiterleitung zur lokalen Success-Seite (kein Stripe).
  */
+function isValidCompatPayload(
+  c: { a: CheckoutAstroPayload; b: CheckoutAstroPayload },
+): boolean {
+  const check = (x: CheckoutAstroPayload) =>
+    /^\d{4}-\d{2}-\d{2}$/.test(x.birthdate) &&
+    /^\d{2}:\d{2}$/.test(x.birthtime) &&
+    x.place &&
+    typeof x.place.lat === "number" &&
+    typeof x.place.lon === "number";
+  return check(c.a) && check(c.b);
+}
+
 export async function createCheckoutSessionForProduct(
   productId: string,
-  options?: { astro?: CheckoutAstroPayload },
+  options?: {
+    astro?: CheckoutAstroPayload;
+    compat?: { a: CheckoutAstroPayload; b: CheckoutAstroPayload };
+  },
 ): Promise<{ url: string } | { error: string }> {
   const product = resolveProduct(productId);
   if (!product) {
     return { error: "Unbekanntes Produkt." };
+  }
+
+  if (product.id === PRODUCT_ID_COMPAT_PAARANALYSE) {
+    const c = options?.compat;
+    if (!c || !isValidCompatPayload(c)) {
+      return {
+        error:
+          "Für die Paaranalyse werden vollständige Geburtsdaten für Person A und B benötigt.",
+      };
+    }
   }
 
   const stripe = getStripe();
@@ -122,6 +148,28 @@ export async function createCheckoutSessionForProduct(
       const ap = encodeAstroSuccessPack(checkoutAstroToBirthPayload(astro));
       if (ap) {
         url += `&ap=${encodeURIComponent(ap)}`;
+      }
+    }
+    const compat = options?.compat;
+    if (
+      product.id === PRODUCT_ID_COMPAT_PAARANALYSE &&
+      compat?.a &&
+      compat?.b &&
+      /^\d{4}-\d{2}-\d{2}$/.test(compat.a.birthdate) &&
+      /^\d{2}:\d{2}$/.test(compat.a.birthtime) &&
+      /^\d{4}-\d{2}-\d{2}$/.test(compat.b.birthdate) &&
+      /^\d{2}:\d{2}$/.test(compat.b.birthtime) &&
+      compat.a.place &&
+      compat.b.place
+    ) {
+      const apa = encodeAstroSuccessPack(
+        checkoutAstroToBirthPayload(compat.a),
+      );
+      const apb = encodeAstroSuccessPack(
+        checkoutAstroToBirthPayload(compat.b),
+      );
+      if (apa && apb) {
+        url += `&apa=${encodeURIComponent(apa)}&apb=${encodeURIComponent(apb)}`;
       }
     }
     return { url };
@@ -147,6 +195,31 @@ export async function createCheckoutSessionForProduct(
     metadata.zd_astro = stripeMetadataAstroJson(astro);
   }
 
+  const compat = options?.compat;
+  if (
+    product.id === PRODUCT_ID_COMPAT_PAARANALYSE &&
+    compat?.a &&
+    compat?.b &&
+    /^\d{4}-\d{2}-\d{2}$/.test(compat.a.birthdate) &&
+    /^\d{2}:\d{2}$/.test(compat.a.birthtime) &&
+    /^\d{4}-\d{2}-\d{2}$/.test(compat.b.birthdate) &&
+    /^\d{2}:\d{2}$/.test(compat.b.birthtime) &&
+    compat.a.place &&
+    compat.b.place &&
+    typeof compat.a.place.lat === "number" &&
+    typeof compat.a.place.lon === "number" &&
+    typeof compat.b.place.lat === "number" &&
+    typeof compat.b.place.lon === "number"
+  ) {
+    metadata.zd_astro_a = stripeMetadataAstroJson(compat.a);
+    metadata.zd_astro_b = stripeMetadataAstroJson(compat.b);
+  }
+
+  const cancelUrl =
+    product.id === PRODUCT_ID_COMPAT_PAARANALYSE
+      ? `${site}/tools/compatibility`
+      : `${site}/shop`;
+
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
@@ -163,7 +236,7 @@ export async function createCheckoutSessionForProduct(
         },
       ],
       success_url: `${site}/success?session_id={CHECKOUT_SESSION_ID}&productId=${encodeURIComponent(product.id)}`,
-      cancel_url: `${site}/shop`,
+      cancel_url: cancelUrl,
       metadata,
     });
 

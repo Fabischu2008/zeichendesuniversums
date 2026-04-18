@@ -3,7 +3,7 @@
 import { useEffect } from "react";
 
 /**
- * Entfernt sensible Query-Parameter (`email`, `ap`) aus der URL ohne Reload.
+ * Entfernt sensible Query-Parameter (`email`, `ap`, `apa`, `apb`) aus der URL ohne Reload.
  */
 export function StripSuccessEmailQuery() {
   useEffect(() => {
@@ -14,9 +14,11 @@ export function StripSuccessEmailQuery() {
       u.searchParams.delete("email");
       changed = true;
     }
-    if (u.searchParams.has("ap")) {
-      u.searchParams.delete("ap");
-      changed = true;
+    for (const k of ["ap", "apa", "apb"] as const) {
+      if (u.searchParams.has(k)) {
+        u.searchParams.delete(k);
+        changed = true;
+      }
     }
     if (!changed) return;
     window.history.replaceState(null, "", u.pathname + u.search + u.hash);

@@ -11,7 +11,21 @@ import type {
   SynastryReport,
 } from "@/lib/astro/synastry";
 import { useGeoPlaces, type GeoPlace } from "@/hooks/useGeoPlaces";
+import {
+  PRICE_COMPAT_PAARANALYSE,
+  PRODUCT_ID_COMPAT_PAARANALYSE,
+} from "@/lib/cms";
 import { readUnlockTokenFromBrowser } from "@/lib/profile-unlock-url";
+import type { CheckoutAstroPayload } from "@/lib/stripe/create-checkout-session";
+
+function formatPaarPriceEur(amount: number) {
+  return new Intl.NumberFormat("de-DE", {
+    style: "currency",
+    currency: "EUR",
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2,
+  }).format(amount);
+}
 
 function safeJsonParse(raw: string): unknown {
   if (!raw) return {};
@@ -37,6 +51,31 @@ const emptyPerson = (): PersonForm => ({
   query: "",
   place: null,
 });
+
+function personFormToCheckoutPayload(
+  form: PersonForm,
+): CheckoutAstroPayload | null {
+  if (
+    !form.place ||
+    !/^\d{4}-\d{2}-\d{2}$/.test(form.birthdate) ||
+    !/^\d{2}:\d{2}$/.test(form.birthtime)
+  ) {
+    return null;
+  }
+  return {
+    birthdate: form.birthdate,
+    birthtime: form.birthtime,
+    place: {
+      id: form.place.id,
+      label: form.place.label,
+      city: form.place.city,
+      country: form.place.country,
+      countryCode: form.place.countryCode,
+      lat: form.place.lat,
+      lon: form.place.lon,
+    },
+  };
+}
 
 function PersonFields({
   title,
@@ -404,6 +443,8 @@ export default function CompatibilityToolPage() {
   const geoB = useGeoPlaces(b.query);
 
   const [loading, setLoading] = useState(false);
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<null | {
     synastry: SynastryReport;
@@ -431,109 +472,45 @@ export default function CompatibilityToolPage() {
     );
   }, [a, b]);
 
-  async function runSynastry() {
-    if (!a.place || !b.place) return;
-    setLoading(true);
-    setError(null);
-    setReport(null);
+  async function goToCompatCheckout() {
+    if (!canSubmit) return;
+    setCheckoutError(null);
+    setCheckoutLoading(true);
     try {
-      const res = await fetch("/api/tools/synastry", {
+      const pa = personFormToCheckoutPayload(a);
+      const pb = personFormToCheckoutPayload(b);
+      if (!pa || !pb) {
+        throw new Error(
+          "Bitte für beide Personen Datum, Uhrzeit und Ort vollständig ausfüllen.",
+        );
+      }
+      const res = await fetch("/api/create-checkout-session", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          a: {
-            date: a.birthdate,
-            time: a.birthtime,
-            location: {
-              name: a.place.city || a.place.label,
-              lat: a.place.lat,
-              lon: a.place.lon,
-              countryCode: a.place.countryCode,
-            },
-          },
-          b: {
-            date: b.birthdate,
-            time: b.birthtime,
-            location: {
-              name: b.place.city || b.place.label,
-              lat: b.place.lat,
-              lon: b.place.lon,
-              countryCode: b.place.countryCode,
-            },
-          },
+          productId: PRODUCT_ID_COMPAT_PAARANALYSE,
+          compat: { a: pa, b: pb },
         }),
       });
       const raw = await res.text();
       const parsed = safeJsonParse(raw);
       const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
-        synastry?: SynastryReport;
-        deepComparison?: DeepCompatibilityReport;
-        a?: {
-          profile?: AstroProfileResult;
-          big3: { sun: string; moon: string; ascendant: string };
-        };
-        b?: {
-          profile?: AstroProfileResult;
-          big3: { sun: string; moon: string; ascendant: string };
-        };
+        url?: string;
         message?: string;
       };
-      if (
-        !res.ok ||
-        !data.synastry ||
-        !data.deepComparison ||
-        !data.a?.profile ||
-        !data.b?.profile
-      ) {
+      if (!res.ok || !data.url) {
         throw new Error(
-          data.message || `Analyse fehlgeschlagen (HTTP ${res.status}).`,
+          data.message ||
+            `Checkout konnte nicht gestartet werden (HTTP ${res.status}).`,
         );
       }
-      setReport({
-        synastry: data.synastry,
-        deepComparison: data.deepComparison,
-        a: { profile: data.a.profile, big3: data.a.big3 },
-        b: { profile: data.b.profile, big3: data.b.big3 },
-      });
-
-      const linkRes = await fetch("/api/tools/compatibility/access-links", {
-        method: "POST",
-        headers: { "content-type": "application/json" },
-        body: JSON.stringify({
-          a: {
-            birthdate: a.birthdate,
-            birthtime: a.birthtime,
-            place: a.place,
-          },
-          b: {
-            birthdate: b.birthdate,
-            birthtime: b.birthtime,
-            place: b.place,
-          },
-        }),
-      });
-      const linkRaw = await linkRes.text();
-      const linkParsed = safeJsonParse(linkRaw);
-      const linkData = (linkParsed && typeof linkParsed === "object"
-        ? linkParsed
-        : {}) as {
-        pairLink?: string | null;
-      };
-      const nextPairLink = linkData.pairLink || null;
-      if (!nextPairLink) {
-        throw new Error(
-          "Zugangsseite konnte nicht erstellt werden. Bitte erneut versuchen.",
-        );
-      }
-      if (typeof window !== "undefined") {
-        window.location.href = nextPairLink;
-        return;
-      }
-      setStage("result");
+      window.location.href = data.url;
     } catch (e) {
-      setError(e instanceof Error ? e.message : "Unbekannter Fehler");
+      setCheckoutError(
+        e instanceof Error ? e.message : "Checkout konnte nicht gestartet werden.",
+      );
     } finally {
-      setLoading(false);
+      setCheckoutLoading(false);
     }
   }
 
@@ -810,7 +787,10 @@ export default function CompatibilityToolPage() {
                         </li>
                       </ul>
                     </div>
-                    <div className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.08] p-4 dark:border-violet-400/25 dark:bg-violet-500/10">
+                    <div
+                      className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.08] p-4 dark:border-violet-400/25 dark:bg-violet-500/10"
+                      data-product={PRODUCT_ID_COMPAT_PAARANALYSE}
+                    >
                       <p className="text-xs font-semibold uppercase tracking-wider text-violet-900 dark:text-violet-100">
                         Exakte Paaranalyse
                       </p>
@@ -828,6 +808,16 @@ export default function CompatibilityToolPage() {
                           Persönliche Zugangslinks (Paaranalyse + beide Einzelprofile)
                         </li>
                       </ul>
+                      <p className="mt-4 text-2xl font-semibold tracking-tight text-violet-950 dark:text-violet-50">
+                        {formatPaarPriceEur(PRICE_COMPAT_PAARANALYSE)}{" "}
+                        <span className="text-sm font-normal text-black/50 dark:text-white/50">
+                          einmalig
+                        </span>
+                      </p>
+                      <p className="mt-2 text-xs leading-relaxed text-black/55 dark:text-white/55">
+                        Nach der Zahlung erhältst du drei persönliche Links – Paaranalyse
+                        und beide Einzelprofile.
+                      </p>
                     </div>
                   </div>
 
@@ -855,6 +845,10 @@ export default function CompatibilityToolPage() {
               Für präzise Synastry (Mond, Aszendent, Häuser und Aspekt-Orbs) werden
               für beide Personen Geburtsdatum, Zeit und Ort benötigt.
             </p>
+            <p className="mt-2 text-amber-900/90 dark:text-amber-100/90">
+              Vollanalyse: {formatPaarPriceEur(PRICE_COMPAT_PAARANALYSE)} einmalig – nach
+              dem Ausfüllen startest du den sicheren Stripe-Checkout.
+            </p>
           </section>
           <div className="grid gap-6 lg:grid-cols-1">
             <PersonFields
@@ -878,11 +872,13 @@ export default function CompatibilityToolPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
-              disabled={!canSubmit || loading}
-              onClick={() => void runSynastry()}
+              disabled={!canSubmit || checkoutLoading}
+              onClick={() => void goToCompatCheckout()}
               className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
-              {loading ? "Berechne Synastry…" : "Exakte Paar-Analyse starten"}
+              {checkoutLoading
+                ? "Weiter zu Stripe…"
+                : `Bezahlen & Links erhalten · ${formatPaarPriceEur(PRICE_COMPAT_PAARANALYSE)}`}
             </button>
             <button
               type="button"
@@ -892,6 +888,9 @@ export default function CompatibilityToolPage() {
               Zurück zum Vorgeschmack
             </button>
           </div>
+          {checkoutError ? (
+            <p className="text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
+          ) : null}
         </>
       ) : null}
 
@@ -1105,10 +1104,6 @@ export default function CompatibilityToolPage() {
             </Link>
           </div>
         </div>
-      ) : stage === "result" ? (
-        <p className="text-sm text-black/60 dark:text-white/60">
-          Fülle beide Profile vollständig aus und starte die Berechnung.
-        </p>
       ) : null}
 
       {stage === "preview" ? (

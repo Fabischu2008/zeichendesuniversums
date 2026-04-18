@@ -1,24 +1,35 @@
 import type { Metadata } from "next";
 import { AccessBrandHeader } from "@/components/AccessBrandHeader";
+import { CompatibilityAccessLinksCard } from "@/components/CompatibilityAccessLinksCard";
 import { ProfileAccessLinkCard } from "@/components/ProfileAccessLinkCard";
+import { StripeCompatibilityEmailOnce } from "@/components/StripeCompatibilityEmailOnce";
 import { StripeProfileEmailOnce } from "@/components/StripeProfileEmailOnce";
 import { StripSuccessEmailQuery } from "@/components/StripSuccessEmailQuery";
-import { getProducts, PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
+import { buildCompatibilityAccessLinks } from "@/lib/compatibility-access-links";
+import {
+  getProducts,
+  PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_COMPAT_PAARANALYSE,
+} from "@/lib/cms";
 import {
   isValidProfileEmail,
+  sendCompatibilityAccessEmail,
   sendProfileAccessEmail,
 } from "@/lib/email-profile-access";
 import {
   createProfileAccessToken,
   decodeAstroSuccessPack,
 } from "@/lib/profile-access-token";
+import {
+  resolveCompatibilityAccessForSuccess,
+  resolveProfileAccessForSuccess,
+} from "@/lib/profile-access-policy";
 import { buildProfileAccessWithUnlockUrl } from "@/lib/profile-unlock-url";
-import { resolveProfileAccessForSuccess } from "@/lib/profile-access-policy";
 import { getSiteUrl } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Kauf erfolgreich",
-  description: "Dein persönlicher Profil-Zugangslink.",
+  description: "Dein persönlicher Zugangslink.",
   robots: {
     index: false,
     follow: false,
@@ -34,6 +45,8 @@ export default async function SuccessPage({
     session_id?: string;
     email?: string;
     ap?: string;
+    apa?: string;
+    apb?: string;
   }>;
 }) {
   const sp = await searchParams;
@@ -45,10 +58,14 @@ export default async function SuccessPage({
       : undefined;
   const rawQueryEmail =
     sp?.email && typeof sp.email === "string" ? sp.email.trim() : "";
-  const apParam =
-    sp?.ap && typeof sp.ap === "string" ? sp.ap.trim() : "";
+  const apParam = sp?.ap && typeof sp.ap === "string" ? sp.ap.trim() : "";
+  const apaParam =
+    sp?.apa && typeof sp.apa === "string" ? sp.apa.trim() : "";
+  const apbParam =
+    sp?.apb && typeof sp.apb === "string" ? sp.apb.trim() : "";
 
   const isProfileProduct = productId === PRODUCT_ID_ASTRO_VOLLPROFIL;
+  const isCompatProduct = productId === PRODUCT_ID_COMPAT_PAARANALYSE;
   const product = getProducts().find((p) => p.id === productId);
 
   const { mayIssue, stripeCustomerEmail, birthPayload } =
@@ -64,6 +81,24 @@ export default async function SuccessPage({
   const profileAccessUrl =
     token !== null ? buildProfileAccessWithUnlockUrl(getSiteUrl(), token) : null;
 
+  const compatResolved = await resolveCompatibilityAccessForSuccess(
+    isCompatProduct,
+    sessionId,
+  );
+  const birthAFromPack =
+    isCompatProduct && apaParam ? decodeAstroSuccessPack(apaParam) : null;
+  const birthBFromPack =
+    isCompatProduct && apbParam ? decodeAstroSuccessPack(apbParam) : null;
+  const birthA =
+    compatResolved.birthA ?? birthAFromPack ?? undefined;
+  const birthB =
+    compatResolved.birthB ?? birthBFromPack ?? undefined;
+  const compatMayIssue = compatResolved.mayIssue && birthA && birthB;
+  const compatLinks =
+    compatMayIssue && birthA && birthB
+      ? buildCompatibilityAccessLinks(getSiteUrl(), birthA, birthB)
+      : null;
+
   const queryEmailRecipient =
     rawQueryEmail && isValidProfileEmail(rawQueryEmail) ? rawQueryEmail : null;
 
@@ -72,6 +107,20 @@ export default async function SuccessPage({
     const r = await sendProfileAccessEmail({
       to: queryEmailRecipient,
       profileUrl: profileAccessUrl,
+    });
+    queryEmailNotice = r.ok ? "sent" : "failed";
+  }
+
+  if (
+    isCompatProduct &&
+    compatLinks &&
+    queryEmailRecipient
+  ) {
+    const r = await sendCompatibilityAccessEmail({
+      to: queryEmailRecipient,
+      compatibilityUrl: compatLinks.pairLink,
+      profileUrlA: compatLinks.profileLinkA,
+      profileUrlB: compatLinks.profileLinkB,
     });
     queryEmailNotice = r.ok ? "sent" : "failed";
   }
@@ -106,6 +155,47 @@ export default async function SuccessPage({
     );
   }
 
+  if (isCompatProduct && compatLinks) {
+    const showStripeCompatMail =
+      Boolean(sessionId) &&
+      Boolean(compatResolved.stripeCustomerEmail) &&
+      !queryEmailRecipient;
+
+    return (
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl space-y-6">
+            {showStripeCompatMail ? (
+              <StripeCompatibilityEmailOnce
+                sessionId={sessionId!}
+                pairLink={compatLinks.pairLink}
+                profileUrlA={compatLinks.profileLinkA}
+                profileUrlB={compatLinks.profileLinkB}
+                customerEmail={compatResolved.stripeCustomerEmail!}
+              />
+            ) : null}
+            {rawQueryEmail || apaParam || apbParam ? (
+              <StripSuccessEmailQuery />
+            ) : null}
+            <CompatibilityAccessLinksCard
+              pairLink={compatLinks.pairLink}
+              profileLinkA={compatLinks.profileLinkA}
+              profileLinkB={compatLinks.profileLinkB}
+            />
+            {queryEmailNotice === "sent" || queryEmailNotice === "failed" ? (
+              <p className="text-center text-sm text-black/60 dark:text-white/60">
+                {queryEmailNotice === "sent"
+                  ? "Die Links wurden an die angegebene E-Mail gesendet."
+                  : "E-Mail konnte nicht gesendet werden – bitte Links manuell kopieren."}
+              </p>
+            ) : null}
+          </div>
+        </main>
+      </>
+    );
+  }
+
   if (isProfileProduct && !profileAccessUrl) {
     return (
       <>
@@ -116,9 +206,39 @@ export default async function SuccessPage({
               Persönlicher Link nicht verfügbar
             </p>
             <p className="mt-2">
-              Der Zugangslink konnte nicht erstellt werden (z. B. fehlende
-              Konfiguration). Bitte den Support kontaktieren oder es später erneut
-              versuchen.
+              Der Zugangslink konnte nicht erstellt werden. Typische Ursachen:{" "}
+              <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
+                STRIPE_SECRET_KEY
+              </code>{" "}
+              fehlt auf dem Server, oder diese Seite wurde ohne gültige Stripe-Session
+              geöffnet (immer über den Abschluss im Checkout mit dem Link zurückkehren).
+              Bitte den Support kontaktieren oder es später erneut versuchen.
+            </p>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (isCompatProduct && !compatLinks) {
+    return (
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 text-sm text-black/75 dark:border-white/10 dark:bg-white/5 dark:text-white/75">
+            <p className="font-medium text-black dark:text-white">
+              Paaranalyse-Links nicht verfügbar
+            </p>
+            <p className="mt-2">
+              Die Zugangslinks konnten nicht erstellt werden. Bitte prüfe, ob{" "}
+              <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
+                STRIPE_SECRET_KEY
+              </code>{" "}
+              gesetzt ist und du nach dem Checkout mit{" "}
+              <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
+                session_id
+              </code>{" "}
+              zurückgekehrt bist. Alternativ den Support kontaktieren.
             </p>
           </div>
         </main>
