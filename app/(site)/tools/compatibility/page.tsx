@@ -1110,6 +1110,37 @@ export default function CompatibilityToolPage() {
           Fülle beide Profile vollständig aus und starte die Berechnung.
         </p>
       ) : null}
+
+      {stage === "preview" ? (
+        <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">
+          <p className="text-sm font-medium text-black/80 dark:text-white/80">
+            Nächster Schritt
+          </p>
+          <p className="mt-2 text-sm text-black/60 dark:text-white/60">
+            Wenn du dieses Tool gerade überspringst, geh einfach hier weiter.
+          </p>
+          <div className="mt-5 grid gap-2 sm:grid-cols-3">
+            <Link
+              href="/freebie"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            >
+              Kostenloser Guide
+            </Link>
+            <Link
+              href="/shop"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            >
+              Zum Shop
+            </Link>
+            <Link
+              href="/tools"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              Nächstes Tool
+            </Link>
+          </div>
+        </section>
+      ) : null}
     </div>
   );
 }
