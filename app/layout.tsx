@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 import {
   FAVICON_QUERY,
   SITE_DESCRIPTION,
@@ -87,6 +88,7 @@ export default function RootLayout({
     <html lang="de">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="min-h-dvh bg-background text-foreground">{children}</div>
+        <Analytics />
       </body>
     </html>
   );
