@@ -21,6 +21,9 @@ export type PostFooterCta = {
   cta: { label: string; href: string };
 };
 
+/** Farbakzente für Cover & Typografie (Blog). */
+export type PostAccent = "violet" | "rose" | "amber";
+
 export type Post = {
   title: string;
   slug: string;
@@ -29,6 +32,11 @@ export type Post = {
   metaDescription: string;
   keywords: string[];
   footerCta?: PostFooterCta;
+  /** Styling (Ränder, Überschriften). Standard: violet */
+  accent?: PostAccent;
+  /** Optionales Cover unter /public (z. B. /images/hero-cosmic-eye.png) */
+  coverImage?: string;
+  coverAlt?: string;
 };
 
 /** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). Nicht im Shop-Katalog. */
@@ -126,6 +134,9 @@ const posts: Post[] = [
       "Sonne Mond Aszendent",
       "Astrologie Tool",
     ],
+    accent: "violet",
+    coverImage: "/images/hero-cosmic-eye.png",
+    coverAlt: "Sternenhimmel – Geburtshoroskop & Big Three",
     content: [
       "## Was „Big Three“ überhaupt meint",
       "Kurz gesagt: Sonne (Kern), Mond (Bedürfnisse, Gefühl) und Aszendent (wie du wirkst und neue Situationen angehst). Zusammen ergeben sie ein viel klareres Bild als das reine Sternzeichen allein.",
@@ -158,6 +169,9 @@ const posts: Post[] = [
       "Partnerhoroskop",
       "Beziehung Horoskop",
     ],
+    accent: "rose",
+    coverImage: "/images/hero-cosmic-eye.png",
+    coverAlt: "Zwei Horoskope – Paaranalyse & Synastry",
     content: [
       "## Zwei Sternzeichen reichen nicht",
       "Sun-Sign-Vergleiche sind ein Einstieg – aber echte Paardynamik entsteht aus den Planetenlagen und Aspekten zwischen euch: z. B. Venus (Nähe, was ihr schön findet), Mars (Antrieb, Konfliktstil), Mond (emotionale Sprache).",

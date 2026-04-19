@@ -16,7 +16,8 @@ export default function BlogPage() {
           Blog
         </h1>
         <p className="text-black/70 dark:text-white/70">
-          SEO‑Funnel: Artikel → CTA → Freebie / Produkt.
+          Astrologie &amp; Beziehung verständlich erklärt – mit klaren nächsten
+          Schritten zu Guide und Tools.
         </p>
       </div>
 
