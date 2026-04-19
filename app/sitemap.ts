@@ -22,6 +22,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
     },
     {
+      url: absoluteUrl("/tools/astro-map"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    {
+      url: absoluteUrl("/tools/human-design"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    {
       url: absoluteUrl("/tools/bewusstsein"),
       lastModified: now,
       changeFrequency: "monthly",

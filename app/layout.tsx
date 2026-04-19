@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { SeoJsonLd } from "@/components/SeoJsonLd";
+import { SiteAnalytics } from "@/components/SiteAnalytics";
 import {
   FAVICON_QUERY,
   SITE_DESCRIPTION,
@@ -10,6 +12,9 @@ import {
   THEME_COLOR,
 } from "@/lib/brand";
 import { absoluteUrl, getSiteUrl } from "@/lib/site";
+
+const googleSiteVerification =
+  process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -31,7 +36,26 @@ export const metadata: Metadata = {
     template: `%s · ${SITE_NAME}`,
   },
   description: SITE_DESCRIPTION,
+  keywords: [
+    "Astrologie",
+    "Sternzeichen",
+    "Geburtshoroskop",
+    "Synastry",
+    "Kompatibilität",
+    "Human Design",
+    "Zeichen des Universums",
+  ],
   metadataBase: new URL(getSiteUrl()),
+  alternates: {
+    canonical: "/",
+  },
+  ...(googleSiteVerification
+    ? {
+        verification: {
+          google: googleSiteVerification,
+        },
+      }
+    : {}),
   icons: {
     icon: [
       {
@@ -86,7 +110,9 @@ export default function RootLayout({
   return (
     <html lang="de">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <SeoJsonLd />
         <div className="min-h-dvh bg-background text-foreground">{children}</div>
+        <SiteAnalytics />
       </body>
     </html>
   );
