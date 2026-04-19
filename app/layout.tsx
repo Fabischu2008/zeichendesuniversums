@@ -10,6 +10,7 @@ import {
   THEME_COLOR,
 } from "@/lib/brand";
 import { absoluteUrl, getSiteUrl } from "@/lib/site";
+import { Analytics } from "@vercel/analytics/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -87,6 +88,7 @@ export default function RootLayout({
     <html lang="de">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <div className="min-h-dvh bg-background text-foreground">{children}</div>
+        <Analytics />
       </body>
     </html>
   );
