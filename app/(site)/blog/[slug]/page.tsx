@@ -4,8 +4,15 @@ import { notFound } from "next/navigation";
 import { CTA } from "@/components/CTA";
 import { JsonLd } from "@/components/JsonLd";
 import { RichText } from "@/components/RichText";
-import { getPostBySlug } from "@/lib/cms";
+import { getPostBySlug, type PostFooterCta } from "@/lib/cms";
 import { absoluteUrl } from "@/lib/site";
+
+const DEFAULT_POST_FOOTER_CTA: PostFooterCta = {
+  title: "Hol dir den kostenlosen Guide",
+  description:
+    "Wenn dir der Artikel geholfen hat: Der Guide ist der schnellste Start für Klarheit.",
+  cta: { label: "Kostenloser Guide", href: "/freebie" },
+};
 
 export async function generateMetadata({
   params,
@@ -72,11 +79,7 @@ export default async function BlogPostPage({
 
       <RichText content={post.content} />
 
-      <CTA
-        title="Hol dir den kostenlosen Guide"
-        description="Wenn dir der Artikel geholfen hat: Der Guide ist der schnellste Start für Klarheit."
-        cta={{ label: "Kostenloser Guide", href: "/freebie" }}
-      />
+      <CTA {...(post.footerCta ?? DEFAULT_POST_FOOTER_CTA)} />
 
       <Link
         href="/blog"
