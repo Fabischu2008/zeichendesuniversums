@@ -12,10 +12,14 @@ import {
   SOCIAL_PREVIEW_IMAGE_SIZE,
   THEME_COLOR,
 } from "@/lib/brand";
+import { normalizeGoogleSiteVerificationToken } from "@/lib/google-site-verification";
 import { absoluteUrl, getSiteUrl } from "@/lib/site";
 
-const googleSiteVerification =
+const googleSiteVerificationRaw =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION?.trim();
+const googleSiteVerification = googleSiteVerificationRaw
+  ? normalizeGoogleSiteVerificationToken(googleSiteVerificationRaw)
+  : "";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -42,7 +46,7 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "/",
   },
-  ...(googleSiteVerification
+  ...(googleSiteVerification.length > 0
     ? {
         verification: {
           google: googleSiteVerification,
