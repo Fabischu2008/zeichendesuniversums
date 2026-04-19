@@ -16,7 +16,7 @@ npm run dev
 ## Routen (Auszug)
 
 - `/` Homepage
-- `/freebie` → `/success-freebie`
+- `/freebie` → `/freebie/download` (nach Lead‑Formular)
 - `/shop` + `/shop/[slug]`
 - `/tools/birth-chart` (Big‑3)
 - `/api/tools/big3` (Berechnung)

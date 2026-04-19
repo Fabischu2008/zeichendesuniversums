@@ -12,7 +12,6 @@ export default function robots(): MetadataRoute.Robots {
           "/api/",
           "/checkout",
           "/success",
-          "/success-freebie",
           "/tools/birth-chart/profile",
           "/tools/compatibility/access",
         ],

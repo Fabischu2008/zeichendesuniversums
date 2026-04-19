@@ -32,6 +32,12 @@ export default function FreebieDownloadPage() {
             PDF herunterladen
           </a>
           <Link
+            href="/tools"
+            className="inline-flex h-12 w-full items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 px-6 text-sm font-semibold text-violet-900 hover:bg-violet-500/15 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-100 dark:hover:bg-violet-500/20"
+          >
+            Zu den Tools
+          </Link>
+          <Link
             href="/"
             className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
           >
