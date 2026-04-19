@@ -94,7 +94,7 @@ export async function POST(req: Request) {
   const payload = {
     from,
     to: [to] as string[],
-    subject: leadEmailSubject(firstName, lastName),
+    subject: leadEmailSubject(firstName, lastName, resolvedSource),
     text: textBody,
     html: htmlBody,
     replyTo: email,

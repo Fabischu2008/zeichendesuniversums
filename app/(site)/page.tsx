@@ -13,13 +13,13 @@ import { absoluteUrl } from "@/lib/site";
 const homeOgImage = absoluteUrl(SOCIAL_PREVIEW_IMAGE);
 
 export const metadata: Metadata = {
-  title: "Kostenloser Sternzeichen-Guide",
+  title: "Kostenloser Sternzeichen-Guide & Astrologie-Tools",
   description:
-    "PDF-Guide in Minuten: Vorname, Nachname, E-Mail – danach sofortiger Download. Praktische Astrologie ohne Buzzwords.",
+    `${SITE_NAME}: kostenloser Sternzeichen-PDF-Guide, Astrologie und Bewusstsein – nach dem Formular sofort downloaden. Plus Tools zu Horoskop, Kompatibilität & Human Design – klar und ohne Buzzwords.`,
   openGraph: {
     title: `Kostenloser Sternzeichen-Guide · ${SITE_NAME}`,
     description:
-      "Hol dir den PDF-Guide: kurz, umsetzbar, direkt nach dem Absenden zum Download.",
+      "Zeichen des Universums: PDF-Guide, Astrologie & Bewusstsein. Nach dem Absenden direkt zum Download – plus kostenlose Tools.",
     url: absoluteUrl("/"),
     images: [
       {

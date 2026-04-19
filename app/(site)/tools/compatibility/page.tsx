@@ -605,11 +605,14 @@ export default function CompatibilityToolPage() {
 
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Kompatibilität (Synastry)
+          Paaranalyse &amp; Kompatibilität (Synastry)
         </h1>
         <p className="text-black/70 dark:text-white/70">
-          Zwei Geburtsprofile – echte Planetenlagen und professionelle
-          Aspekt-Analyse (Sonne bis Saturn). Kein Zufalls-Score mehr.
+          Für Partnerschaft, Dating oder enge Freundschaft: astrologische
+          Kompatibilität als echte Synastry – also wie sich zwei Horoskope
+          begegnen, nicht nur zwei Sternzeichen. Zwei Geburtsprofile mit
+          echten Planetenlagen und Aspekt-Analyse (Sonne bis Saturn). Kein
+          Zufalls-Score mehr.
         </p>
       </header>
 

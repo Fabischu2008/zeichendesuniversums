@@ -1,10 +1,38 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import { SITE_NAME } from "@/lib/brand";
+import { absoluteUrl } from "@/lib/site";
+
+const path = "/tools";
+const url = absoluteUrl(path);
 
 export const metadata: Metadata = {
-  title: "Tools – Dein Einstieg",
+  title: "Astrologie-Tools & Horoskop-Rechner",
   description:
-    "Geburtshoroskop, Kompatibilität oder Bewusstseins-Stufen – kostenlos ausprobieren.",
+    "Kostenlose Astro-Tools von Zeichen des Universums: Geburtshoroskop & Big Three, Paaranalyse und Beziehungs-Kompatibilität (Synastrie), Astro-Karte, Human Design und Bewusstseins-Stufen – Astrologie und Bewusstsein praktisch erklärt.",
+  keywords: [
+    "Astrologie Tools",
+    "Horoskop Rechner",
+    "Paaranalyse",
+    "Geburtshoroskop",
+    "Kompatibilität Beziehung",
+    "Human Design",
+    "Zeichen des Universums",
+  ],
+  alternates: { canonical: path },
+  openGraph: {
+    title: `Astrologie-Tools & Horoskop · ${SITE_NAME}`,
+    description:
+      "Geburtshoroskop, Paaranalyse, Astro-Karte, Human Design, Bewusstsein – alle Tools auf einen Blick.",
+    url,
+    locale: "de_DE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Astrologie-Tools · ${SITE_NAME}`,
+    description:
+      "Horoskop-Tools: Kompatibilität, Big Three, Human Design und mehr.",
+  },
 };
 
 const pathDu = {

@@ -5,7 +5,31 @@ export const SITE_NAME = "Zeichen des Universums";
 export const CANONICAL_SITE_ORIGIN = "https://zeichendesuniversums.com";
 
 export const SITE_DESCRIPTION =
-  "Sternzeichen-Guide, Tools und Readings – finde dein wahres Sternzeichen-Potenzial.";
+  "Zeichen des Universums: praktische Astrologie und Bewusstsein – Sternzeichen, Geburtshoroskop, Kompatibilität und Human Design. Kostenloser Guide und klare Tools ohne esoterisches Geschwurbel.";
+
+/** Meta-Keywords (Startseiten-Defaults); unterseiten können ergänzen. */
+export const SITE_SEO_KEYWORDS = [
+  "Zeichen des Universums",
+  "zeichendesuniversums",
+  "Astrologie",
+  "Bewusstsein",
+  "persönliche Entwicklung",
+  "Sternzeichen",
+  "Geburtshoroskop",
+  "Big Three",
+  "Aszendent",
+  "Synastrie",
+  "Kompatibilität Beziehung",
+  "Human Design",
+  "Astro Karte",
+] as const;
+
+/** schema.org `sameAs` – gleiche Handles wie auf /links (für Google Knowledge Panel). */
+export const SITE_SAME_AS = [
+  "https://www.instagram.com/zeichen.des.universums",
+  "https://www.youtube.com/@Zeichen.des.Universums",
+  "https://www.tiktok.com/@zeichen.des.unive",
+] as const;
 
 export const SITE_TAGLINE = "Astrology, aber praktisch.";
 

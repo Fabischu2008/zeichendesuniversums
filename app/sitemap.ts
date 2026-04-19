@@ -8,6 +8,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
   const staticRoutes: MetadataRoute.Sitemap = [
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "weekly" },
     { url: absoluteUrl("/freebie"), lastModified: now, changeFrequency: "monthly" },
+    {
+      url: absoluteUrl("/beziehung"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    {
+      url: absoluteUrl("/partnerschaft"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
     { url: absoluteUrl("/shop"), lastModified: now, changeFrequency: "weekly" },
     { url: absoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly" },
     { url: absoluteUrl("/tools"), lastModified: now, changeFrequency: "monthly" },

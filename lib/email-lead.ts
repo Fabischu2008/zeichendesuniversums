@@ -9,8 +9,16 @@ function escapeHtml(text: string) {
     .replace(/"/g, "&quot;");
 }
 
-export function leadEmailSubject(firstName: string, lastName: string) {
-  return `[${SITE_NAME}] Neuer Guide-Lead: ${firstName} ${lastName}`;
+export function leadEmailSubject(
+  firstName: string,
+  lastName: string,
+  resolvedSource?: string,
+) {
+  const tag =
+    resolvedSource && resolvedSource !== "freebie"
+      ? ` · ${resolvedSource}`
+      : "";
+  return `[${SITE_NAME}] Neuer Lead${tag}: ${firstName} ${lastName}`;
 }
 
 export function buildLeadEmailBodies(params: {
@@ -74,7 +82,7 @@ export function buildLeadEmailBodies(params: {
       <td style="background:#ffffff;border-radius:16px;padding:8px 0 0 0;box-shadow:0 4px 24px rgba(15,23,42,0.08);overflow:hidden;">
         <div style="padding:20px 22px 8px 22px;">
           <p style="margin:0;font-size:15px;font-weight:600;color:#7c3aed;">Neuer Lead</p>
-          <p style="margin:8px 0 0 0;font-size:14px;line-height:1.5;color:#64748b;">Jemand hat sich für den kostenlosen Guide eingetragen.</p>
+          <p style="margin:8px 0 0 0;font-size:14px;line-height:1.5;color:#64748b;">Neuer Lead über die Website – Details in der Tabelle.</p>
         </div>
         <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="border-collapse:collapse;">
           ${innerRows}
