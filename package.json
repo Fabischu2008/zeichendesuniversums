@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "eslint",
     "verify:profile": "npx tsx scripts/verify-profile-access.ts",
+    "sanity:payment-pending": "npx tsx scripts/sanity-async-payment-pending.ts",
     "test:resend": "npx tsx scripts/test-resend.ts",
     "test:astro-regression": "node scripts/test-astro-regression.js"
   },

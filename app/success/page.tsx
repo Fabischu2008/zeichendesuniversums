@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { AccessBrandHeader } from "@/components/AccessBrandHeader";
+import { AsyncCheckoutPaymentPoller } from "@/components/AsyncCheckoutPaymentPoller";
 import { CompatibilityAccessLinksCard } from "@/components/CompatibilityAccessLinksCard";
 import { ProfileAccessLinkCard } from "@/components/ProfileAccessLinkCard";
 import { StripeCompatibilityEmailOnce } from "@/components/StripeCompatibilityEmailOnce";
@@ -26,6 +27,7 @@ import {
 } from "@/lib/profile-access-policy";
 import { buildProfileAccessWithUnlockUrl } from "@/lib/profile-unlock-url";
 import { getSiteUrl } from "@/lib/site";
+import { asyncPaymentPendingForProduct } from "@/lib/stripe-checkout-session";
 
 export const runtime = "nodejs";
 
@@ -199,23 +201,40 @@ export default async function SuccessPage({
   }
 
   if (isProfileProduct && !profileAccessUrl) {
+    const pollAsync =
+      typeof sessionId === "string" &&
+      sessionId.trim() !== "" &&
+      (await asyncPaymentPendingForProduct(sessionId, PRODUCT_ID_ASTRO_VOLLPROFIL));
+
     return (
       <>
         <AccessBrandHeader />
         <main className="mx-auto w-full max-w-4xl px-4 py-8">
           <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 text-sm text-black/75 dark:border-white/10 dark:bg-white/5 dark:text-white/75">
             <p className="font-medium text-black dark:text-white">
-              Persönlicher Link nicht verfügbar
+              {pollAsync ? "Zahlung wird bestätigt …" : "Persönlicher Link nicht verfügbar"}
             </p>
             <p className="mt-2">
-              Der Zugangslink konnte nicht erstellt werden. Typische Ursachen:{" "}
-              <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
-                STRIPE_SECRET_KEY
-              </code>{" "}
-              fehlt auf dem Server, oder diese Seite wurde ohne gültige Stripe-Session
-              geöffnet (immer über den Abschluss im Checkout mit dem Link zurückkehren).
-              Bitte den Support kontaktieren oder es später erneut versuchen.
+              {pollAsync
+                ? "Bei Bancontact, SEPA oder ähnlichen Methoden bestätigt Stripe die Zahlung oft erst wenige Sekunden nach der Rückkehr – der Link erscheint gleich automatisch."
+                : "Der Zugangslink konnte nicht erstellt werden. Typische Ursachen: "}
+              {!pollAsync ? (
+                <>
+                  <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
+                    STRIPE_SECRET_KEY
+                  </code>{" "}
+                  fehlt auf dem Server, oder diese Seite wurde ohne gültige Stripe-Session
+                  geöffnet (immer über den Abschluss im Checkout mit dem Link zurückkehren).
+                  Bitte den Support kontaktieren oder es später erneut versuchen.
+                </>
+              ) : null}
             </p>
+            {pollAsync && sessionId ? (
+              <AsyncCheckoutPaymentPoller
+                sessionId={sessionId!}
+                productId={PRODUCT_ID_ASTRO_VOLLPROFIL}
+              />
+            ) : null}
           </div>
         </main>
       </>
@@ -224,32 +243,49 @@ export default async function SuccessPage({
 
   if (isCompatProduct && !compatLinks) {
     const hasSession = Boolean(sessionId?.trim());
+    const pollAsync =
+      typeof sessionId === "string" &&
+      sessionId.trim() !== "" &&
+      (await asyncPaymentPendingForProduct(sessionId, PRODUCT_ID_COMPAT_PAARANALYSE));
+
     return (
       <>
         <AccessBrandHeader />
         <main className="mx-auto w-full max-w-4xl px-4 py-8">
           <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 text-sm text-black/75 dark:border-white/10 dark:bg-white/5 dark:text-white/75">
             <p className="font-medium text-black dark:text-white">
-              Paaranalyse-Links nicht verfügbar
+              {pollAsync ? "Zahlung wird bestätigt …" : "Paaranalyse-Links nicht verfügbar"}
             </p>
             <p className="mt-2">
-              Die Zugangslinks konnten nicht erstellt werden. Häufige Ursachen:{" "}
-              <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
-                STRIPE_SECRET_KEY
-              </code>{" "}
-              fehlt auf Vercel (Production) oder passt nicht zur Stripe-Umgebung (Test- vs.
-              Live-Key), die Success-URL enthält keine{" "}
-              <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
-                session_id
-              </code>{" "}
-              {!hasSession ? (
-                <span className="font-medium text-amber-800 dark:text-amber-200">
-                  (aktuell fehlt sie in der Adresszeile)
-                </span>
-              ) : null}
-              , oder die Zahlung ist noch nicht als „bezahlt“ verbucht. Bitte Support
-              kontaktieren, wenn das weiterhin auftritt.
+              {pollAsync ? (
+                "Bei Bancontact, SEPA oder ähnlichen Methoden bestätigt Stripe die Zahlung oft erst kurz nach der Rückkehr – die Links erscheinen gleich automatisch."
+              ) : (
+                <>
+                  Die Zugangslinks konnten nicht erstellt werden. Häufige Ursachen:{" "}
+                  <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
+                    STRIPE_SECRET_KEY
+                  </code>{" "}
+                  fehlt auf Vercel (Production) oder passt nicht zur Stripe-Umgebung (Test- vs.
+                  Live-Key), die Success-URL enthält keine{" "}
+                  <code className="rounded bg-black/5 px-1 py-0.5 text-xs dark:bg-white/10">
+                    session_id
+                  </code>{" "}
+                  {!hasSession ? (
+                    <span className="font-medium text-amber-800 dark:text-amber-200">
+                      (aktuell fehlt sie in der Adresszeile)
+                    </span>
+                  ) : null}
+                  , oder die Zahlung ist noch nicht als „bezahlt“ verbucht. Bitte Support
+                  kontaktieren, wenn das weiterhin auftritt.
+                </>
+              )}
             </p>
+            {pollAsync && sessionId ? (
+              <AsyncCheckoutPaymentPoller
+                sessionId={sessionId!}
+                productId={PRODUCT_ID_COMPAT_PAARANALYSE}
+              />
+            ) : null}
           </div>
         </main>
       </>

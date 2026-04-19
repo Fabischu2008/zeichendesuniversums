@@ -98,6 +98,38 @@ async function retrieveCheckoutSession(
 }
 
 /**
+ * Bei Bancontact, SEPA, manchen Bank-Redirects: Redirect kommt, bevor die Session
+ * schon `payment_status: paid` hat. Dann kurz pollen (Success-Seite) oder Webhooks nutzen.
+ */
+function sessionPaymentStillPending(session: Stripe.Checkout.Session): boolean {
+  if (session.payment_status === "paid" || session.payment_status === "no_payment_required") {
+    return false;
+  }
+  const ps = session.payment_status as string;
+  if (ps === "processing" || ps === "requires_action") {
+    return true;
+  }
+  return session.status === "complete" && session.payment_status === "unpaid";
+}
+
+/**
+ * Gleiche Session + URL-`productId` wie im Checkout: Zahlung noch nicht final, aber
+ * sinnvoll zu warten (async Zahlarten).
+ */
+export async function asyncPaymentPendingForProduct(
+  sessionId: string,
+  productId: string,
+): Promise<boolean> {
+  const session = await retrieveCheckoutSession(sessionId);
+  if (!session) return false;
+  const meta = session.metadata ?? {};
+  const match =
+    meta.cms_product_id === productId || meta.productId === productId;
+  if (!match) return false;
+  return sessionPaymentStillPending(session);
+}
+
+/**
  * Lädt eine Checkout Session – bezahlt, Vollprofil-Produkt, Kunden-E-Mail.
  */
 export async function getPaidProfileCheckoutSessionInfo(sessionId: string): Promise<{
