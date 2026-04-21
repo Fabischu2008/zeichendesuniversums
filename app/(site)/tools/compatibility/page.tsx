@@ -98,14 +98,14 @@ function SignChip({ label, sign }: { label: string; sign: string }) {
   const icon = signIconPath(sign);
   return (
     <div className="rounded-xl border border-black/10 bg-white/70 px-3 py-2 dark:border-white/15 dark:bg-black/20">
-      <p className="text-[10px] uppercase tracking-[0.14em] text-black/50 dark:text-white/55">
+      <p className="text-[9px] uppercase leading-tight tracking-[0.12em] text-black/50 dark:text-white/55">
         {label}
       </p>
-      <div className="mt-1 flex items-center gap-2">
+      <div className="mt-1 flex min-w-0 items-center gap-2">
         {icon ? (
           <Image src={icon} alt={sign} width={18} height={18} className="h-[18px] w-[18px]" />
         ) : null}
-        <span className="text-sm font-semibold">{sign}</span>
+        <span className="min-w-0 break-words text-sm font-semibold">{sign}</span>
       </div>
     </div>
   );
@@ -432,7 +432,7 @@ function CompatibilityOctagon({
         width={size}
         height={size}
         viewBox={`0 0 ${size} ${size}`}
-        className="h-[380px] w-[380px] max-w-full"
+        className="h-auto w-full max-w-[380px]"
         aria-label="Kompatibilitäts-Oktagon"
       >
         {rings.map((r) => (
@@ -505,8 +505,8 @@ function CompatibilityOctagon({
               <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
                 {d.label}
               </p>
-              <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-3 text-xs">
-                <div className="min-w-[92px] text-left">
+              <div className="mt-2 grid grid-cols-[minmax(0,1fr)_1fr_minmax(0,1fr)] items-center gap-2 text-[11px]">
+                <div className="min-w-0 text-left">
                   <p className="font-medium text-black/80 dark:text-white/80">{poles.left}</p>
                   <p className="tabular-nums text-black/55 dark:text-white/55">{leftValue}%</p>
                 </div>
@@ -516,7 +516,7 @@ function CompatibilityOctagon({
                     style={{ left: `calc(${rightValue}% - 8px)` }}
                   />
                 </div>
-                <div className="min-w-[92px] text-right">
+                <div className="min-w-0 text-right">
                   <p className="font-medium text-black/80 dark:text-white/80">{poles.right}</p>
                   <p className="tabular-nums text-black/55 dark:text-white/55">{rightValue}%</p>
                 </div>
@@ -768,7 +768,7 @@ export default function CompatibilityToolPage() {
   }, [previewA, previewB]);
 
   return (
-    <div className="mx-auto w-full max-w-[1200px] space-y-10 px-4 sm:px-6 lg:px-8">
+    <div className="w-full max-w-none space-y-8 px-2 sm:px-4 lg:mx-auto lg:max-w-[1200px] lg:px-8">
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Paaranalyse &amp; Kompatibilität (Synastry)
@@ -783,7 +783,7 @@ export default function CompatibilityToolPage() {
       </header>
 
       {stage === "preview" ? (
-        <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+        <section className="rounded-3xl border border-black/5 bg-white/70 p-4 sm:p-6 lg:p-8 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
             Schritt 2 · Kleine Analyse
           </p>
@@ -1057,8 +1057,8 @@ export default function CompatibilityToolPage() {
       ) : null}
 
       {report ? (
-        <div className="space-y-8">
-          <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+        <div className="-mx-1 space-y-6 sm:mx-0 sm:space-y-8">
+          <section className="rounded-2xl border border-black/5 bg-white/70 p-4 sm:rounded-3xl sm:p-8 dark:border-white/10 dark:bg-white/5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
               Große Analyse · Profile
             </p>
@@ -1094,7 +1094,7 @@ export default function CompatibilityToolPage() {
               );
               return (
                 <div className="mt-5 space-y-4">
-                  <section className="rounded-3xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-black/20">
+          <section className="rounded-3xl border border-black/10 bg-white/80 p-3 sm:p-4 dark:border-white/10 dark:bg-black/20">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-700 dark:text-violet-300">
                       Profilvergleich A ↔ B
                     </p>
@@ -1211,7 +1211,7 @@ export default function CompatibilityToolPage() {
             })()}
           </section>
 
-          <section className="rounded-3xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-emerald-500/10 p-6 sm:p-8 dark:border-violet-400/20">
+          <section className="rounded-2xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-emerald-500/10 p-3 sm:rounded-3xl sm:p-6 lg:p-8 dark:border-violet-400/20">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
               Große Analyse · Vergleich
             </p>
@@ -1243,7 +1243,7 @@ export default function CompatibilityToolPage() {
             </ul>
           </section>
 
-          <section className="rounded-3xl border border-black/5 bg-white/80 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+          <section className="rounded-2xl border border-black/5 bg-white/80 p-3 sm:rounded-3xl sm:p-6 lg:p-8 dark:border-white/10 dark:bg-white/5">
             <h3 className="text-xl font-semibold tracking-tight">
               Analyse je Dimension
             </h3>
@@ -1265,7 +1265,7 @@ export default function CompatibilityToolPage() {
             </div>
           </section>
 
-          <section className="rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-sky-500/10 p-6 sm:p-8 dark:from-violet-500/15 dark:to-sky-500/10">
+          <section className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-sky-500/10 p-3 sm:rounded-3xl sm:p-6 lg:p-8 dark:from-violet-500/15 dark:to-sky-500/10">
             {(() => {
               const harmonic = report.synastry.aspects.filter((a) => a.tone === "harmonisch").length;
               const challenging = report.synastry.aspects.filter(
@@ -1294,8 +1294,8 @@ export default function CompatibilityToolPage() {
                     <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
                       Polarität
                     </p>
-                    <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-3 text-xs">
-                      <div className="min-w-[120px] text-left">
+                    <div className="mt-2 grid grid-cols-[minmax(0,1fr)_1fr_minmax(0,1fr)] items-center gap-2 text-[11px]">
+                      <div className="min-w-0 text-left">
                         <p className="font-medium text-black/80 dark:text-white/80">
                           Leichtigkeit &amp; Flow
                         </p>
@@ -1309,7 +1309,7 @@ export default function CompatibilityToolPage() {
                           style={{ left: `calc(${growthPercent}% - 8px)` }}
                         />
                       </div>
-                      <div className="min-w-[120px] text-right">
+                      <div className="min-w-0 text-right">
                         <p className="font-medium text-black/80 dark:text-white/80">
                           Reibung &amp; Wachstum
                         </p>
@@ -1343,7 +1343,7 @@ export default function CompatibilityToolPage() {
       ) : null}
 
       {stage === "preview" ? (
-        <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">
+          <section className="w-full max-w-none rounded-2xl border border-black/5 bg-black/[0.02] px-4 py-6 text-center dark:border-white/10 dark:bg-white/[0.03] sm:rounded-3xl sm:px-8 sm:py-8">
           <p className="text-sm font-medium text-black/80 dark:text-white/80">
             Nächster Schritt
           </p>
