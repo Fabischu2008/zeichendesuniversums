@@ -181,7 +181,7 @@ export default function BirthChartToolPage() {
   }
 
   return (
-    <div className="mx-auto max-w-3xl space-y-12">
+    <div className="w-full max-w-none space-y-8 px-2 sm:px-4 lg:mx-auto lg:max-w-3xl lg:px-0">
       <Link
         href="/tools"
         className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
@@ -208,7 +208,7 @@ export default function BirthChartToolPage() {
         </p>
       </header>
 
-      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+      <section className="rounded-2xl border border-black/5 bg-white/60 p-4 sm:rounded-3xl sm:p-8 dark:border-white/10 dark:bg-white/5">
         <h2 className="text-lg font-semibold tracking-tight">
           Schritt 2 · Geburtsdaten
         </h2>
@@ -306,7 +306,7 @@ export default function BirthChartToolPage() {
 
       <section
         ref={resultRef}
-        className="scroll-mt-24 space-y-8 rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
+        className="scroll-mt-24 space-y-6 rounded-2xl border border-black/5 bg-white p-4 sm:space-y-8 sm:rounded-3xl sm:p-8 dark:border-white/10 dark:bg-white/5"
       >
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
           Schritt 3 · Ergebnis &amp; Demo
@@ -367,7 +367,7 @@ export default function BirthChartToolPage() {
         )}
       </section>
 
-      <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">
+      <section className="w-full max-w-none rounded-2xl border border-black/5 bg-black/[0.02] px-4 py-6 text-center dark:border-white/10 dark:bg-white/[0.03] sm:rounded-3xl sm:px-8 sm:py-8">
         <p className="text-sm font-medium text-black/80 dark:text-white/80">
           Nächster Schritt
         </p>
