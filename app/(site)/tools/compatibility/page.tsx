@@ -769,6 +769,12 @@ export default function CompatibilityToolPage() {
 
   return (
     <div className="w-full max-w-none space-y-8 px-2 sm:px-4 lg:mx-auto lg:max-w-[1200px] lg:px-8">
+      <Link
+        href="/tools"
+        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
+      >
+        ← Zur Themenwahl
+      </Link>
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Paaranalyse &amp; Kompatibilität (Synastry)
@@ -783,7 +789,8 @@ export default function CompatibilityToolPage() {
       </header>
 
       {stage === "preview" ? (
-        <section className="rounded-3xl border border-black/5 bg-white/70 p-4 sm:p-6 lg:p-8 dark:border-white/10 dark:bg-white/5">
+        <>
+        <section className="rounded-2xl border border-black/5 bg-white/70 p-4 sm:rounded-3xl sm:p-6 lg:p-8 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
             Schritt 2 · Kleine Analyse
           </p>
@@ -841,28 +848,28 @@ export default function CompatibilityToolPage() {
           </div>
 
           {miniPreviewReady ? (
-            <>
               <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
                 <p className="font-medium">
                   {previewA} × {previewB} · Mini-Analyse
                 </p>
                 <p className="mt-1.5">{previewCopy}</p>
               </div>
+          ) : null}
+        </section>
 
-              <section className="relative mt-6 overflow-hidden rounded-3xl border border-dashed border-black/20 bg-white p-5 sm:p-6 dark:border-white/20 dark:bg-white/5">
-                <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(0,0,0,0.03)_100%)] dark:bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.04)_100%)]" />
-                <div className="pointer-events-none absolute right-3 top-3">
-                  <span className="rounded-full border border-black/15 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black/60 shadow-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
-                    Demo · keine exakten Synastry-Texte
-                  </span>
-                </div>
-                <div className="relative">
+        {miniPreviewReady ? (
+          <section className="relative mt-6 w-full overflow-hidden rounded-2xl border border-black/10 bg-white p-4 sm:rounded-3xl sm:p-6 dark:border-white/15 dark:bg-white/5">
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(0,0,0,0.03)_100%)] dark:bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.04)_100%)]" />
+            <div className="relative">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
                     Schritt 3 · Große Analyse
                   </p>
                   <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
                     So sieht die vollständige Paaranalyse aus
                   </h3>
+                  <p className="mt-3 inline-flex rounded-full border border-black/15 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black/60 shadow-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
+                    Demo · keine exakten Synastry-Texte
+                  </p>
                   <p className="mt-2 text-sm text-black/70 dark:text-white/70">
                     Kein Rätselraten mehr: In der Vollversion werden beide Horoskope
                     vollständig berechnet und dann glasklar verglichen
@@ -999,11 +1006,10 @@ export default function CompatibilityToolPage() {
                       Exakte Paaranalyse freischalten
                     </button>
                   </div>
-                </div>
-              </section>
-            </>
-          ) : null}
-        </section>
+            </div>
+          </section>
+        ) : null}
+        </>
       ) : null}
 
       {stage === "exact" ? (
