@@ -83,6 +83,178 @@ function signIconPath(sign: string): string | null {
   return SIGN_ICON_BY_SIGN[sign] ?? null;
 }
 
+const SIGN_RELATION_HINTS: Record<
+  ZodiacSign,
+  { strength: string; challenge: string }
+> = {
+  Widder: {
+    strength: "bringt Initiative, Mut und direkte Bewegung in die Verbindung",
+    challenge: "kann bei Druck schneller in Ungeduld oder Reaktivität kippen",
+  },
+  Stier: {
+    strength: "bringt Stabilität, Verlässlichkeit und sinnliche Bindung",
+    challenge: "kann bei Unsicherheit festhalten oder sich schwer umstellen",
+  },
+  Zwillinge: {
+    strength: "bringt Leichtigkeit, Humor und flexible Kommunikation",
+    challenge: "kann bei Überlastung springen statt vertiefen",
+  },
+  Krebs: {
+    strength: "bringt emotionale Fürsorge und tiefe Bindungsbereitschaft",
+    challenge: "kann Rückzug wählen, wenn Verletzlichkeit nicht sicher gehalten wird",
+  },
+  Löwe: {
+    strength: "bringt Herz, Strahlkraft und großzügige Wärme",
+    challenge: "kann bei fehlender Resonanz schnell in Stolz oder Drama gehen",
+  },
+  Jungfrau: {
+    strength: "bringt Klarheit, Alltagstauglichkeit und hilfreiche Struktur",
+    challenge: "kann in Kritik oder Perfektionsdruck rutschen",
+  },
+  Waage: {
+    strength: "bringt Ausgleich, Diplomatie und Beziehungsorientierung",
+    challenge: "kann Konflikte zu lange glätten statt klar zu benennen",
+  },
+  Skorpion: {
+    strength: "bringt Tiefe, Loyalität und Transformationskraft",
+    challenge: "kann bei Misstrauen kontrollierend oder extrem reagieren",
+  },
+  Schütze: {
+    strength: "bringt Weite, Sinnorientierung und Optimismus",
+    challenge: "kann Verbindlichkeit meiden, wenn Freiheit zu eng erlebt wird",
+  },
+  Steinbock: {
+    strength: "bringt Verlässlichkeit, Reife und langfristigen Aufbau",
+    challenge: "kann Gefühle zugunsten von Funktion zu stark kontrollieren",
+  },
+  Wassermann: {
+    strength: "bringt Perspektivwechsel, Eigenständigkeit und Innovation",
+    challenge: "kann emotional distanziert wirken, wenn Nähe eingefordert wird",
+  },
+  Fische: {
+    strength: "bringt Empathie, Mitgefühl und intuitive Verbundenheit",
+    challenge: "kann Grenzen verwischen oder Konflikte vermeiden",
+  },
+};
+
+function signGroup(sign: ZodiacSign): "fire" | "earth" | "air" | "water" {
+  if (["Widder", "Löwe", "Schütze"].includes(sign)) return "fire";
+  if (["Stier", "Jungfrau", "Steinbock"].includes(sign)) return "earth";
+  if (["Zwillinge", "Waage", "Wassermann"].includes(sign)) return "air";
+  return "water";
+}
+
+function signModality(sign: ZodiacSign): "cardinal" | "fixed" | "mutable" {
+  if (["Widder", "Krebs", "Waage", "Steinbock"].includes(sign)) return "cardinal";
+  if (["Stier", "Löwe", "Skorpion", "Wassermann"].includes(sign)) return "fixed";
+  return "mutable";
+}
+
+function signPolarity(sign: ZodiacSign): "yang" | "yin" {
+  if (["Widder", "Zwillinge", "Löwe", "Waage", "Schütze", "Wassermann"].includes(sign)) return "yang";
+  return "yin";
+}
+
+function signIndex(sign: ZodiacSign): number {
+  return [
+    "Widder",
+    "Stier",
+    "Zwillinge",
+    "Krebs",
+    "Löwe",
+    "Jungfrau",
+    "Waage",
+    "Skorpion",
+    "Schütze",
+    "Steinbock",
+    "Wassermann",
+    "Fische",
+  ].indexOf(sign);
+}
+
+function pairSeed(a: ZodiacSign, b: ZodiacSign): number {
+  const key = [a, b].sort().join("|");
+  return [...key].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
+}
+
+function signBasedHarmony(previewA: ZodiacSign, previewB: ZodiacSign): {
+  flowPercent: number;
+  growthPercent: number;
+  contextLines: string[];
+} {
+  const a = signGroup(previewA);
+  const b = signGroup(previewB);
+  const modalityA = signModality(previewA);
+  const modalityB = signModality(previewB);
+  const polarityA = signPolarity(previewA);
+  const polarityB = signPolarity(previewB);
+  const idxA = signIndex(previewA);
+  const idxB = signIndex(previewB);
+  const directDistance = Math.abs(idxA - idxB);
+  const distance = Math.min(directDistance, 12 - directDistance);
+  const seed = pairSeed(previewA, previewB);
+  const hintA = SIGN_RELATION_HINTS[previewA];
+  const hintB = SIGN_RELATION_HINTS[previewB];
+
+  let flow = 52;
+  if (a === b) flow = 70;
+  if ((a === "fire" && b === "air") || (a === "air" && b === "fire")) flow = 63;
+  if ((a === "water" && b === "earth") || (a === "earth" && b === "water")) flow = 61;
+  if ((a === "fire" && b === "water") || (a === "water" && b === "fire")) flow = 44;
+  if ((a === "air" && b === "earth") || (a === "earth" && b === "air")) flow = 46;
+
+  if (modalityA === modalityB) flow += 4;
+  if (
+    (modalityA === "cardinal" && modalityB === "fixed") ||
+    (modalityA === "fixed" && modalityB === "cardinal")
+  ) {
+    flow -= 4;
+  }
+  if (polarityA !== polarityB) flow += 2;
+
+  const aspectBiasByDistance: Record<number, number> = {
+    0: 6, // conjunction
+    1: -2, // semi-sextile: adjustment
+    2: 2, // sextile-ish tone
+    3: 5, // trine-ish tone
+    4: -5, // square
+    5: 3, // quincunx/sextile blend
+    6: -3, // opposition
+  };
+  flow += aspectBiasByDistance[distance] ?? 0;
+
+  // deterministic fine-grain variation per specific sign pair
+  flow += (seed % 5) - 2;
+
+  flow = Math.max(30, Math.min(78, flow));
+  const growth = 100 - flow;
+
+  const distanceText: Record<number, string> = {
+    0: "Sehr direkte Spiegelung: starke Resonanz, aber auch Trigger liegen offen.",
+    1: "Feinabstimmung im Alltag wichtig: kleine Unterschiede summieren sich schnell.",
+    2: "Gute Lernachse: ihr könnt euch leicht ergänzen, wenn Rollen klar sind.",
+    3: "Natürlicher Flow zwischen euch: Kooperation fällt meist leicht.",
+    4: "Spannungsachse: hohe Entwicklungskraft, wenn Konflikte bewusst geführt werden.",
+    5: "Dynamische Ergänzung: braucht flexible Absprachen statt starre Erwartungen.",
+    6: "Gegenpol-Dynamik: starke Anziehung plus Reibung bei Prioritäten möglich.",
+  };
+  const actionVariants = [
+    "Hebel: ein wöchentliches 15-Minuten-Check-in zu Nähe, Tempo und Entscheidungen.",
+    "Hebel: klärt vor Konflikten, wer gerade führt und wer spiegelt.",
+    "Hebel: definiert ein gemeinsames Ritual, das Sicherheit und Freiraum verbindet.",
+  ];
+
+  const lines = [
+    `Sonnenzeichen: ${previewA} trifft auf ${previewB}.`,
+    distanceText[distance] ??
+      "Unterschiedliche Element-Basis bringt Ergänzung, wenn ihr Tempo und Kommunikation bewusst abstimmt.",
+    `${previewA}: ${hintA.strength}. ${previewB}: ${hintB.strength}.`,
+    actionVariants[seed % actionVariants.length],
+  ];
+
+  return { flowPercent: flow, growthPercent: growth, contextLines: lines };
+}
+
 function elementMixFromProfile(profile: AstroProfileResult): Array<{ element: Element; value: number }> {
   const map = new Map<Element, number>();
   for (const item of profile.elementBalance) {
@@ -529,6 +701,83 @@ function CompatibilityOctagon({
   );
 }
 
+function PreviewOctagonDemo() {
+  const axes = [
+    { score: 68 },
+    { score: 74 },
+    { score: 59 },
+    { score: 63 },
+    { score: 52 },
+    { score: 70 },
+    { score: 61 },
+    { score: 66 },
+  ];
+  const size = 280;
+  const center = size / 2;
+  const radius = 92;
+  const rings = [0.25, 0.5, 0.75, 1];
+  const angleFor = (i: number) => -Math.PI / 2 + (i * (Math.PI * 2)) / axes.length;
+  const pointFor = (idx: number, r: number) => {
+    const a = angleFor(idx);
+    return { x: center + Math.cos(a) * r, y: center + Math.sin(a) * r };
+  };
+  const polygon = axes
+    .map((d, idx) => {
+      const p = pointFor(idx, radius * (d.score / 100));
+      return `${p.x},${p.y}`;
+    })
+    .join(" ");
+
+  return (
+    <div className="mt-3 flex justify-center">
+      <svg
+        width={size}
+        height={size}
+        viewBox={`0 0 ${size} ${size}`}
+        className="h-auto w-full max-w-[280px]"
+        aria-label="Beispiel Oktagon-Matrix"
+      >
+        {rings.map((r) => (
+          <polygon
+            key={r}
+            points={axes
+              .map((_, idx) => {
+                const p = pointFor(idx, radius * r);
+                return `${p.x},${p.y}`;
+              })
+              .join(" ")}
+            fill="none"
+            stroke="currentColor"
+            className="text-black/10 dark:text-white/20"
+            strokeWidth="1"
+          />
+        ))}
+        {axes.map((_, idx) => {
+          const p = pointFor(idx, radius);
+          return (
+            <line
+              key={`axis-${idx}`}
+              x1={center}
+              y1={center}
+              x2={p.x}
+              y2={p.y}
+              stroke="currentColor"
+              className="text-black/10 dark:text-white/20"
+              strokeWidth="1"
+            />
+          );
+        })}
+        <polygon
+          points={polygon}
+          fill="rgba(124,58,237,0.26)"
+          stroke="rgba(109,40,217,0.9)"
+          strokeWidth="2"
+        />
+      </svg>
+    </div>
+  );
+}
+
 function dimensionAnalysisText(
   key: string,
   score: number,
@@ -748,24 +997,10 @@ export default function CompatibilityToolPage() {
     void redeem();
   }, [router]);
 
-  const previewCopy = useMemo(() => {
-    const fire = ["Widder", "Löwe", "Schütze"];
-    const earth = ["Stier", "Jungfrau", "Steinbock"];
-    const air = ["Zwillinge", "Waage", "Wassermann"];
-    const water = ["Krebs", "Skorpion", "Fische"];
-    const pair = [previewA, previewB];
-    const inGroup = (g: string[]) => pair.every((s) => g.includes(s));
-    if (inGroup(fire) || inGroup(earth) || inGroup(air) || inGroup(water)) {
-      return "Starker natürlicher Gleichklang. Ihr versteht euren Grundrhythmus meist intuitiv – achtet nur darauf, nicht dieselben blinden Flecken zu teilen.";
-    }
-    if (
-      (fire.includes(previewA) && air.includes(previewB)) ||
-      (air.includes(previewA) && fire.includes(previewB))
-    ) {
-      return "Hohe Dynamik und Inspiration: viel Bewegung, Ideen und Anziehung. Klärt früh, wer Struktur in Entscheidungen bringt.";
-    }
-    return "Spannende Ergänzung mit Reibungsfläche: genau hier liegt Potenzial. Für belastbare Aussagen braucht ihr die exakte Synastry mit Uhrzeit und Ort.";
-  }, [previewA, previewB]);
+  const previewHarmony = useMemo(
+    () => signBasedHarmony(previewA, previewB),
+    [previewA, previewB],
+  );
 
   return (
     <div className="w-full max-w-none space-y-8 px-2 sm:px-4 lg:mx-auto lg:max-w-[1200px] lg:px-8">
@@ -848,12 +1083,54 @@ export default function CompatibilityToolPage() {
           </div>
 
           {miniPreviewReady ? (
-              <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
-                <p className="font-medium">
-                  {previewA} × {previewB} · Mini-Analyse
+            <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
+              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
+                Kleine Analyse · Harmonie-Dynamik
+              </p>
+              <h3 className="mt-2 text-lg font-semibold">
+                {previewA} × {previewB}
+              </h3>
+              <div className="mt-4 rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/15 dark:bg-black/20">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
+                  Polarität
                 </p>
-                <p className="mt-1.5">{previewCopy}</p>
+                <div className="mt-3">
+                  <div className="mb-2 flex items-end justify-between text-[11px]">
+                    <div>
+                      <p className="font-medium text-black/80 dark:text-white/80">
+                        Leichtigkeit &amp; Flow
+                      </p>
+                      <p className="tabular-nums text-black/55 dark:text-white/55">
+                        {previewHarmony.flowPercent}%
+                      </p>
+                    </div>
+                    <div className="text-right">
+                      <p className="font-medium text-black/80 dark:text-white/80">
+                        Reibung &amp; Wachstum
+                      </p>
+                      <p className="tabular-nums text-black/55 dark:text-white/55">
+                        {previewHarmony.growthPercent}%
+                      </p>
+                    </div>
+                  </div>
+                  <div className="relative h-3 rounded-full bg-violet-500/45">
+                    <div
+                      className="absolute top-0 h-full w-px bg-white/70 dark:bg-black/55"
+                      style={{ left: `${previewHarmony.flowPercent}%` }}
+                    />
+                    <div
+                      className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-violet-700 bg-violet-500 shadow-sm dark:border-violet-300 dark:bg-violet-400"
+                      style={{ left: `calc(${previewHarmony.flowPercent}% - 10px)` }}
+                    />
+                  </div>
+                </div>
               </div>
+              <div className="mt-3 space-y-2 text-xs text-black/70 dark:text-white/75">
+                {previewHarmony.contextLines.map((line) => (
+                  <p key={line}>{line}</p>
+                ))}
+              </div>
+            </div>
           ) : null}
         </section>
 
@@ -893,25 +1170,7 @@ export default function CompatibilityToolPage() {
                       <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
                         Oktagon-Matrix
                       </p>
-                      <div className="mt-3 grid grid-cols-4 gap-2">
-                        {[
-                          "Kommunikation",
-                          "Anziehung",
-                          "Emotion",
-                          "Vertrauen",
-                          "Konflikt",
-                          "Wachstum",
-                          "Vision",
-                          "Langfristigkeit",
-                        ].map((x) => (
-                          <div
-                            key={x}
-                            className="rounded-lg border border-black/10 bg-black/[0.03] px-2 py-1 text-[10px] text-black/40 dark:border-white/10 dark:bg-white/10 dark:text-white/45"
-                          >
-                            {x}
-                          </div>
-                        ))}
-                      </div>
+                      <PreviewOctagonDemo />
                       <p className="mt-2 text-xs text-black/55 dark:text-white/55">
                         Auf einen Blick: wo ihr stark harmoniert und wo ihr bewusst
                         nachschärfen solltet.
@@ -1008,7 +1267,18 @@ export default function CompatibilityToolPage() {
                   </div>
             </div>
           </section>
-        ) : null}
+        ) : (
+          <section className="mt-6 rounded-2xl border border-black/5 bg-white p-4 sm:rounded-3xl sm:p-6 dark:border-white/10 dark:bg-white/5">
+            <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
+              Schritt 3 · Ergebnis &amp; Demo
+            </h3>
+            <p className="mt-4 text-sm text-black/65 dark:text-white/65">
+              Sobald du die kleine Paaranalyse erstellt hast, erscheinen hier die
+              Demo-Ansicht der vollständigen Paaranalyse und der Weg zur exakten
+              Auswertung.
+            </p>
+          </section>
+        )}
         </>
       ) : null}
 
@@ -1098,6 +1368,10 @@ export default function CompatibilityToolPage() {
                   (a.planetA === "venus" && a.planetB === "mars") ||
                   (a.planetA === "mars" && a.planetB === "venus"),
               );
+              const sunA = report.a.big3.sun as ZodiacSign;
+              const sunB = report.b.big3.sun as ZodiacSign;
+              const hintA = SIGN_RELATION_HINTS[sunA];
+              const hintB = SIGN_RELATION_HINTS[sunB];
               return (
                 <div className="mt-5 space-y-4">
                   <div className="space-y-4">
@@ -1278,6 +1552,10 @@ export default function CompatibilityToolPage() {
                 (a) => a.tone === "herausfordernd",
               ).length;
               const mixed = report.synastry.aspects.filter((a) => a.tone === "gemischt").length;
+              const sunA = report.a.big3.sun as ZodiacSign;
+              const sunB = report.b.big3.sun as ZodiacSign;
+              const hintA = SIGN_RELATION_HINTS[sunA];
+              const hintB = SIGN_RELATION_HINTS[sunB];
               const leftRaw = harmonic + mixed * 0.5;
               const rightRaw = challenging + mixed * 0.5;
               const total = Math.max(1, leftRaw + rightRaw);
@@ -1300,28 +1578,34 @@ export default function CompatibilityToolPage() {
                     <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
                       Polarität
                     </p>
-                    <div className="mt-2 grid grid-cols-[minmax(0,1fr)_1fr_minmax(0,1fr)] items-center gap-2 text-[11px]">
-                      <div className="min-w-0 text-left">
-                        <p className="font-medium text-black/80 dark:text-white/80">
-                          Leichtigkeit &amp; Flow
-                        </p>
-                        <p className="tabular-nums text-black/55 dark:text-white/55">
-                          {flowPercent}%
-                        </p>
+                    <div className="mt-3">
+                      <div className="mb-2 flex items-end justify-between text-[11px]">
+                        <div>
+                          <p className="font-medium text-black/80 dark:text-white/80">
+                            Leichtigkeit &amp; Flow
+                          </p>
+                          <p className="tabular-nums text-black/55 dark:text-white/55">
+                            {flowPercent}%
+                          </p>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-medium text-black/80 dark:text-white/80">
+                            Reibung &amp; Wachstum
+                          </p>
+                          <p className="tabular-nums text-black/55 dark:text-white/55">
+                            {growthPercent}%
+                          </p>
+                        </div>
                       </div>
-                      <div className="relative h-2 rounded-full bg-black/10 dark:bg-white/15">
+                      <div className="relative h-3 rounded-full bg-violet-500/45">
                         <div
-                          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border border-violet-700 bg-violet-500 shadow-sm dark:border-violet-300 dark:bg-violet-400"
-                          style={{ left: `calc(${growthPercent}% - 8px)` }}
+                          className="absolute top-0 h-full w-px bg-white/70 dark:bg-black/55"
+                          style={{ left: `${flowPercent}%` }}
                         />
-                      </div>
-                      <div className="min-w-0 text-right">
-                        <p className="font-medium text-black/80 dark:text-white/80">
-                          Reibung &amp; Wachstum
-                        </p>
-                        <p className="tabular-nums text-black/55 dark:text-white/55">
-                          {growthPercent}%
-                        </p>
+                        <div
+                          className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-violet-700 bg-violet-500 shadow-sm dark:border-violet-300 dark:bg-violet-400"
+                          style={{ left: `calc(${flowPercent}% - 10px)` }}
+                        />
                       </div>
                     </div>
                   </div>
@@ -1336,9 +1620,34 @@ export default function CompatibilityToolPage() {
                         ),
                       )}
                   </p>
-                  <p className="mt-4 text-sm text-black/70 dark:text-white/70">
-                    {report.synastry.chemistryLine}
-                  </p>
+                  <div className="mt-4 space-y-3 text-sm text-black/75 dark:text-white/75">
+                    <p>
+                      <strong>Sonnenzeichen:</strong> {sunA} trifft auf {sunB}.{" "}
+                      {sunA === sunB
+                        ? "Gleiche Grundenergie bringt schnelle Lesbarkeit und viel gemeinsames Tempo."
+                        : "Unterschiedliche Grundenergien bringen Ergänzung, wenn ihr Tempo und Prioritäten bewusst abstimmt."}
+                    </p>
+                    {sunA === sunB ? (
+                      <p>
+                        <strong>{sunA}:</strong> {hintA.strength}; gleichzeitig {hintA.challenge}.
+                      </p>
+                    ) : (
+                      <>
+                        <p>
+                          <strong>{sunA}:</strong> {hintA.strength}; gleichzeitig {hintA.challenge}.
+                        </p>
+                        <p>
+                          <strong>{sunB}:</strong> {hintB.strength}; gleichzeitig {hintB.challenge}.
+                        </p>
+                      </>
+                    )}
+                    <p>
+                      <strong>Synastry-Basis:</strong> {report.synastry.aspects.length} markante
+                      Hauptaspekte zwischen Sonne, Mond, Merkur, Venus, Mars, Jupiter und Saturn.
+                      {` `}Die stärksten Dynamiken seht ihr in den Vergleichsblöcken darunter.
+                    </p>
+                    <p>{report.synastry.chemistryLine}</p>
+                  </div>
                 </>
               );
             })()}
