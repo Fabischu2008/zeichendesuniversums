@@ -1094,7 +1094,7 @@ export default function CompatibilityToolPage() {
               );
               return (
                 <div className="mt-5 space-y-4">
-          <section className="rounded-3xl border border-black/10 bg-white/80 p-3 sm:p-4 dark:border-white/10 dark:bg-black/20">
+                  <div className="space-y-4">
                     <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-700 dark:text-violet-300">
                       Profilvergleich A ↔ B
                     </p>
@@ -1205,7 +1205,7 @@ export default function CompatibilityToolPage() {
                         <span className="font-semibold">Praxis:</span> Nutzt euer dominantes Element als Stärke und plant gezielt Ausgleich über das Gegen-Element (z. B. bei viel Feuer bewusst Struktur durch Erde).
                       </p>
                     </article>
-                  </section>
+                  </div>
                 </div>
               );
             })()}
