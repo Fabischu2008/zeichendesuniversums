@@ -3,6 +3,7 @@ import type {
   PlanetKey,
   PlanetPlacement,
 } from "@/lib/astro/profile";
+import { signFromEclipticLongitude } from "@/lib/astro/signs";
 
 export type AspectKind =
   | "conjunction"
@@ -298,6 +299,35 @@ function clamp(min: number, value: number, max: number): number {
   return Math.max(min, Math.min(max, value));
 }
 
+function pickPlanet(profile: AstroProfileResult, key: PlanetKey): PlanetPlacement | null {
+  return profile.planets.find((p) => p.key === key) ?? null;
+}
+
+function big3FromProfile(profile: AstroProfileResult): {
+  sun: string;
+  moon: string;
+  ascendant: string;
+} {
+  const sun = pickPlanet(profile, "sun")?.sign ?? "Unbekannt";
+  const moon = pickPlanet(profile, "moon")?.sign ?? "Unbekannt";
+  const ascendant = signFromEclipticLongitude(profile.chart.angles.asc);
+  return { sun, moon, ascendant };
+}
+
+function venusStyleHint(sign: string): string {
+  if (sign === "Stier") {
+    return "Venus in Stier wirkt bindungsorientiert, sinnlich und langfristig: Nähe entsteht über Verlässlichkeit, Körperlichkeit und stabile Rituale.";
+  }
+  if (sign === "Waage") {
+    return "Venus in Waage wirkt beziehungsorientiert und harmonisierend: Außenwirkung ist freundlich, verbindend und stark auf Gleichgewicht im Miteinander ausgerichtet.";
+  }
+  return "Venus zeigt, wie Bindung, Werte und Anziehung gestaltet werden – also wie sich Beziehung nach außen und nach innen anfühlen soll.";
+}
+
+function marsStyleHint(sign: string): string {
+  return `Mars in ${sign} zeigt die aktive, führende Energie in Begehren und Sexualität: Wie Initiative ergriffen wird, wie Grenzen gesetzt werden und wie direkt Wunschkommunikation läuft.`;
+}
+
 export function buildDeepCompatibilityReport(input: {
   profileA: AstroProfileResult;
   profileB: AstroProfileResult;
@@ -325,11 +355,12 @@ export function buildDeepCompatibilityReport(input: {
     `Leitthema B: ${topHouseTheme(profileB)}`,
   ];
 
-  const communication = `Kommunikation entsteht bei euch über ${profileA.narrative.summary} und ${profileB.narrative.summary}. In der Synastry sind ${harmonic} unterstützende und ${hard} herausfordernde Hauptaspekte sichtbar. Praktisch heißt das: Gespräche laufen gut, wenn ihr Erwartungen explizit macht und Reibung nicht personalisiert, sondern als Muster versteht.`;
-
-  const intimacy = `In Nähe und Bindung zeigt Person A den Stil: ${profileA.narrative.relationshipStyle} Person B bringt: ${profileB.narrative.relationshipStyle} Eure Paarchemie trägt besonders dort, wo ihr Stabilität (Rituale, gemeinsame Zeit) mit Spielraum für Unterschiede kombiniert.`;
-
-  const growth = `Entwicklungspfad als Paar: ${profileA.narrative.growthPath} und ${profileB.narrative.growthPath} In Kombination spricht das für eine Beziehung, die wächst, wenn ihr bewusst Rollen wechselt: mal Halt geben, mal führen, mal loslassen.`;
+  const big3A = big3FromProfile(profileA);
+  const big3B = big3FromProfile(profileB);
+  const venusA = pickPlanet(profileA, "venus");
+  const venusB = pickPlanet(profileB, "venus");
+  const marsA = pickPlanet(profileA, "mars");
+  const marsB = pickPlanet(profileB, "mars");
 
   const relAspects = synastry.aspects;
   const supportive = relAspects.filter((x) => x.tone === "harmonisch").length;
@@ -363,6 +394,11 @@ export function buildDeepCompatibilityReport(input: {
   );
   const visionAspects = relAspects.filter(
     (x) => x.planetA === "jupiter" || x.planetB === "jupiter",
+  );
+  const venusMarsAspects = relAspects.filter(
+    (x) =>
+      (x.planetA === "venus" && x.planetB === "mars") ||
+      (x.planetA === "mars" && x.planetB === "venus"),
   );
 
   const communicationScore = clamp(
@@ -417,6 +453,17 @@ export function buildDeepCompatibilityReport(input: {
     { key: "longterm", label: "Langfristigkeit", score: longTermScore },
   ];
 
+  const elementText =
+    domA === domB
+      ? `Ihr teilt das dominante Element ${domA}. Das erzeugt schnellen Grund-Flow, kann aber blinde Flecken doppeln.`
+      : `Dominante Elemente ${domA} × ${domB}: Unterschiedliche Grundrhythmen ergänzen sich, brauchen aber klare Übersetzung im Alltag.`;
+  const venusMarsTone =
+    venusMarsAspects.length === 0
+      ? "Zwischen Venus und Mars liegt kein Hauptaspekt in klassischem Orb – die Dynamik zeigt sich dann stärker indirekt über andere Aspektachsen."
+      : `Zwischen Venus und Mars sind ${venusMarsAspects.length} relevante Aspekt(e) sichtbar (${venusMarsAspects
+          .map((a) => a.aspectLabelDe)
+          .join(", ")}).`;
+
   return {
     headline:
       fit >= 75
@@ -428,9 +475,18 @@ export function buildDeepCompatibilityReport(input: {
     focusAxis,
     dimensions,
     sections: [
-      { title: "Kommunikationsmatrix", body: communication },
-      { title: "Bindung & Intimität", body: intimacy },
-      { title: "Wachstumshebel als Paar", body: growth },
+      {
+        title: "Big 3 im Gegenüber",
+        body: `Person A: Sonne ${big3A.sun}, Mond ${big3A.moon}, Aszendent ${big3A.ascendant}. Person B: Sonne ${big3B.sun}, Mond ${big3B.moon}, Aszendent ${big3B.ascendant}. Sonne zeigt Richtung und Identität, Mond die emotionale Verarbeitung, Aszendent die Außenwirkung im Kontakt. Für euch heißt das: identische Big-3-Anteile geben sofortes Verständnis, unterschiedliche Anteile liefern Entwicklung über bewusste Perspektivwechsel.`,
+      },
+      {
+        title: "Elemente & Grundrhythmus",
+        body: `${elementText} Person A bringt als Beziehungsstil: ${profileA.narrative.relationshipStyle} Person B bringt: ${profileB.narrative.relationshipStyle} Praktischer Hebel: Legt ein gemeinsames Beziehungs-Tempo fest (Nähe, Rückzug, Entscheidungen), damit Unterschiedlichkeit nicht als Ablehnung gelesen wird.`,
+      },
+      {
+        title: "Venus & Mars: Bindung und Sexualdynamik",
+        body: `Venus beschreibt Beziehungsstil, Werte und Außenwirkung im Anziehen (oft eher weiblich/rezeptiv gelesen). Mars beschreibt aktive, führende Energie, Begehren und Sexualimpuls (oft eher männlich/initiativ gelesen). Person A: Venus ${venusA?.sign ?? "Unbekannt"}, Mars ${marsA?.sign ?? "Unbekannt"}. Person B: Venus ${venusB?.sign ?? "Unbekannt"}, Mars ${marsB?.sign ?? "Unbekannt"}. ${venusStyleHint(venusA?.sign ?? "")} ${venusStyleHint(venusB?.sign ?? "")} ${marsStyleHint(marsA?.sign ?? "Unbekannt")} ${marsStyleHint(marsB?.sign ?? "Unbekannt")} ${venusMarsTone} Schlüssel für euch: Venus klärt, was Bindung sicher und wertvoll macht; Mars klärt, wie Wunsch, Führung und Sexualverhalten konkret gelebt werden. Beides zusammen erzeugt eine stimmige Paar-Dynamik statt Missverständnisse zwischen Nähe und Drive.`,
+      },
     ],
   };
 }

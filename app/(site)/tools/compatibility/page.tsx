@@ -1,11 +1,15 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import { useEffect, useMemo, useRef, useState } from "react";
-import type { AstroProfileResult } from "@/lib/astro/profile";
-import { ZODIAC_SIGNS, type ZodiacSign } from "@/lib/astro/signs";
+import { ELEMENT_BY_SIGN, type AstroProfileResult, type Element } from "@/lib/astro/profile";
+import {
+  ZODIAC_SIGNS,
+  type ZodiacSign,
+} from "@/lib/astro/signs";
 import type {
   DeepCompatibilityReport,
   SynastryReport,
@@ -17,6 +21,7 @@ import {
 } from "@/lib/cms";
 import { readUnlockTokenFromBrowser } from "@/lib/profile-unlock-url";
 import type { CheckoutAstroPayload } from "@/lib/stripe/create-checkout-session";
+import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
 
 function formatPaarPriceEur(amount: number) {
   return new Intl.NumberFormat("de-DE", {
@@ -51,6 +56,121 @@ const emptyPerson = (): PersonForm => ({
   query: "",
   place: null,
 });
+
+const SIGN_ICON_BY_SIGN: Record<string, string> = {
+  Widder: "/Symbole/widder.svg",
+  Stier: "/Symbole/stier.svg",
+  Zwillinge: "/Symbole/zwilling.svg",
+  Krebs: "/Symbole/krebs.svg",
+  Löwe: "/Symbole/löwe.svg",
+  Jungfrau: "/Symbole/jungfrau.svg",
+  Waage: "/Symbole/waage.svg",
+  Skorpion: "/Symbole/skorpio.svg",
+  Schütze: "/Symbole/schuetze.svg",
+  Steinbock: "/Symbole/steinbock.svg",
+  Wassermann: "/Symbole/wassermann.svg",
+  Fische: "/Symbole/fische.svg",
+};
+
+const ELEMENT_COLORS: Record<Element, string> = {
+  Luft: "#facc15",
+  Wasser: "#3b82f6",
+  Erde: "#22c55e",
+  Feuer: "#ef4444",
+};
+
+function signIconPath(sign: string): string | null {
+  return SIGN_ICON_BY_SIGN[sign] ?? null;
+}
+
+function elementMixFromProfile(profile: AstroProfileResult): Array<{ element: Element; value: number }> {
+  const map = new Map<Element, number>();
+  for (const item of profile.elementBalance) {
+    map.set(item.element as Element, item.count);
+  }
+  return (["Feuer", "Erde", "Luft", "Wasser"] as Element[]).map((element) => ({
+    element,
+    value: map.get(element) ?? 0,
+  }));
+}
+
+function SignChip({ label, sign }: { label: string; sign: string }) {
+  const icon = signIconPath(sign);
+  return (
+    <div className="rounded-xl border border-black/10 bg-white/70 px-3 py-2 dark:border-white/15 dark:bg-black/20">
+      <p className="text-[10px] uppercase tracking-[0.14em] text-black/50 dark:text-white/55">
+        {label}
+      </p>
+      <div className="mt-1 flex items-center gap-2">
+        {icon ? (
+          <Image src={icon} alt={sign} width={18} height={18} className="h-[18px] w-[18px]" />
+        ) : null}
+        <span className="text-sm font-semibold">{sign}</span>
+      </div>
+    </div>
+  );
+}
+
+function ElementCircle({
+  title,
+  profile,
+}: {
+  title: string;
+  profile: AstroProfileResult;
+}) {
+  const mix = elementMixFromProfile(profile);
+  const total = Math.max(1, mix.reduce((sum, x) => sum + x.value, 0));
+  const radius = 44;
+  const circumference = 2 * Math.PI * radius;
+  let offset = 0;
+  return (
+    <div className="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/15 dark:bg-black/20">
+      <p className="text-xs font-semibold uppercase tracking-[0.14em] text-black/60 dark:text-white/60">
+        {title}
+      </p>
+      <div className="mt-3 flex items-center gap-4">
+        <svg width="112" height="112" viewBox="0 0 112 112" className="shrink-0">
+          <circle cx="56" cy="56" r={radius} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="14" />
+          {mix.map((m) => {
+            const len = (m.value / total) * circumference;
+            const dashArray = `${len} ${circumference - len}`;
+            const dashOffset = -offset;
+            offset += len;
+            return (
+              <circle
+                key={`${title}-${m.element}`}
+                cx="56"
+                cy="56"
+                r={radius}
+                fill="none"
+                stroke={ELEMENT_COLORS[m.element]}
+                strokeWidth="14"
+                strokeDasharray={dashArray}
+                strokeDashoffset={dashOffset}
+                transform="rotate(-90 56 56)"
+                strokeLinecap="butt"
+              />
+            );
+          })}
+        </svg>
+        <div className="grid gap-1 text-xs">
+          {mix.map((m) => (
+            <div key={`${title}-${m.element}-legend`} className="flex items-center gap-2">
+              <span
+                className="inline-block h-2.5 w-2.5 rounded-full"
+                style={{ backgroundColor: ELEMENT_COLORS[m.element] }}
+              />
+              <span className="text-black/80 dark:text-white/80">{m.element}</span>
+              <span className="tabular-nums text-black/50 dark:text-white/55">
+                {Math.round((m.value / total) * 100)}%
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  );
+}
 
 function personFormToCheckoutPayload(
   form: PersonForm,
@@ -188,6 +308,8 @@ function CompactProfileCard({
   const topHouses = [...profile.houseFocus]
     .sort((a, b) => b.count - a.count)
     .slice(0, 2);
+  const venusSign = profile.planets.find((p) => p.key === "venus")?.sign ?? "Unbekannt";
+  const marsSign = profile.planets.find((p) => p.key === "mars")?.sign ?? "Unbekannt";
   return (
     <section className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5">
       <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
@@ -199,21 +321,20 @@ function CompactProfileCard({
       <p className="mt-1 text-sm text-black/70 dark:text-white/70">
         {profile.archetype.subtitle}
       </p>
-      <ul className="mt-4 grid gap-1 text-sm sm:grid-cols-3">
-        <li>
-          <span className="text-black/55 dark:text-white/55">Sonne: </span>
-          <span className="font-medium">{big3.sun}</span>
-        </li>
-        <li>
-          <span className="text-black/55 dark:text-white/55">Mond: </span>
-          <span className="font-medium">{big3.moon}</span>
-        </li>
-        <li>
-          <span className="text-black/55 dark:text-white/55">Asz: </span>
-          <span className="font-medium">{big3.ascendant}</span>
-        </li>
-      </ul>
+      <div className="mt-4 grid gap-2 sm:grid-cols-3">
+        <SignChip label="Sonne" sign={big3.sun} />
+        <SignChip label="Mond" sign={big3.moon} />
+        <SignChip label="Aszendent" sign={big3.ascendant} />
+      </div>
+      <div className="mt-3 grid gap-2 sm:grid-cols-2">
+        <SignChip label="Venus · weiblich · langfristig" sign={venusSign} />
+        <SignChip label="Mars · männlich · sexuell" sign={marsSign} />
+      </div>
       <div className="mt-4 grid gap-2 sm:grid-cols-2">
+        <p className="sm:col-span-2 text-[11px] leading-relaxed text-black/55 dark:text-white/55">
+          Hausfokus zeigt, in welchen Lebensbereichen eure Beziehung am meisten
+          Energie, Reibung und Entwicklung aktiviert.
+        </p>
         {topHouses.map((h) => (
           <div
             key={`${label}-${h.house}`}
@@ -231,11 +352,45 @@ function CompactProfileCard({
   );
 }
 
+function dominantElementOf(profile: AstroProfileResult): Element {
+  const top = [...profile.elementBalance].sort((a, b) => b.count - a.count)[0];
+  return (top?.element as Element) ?? "Feuer";
+}
+
+function planetSign(profile: AstroProfileResult, key: "venus" | "mars"): string {
+  return profile.planets.find((p) => p.key === key)?.sign ?? "Unbekannt";
+}
+
+function sharedCount(valuesA: string[], valuesB: string[]): number {
+  let same = 0;
+  for (let i = 0; i < Math.min(valuesA.length, valuesB.length); i += 1) {
+    if (valuesA[i] === valuesB[i]) same += 1;
+  }
+  return same;
+}
+
 function CompatibilityOctagon({
   dimensions,
 }: {
   dimensions?: DeepCompatibilityReport["dimensions"];
 }) {
+  const polesByKey: Record<
+    string,
+    {
+      left: string;
+      right: string;
+    }
+  > = {
+    communication: { left: "Direktheit", right: "Feingefühl" },
+    intimacy: { left: "Leidenschaft", right: "Sicherheit" },
+    emotional: { left: "Nähe", right: "Autonomie" },
+    trust: { left: "Verlässlichkeit", right: "Freiheit" },
+    conflict: { left: "Konfrontation", right: "Deeskalation" },
+    growth: { left: "Stabilität", right: "Wachstum" },
+    purpose: { left: "Sinn", right: "Umsetzung" },
+    longterm: { left: "Beständigkeit", right: "Erneuerung" },
+  };
+
   const fallbackDimensions: NonNullable<DeepCompatibilityReport["dimensions"]> = [
     { key: "communication", label: "Kommunikation", score: 50 },
     { key: "intimacy", label: "Anziehung", score: 50 },
@@ -337,16 +492,38 @@ function CompatibilityOctagon({
           );
         })}
       </svg>
-      <div className="grid w-full gap-2 sm:grid-cols-2">
-        {axes.map((d) => (
-          <div
-            key={d.key}
-            className="flex items-center justify-between rounded-xl border border-black/10 bg-white/70 px-3 py-2 text-xs dark:border-white/15 dark:bg-black/20"
-          >
-            <span>{d.label}</span>
-            <span className="font-semibold tabular-nums">{d.score}/100</span>
-          </div>
-        ))}
+      <div className="grid w-full gap-3">
+        {axes.map((d) => {
+          const poles = polesByKey[d.key] ?? { left: "Pol A", right: "Pol B" };
+          const rightValue = Math.max(0, Math.min(100, d.score));
+          const leftValue = 100 - rightValue;
+          return (
+            <div
+              key={d.key}
+              className="rounded-xl border border-black/10 bg-white/70 px-4 py-3 dark:border-white/15 dark:bg-black/20"
+            >
+              <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
+                {d.label}
+              </p>
+              <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-3 text-xs">
+                <div className="min-w-[92px] text-left">
+                  <p className="font-medium text-black/80 dark:text-white/80">{poles.left}</p>
+                  <p className="tabular-nums text-black/55 dark:text-white/55">{leftValue}%</p>
+                </div>
+                <div className="relative h-2 rounded-full bg-black/10 dark:bg-white/15">
+                  <div
+                    className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border border-violet-700 bg-violet-500 shadow-sm dark:border-violet-300 dark:bg-violet-400"
+                    style={{ left: `calc(${rightValue}% - 8px)` }}
+                  />
+                </div>
+                <div className="min-w-[92px] text-right">
+                  <p className="font-medium text-black/80 dark:text-white/80">{poles.right}</p>
+                  <p className="tabular-nums text-black/55 dark:text-white/55">{rightValue}%</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );
@@ -356,72 +533,68 @@ function dimensionAnalysisText(
   key: string,
   score: number,
 ): { headline: string; text: string } {
-  const level =
-    score >= 75 ? "hoch" : score >= 55 ? "mittel" : score >= 40 ? "sensibel" : "kritisch";
+  const poles = {
+    communication: { left: "Direktheit", right: "Feingefühl" },
+    intimacy: { left: "Leidenschaft", right: "Sicherheit" },
+    emotional: { left: "Nähe", right: "Autonomie" },
+    trust: { left: "Verlässlichkeit", right: "Freiheit" },
+    conflict: { left: "Konfrontation", right: "Deeskalation" },
+    growth: { left: "Stabilität", right: "Wachstum" },
+    purpose: { left: "Sinn", right: "Umsetzung" },
+    longterm: { left: "Beständigkeit", right: "Erneuerung" },
+  } as const;
+  const fallbackPoles = { left: "Pol A", right: "Pol B" };
+  const p = poles[key as keyof typeof poles] ?? fallbackPoles;
+  const rightValue = Math.max(0, Math.min(100, score));
+  const leftValue = 100 - rightValue;
+  const balanceText =
+    Math.abs(rightValue - leftValue) <= 12
+      ? `ausgewogene Balance zwischen ${p.left} und ${p.right}`
+      : rightValue > leftValue
+        ? `klarer Schwerpunkt auf ${p.right}`
+        : `klarer Schwerpunkt auf ${p.left}`;
+  const base = `${leftValue}% ${p.left} · ${rightValue}% ${p.right} – ${balanceText}.`;
+
   switch (key) {
     case "communication":
       return {
-        headline: `Kommunikation · ${level}`,
-        text:
-          score >= 70
-            ? "Ihr könnt Themen meist direkt klären. Achtet darauf, schwierige Punkte trotzdem nicht zu überspringen."
-            : "Hier entscheidet eure Qualität der Absprachen über den Verlauf. Regelmäßige Check-ins helfen enorm.",
+        headline: "Kommunikation",
+        text: `${base} Führt Gespräche in zwei Schritten: erst Position klar benennen, dann aktiv rückspiegeln, was angekommen ist.`,
       };
     case "intimacy":
       return {
-        headline: `Anziehung · ${level}`,
-        text:
-          score >= 70
-            ? "Die chemische Spannung ist klar da. Wichtig ist, sie mit emotionaler Sicherheit zu verbinden."
-            : "Anziehung braucht bei euch bewusstes Nähren über Zeit, Sprache und gemeinsame Rituale.",
+        headline: "Anziehung",
+        text: `${base} Bei euch wirkt Intimität am stärksten, wenn Spannung und Verbindlichkeit gemeinsam gepflegt werden.`,
       };
     case "emotional":
       return {
-        headline: `Emotionale Sicherheit · ${level}`,
-        text:
-          score >= 70
-            ? "Gefühle haben Raum, ohne dass sofort Rückzug oder Abwehr entsteht."
-            : "Trigger können schneller anspringen. Validierung und klare Grenzen stabilisieren.",
+        headline: "Emotionale Sicherheit",
+        text: `${base} Legt fest, wie ihr in Trigger-Momenten reagiert: kurze Pause, dann Rückkehr mit klarer Sprache statt Rückzug.`,
       };
     case "trust":
       return {
-        headline: `Vertrauen · ${level}`,
-        text:
-          score >= 70
-            ? "Verbindlichkeit kann gut wachsen, wenn ihr transparent bleibt."
-            : "Vertrauen ist eher ein Aufbau-Thema: Konsistenz im Alltag ist hier der Hebel.",
+        headline: "Vertrauen",
+        text: `${base} Vertrauen wächst dort, wo Erwartungen explizit sind und Freiheit nicht als Distanz missverstanden wird.`,
       };
     case "conflict":
       return {
-        headline: `Konfliktkompetenz · ${level}`,
-        text:
-          score >= 70
-            ? "Spannung kann produktiv verarbeitet werden. Ihr habt Potenzial für faire Reparaturgespräche."
-            : "Konflikte können eskalieren, wenn Tempo hoch ist. Pausen + klare Regeln entlasten.",
+        headline: "Konfliktkompetenz",
+        text: `${base} Hilfreich sind klare Konfliktregeln: kein Unterbrechen, ein Thema pro Runde und bewusste Reparatur nach Reibung.`,
       };
     case "growth":
       return {
-        headline: `Entwicklungspotenzial · ${level}`,
-        text:
-          score >= 70
-            ? "Diese Verbindung hat spürbar Wachstumskraft, wenn ihr bewusst reflektiert."
-            : "Lernen ist da, aber eher über Reibung. Setzt euch gemeinsame Lernziele als Paar.",
+        headline: "Entwicklungspotenzial",
+        text: `${base} Setzt euch monatlich ein gemeinsames Lernziel, damit Entwicklung nicht nur zufällig über Reibung passiert.`,
       };
     case "purpose":
       return {
-        headline: `Vision/Meaning · ${level}`,
-        text:
-          score >= 70
-            ? "Ihr könnt Sinn, Zukunft und Werte gut synchronisieren."
-            : "Langfristige Ausrichtung braucht aktive Abstimmung statt stiller Annahmen.",
+        headline: "Vision/Meaning",
+        text: `${base} Eine kurze Werte-Klärung pro Quartal hilft, Sinn und konkrete Umsetzung synchron zu halten.`,
       };
     case "longterm":
       return {
-        headline: `Langfristigkeit · ${level}`,
-        text:
-          score >= 70
-            ? "Gute Basis für Dauerhaftigkeit – vor allem mit verlässlichen Gewohnheiten."
-            : "Die Langstrecke ist möglich, braucht aber klare Strukturen und bewusste Prioritäten.",
+        headline: "Langfristigkeit",
+        text: `${base} Am tragfähigsten ist ein Mix aus stabilen Ritualen und geplanter Erneuerung statt starrem Entweder-oder.`,
       };
     default:
       return {
@@ -595,14 +768,7 @@ export default function CompatibilityToolPage() {
   }, [previewA, previewB]);
 
   return (
-    <div className="mx-auto max-w-3xl space-y-10">
-      <Link
-        href="/tools"
-        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
-      >
-        ← Zur Themenwahl
-      </Link>
-
+    <div className="mx-auto w-full max-w-[1200px] space-y-10 px-4 sm:px-6 lg:px-8">
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Paaranalyse &amp; Kompatibilität (Synastry)
@@ -619,7 +785,7 @@ export default function CompatibilityToolPage() {
       {stage === "preview" ? (
         <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-            Schritt 2 · Vorgeschmack
+            Schritt 2 · Kleine Analyse
           </p>
           <h2 className="mt-2 text-2xl font-semibold tracking-tight">
             Schneller Check ohne Geburtszeit
@@ -692,7 +858,7 @@ export default function CompatibilityToolPage() {
                 </div>
                 <div className="relative">
                   <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
-                    Schritt 3 · Ergebnis & Demo
+                    Schritt 3 · Große Analyse
                   </p>
                   <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
                     So sieht die vollständige Paaranalyse aus
@@ -842,17 +1008,6 @@ export default function CompatibilityToolPage() {
 
       {stage === "exact" ? (
         <>
-          <section className="rounded-3xl border border-amber-500/20 bg-amber-500/10 p-4 text-sm text-amber-950 dark:border-amber-400/20 dark:bg-amber-500/10 dark:text-amber-100">
-            <p className="font-medium">Schritt 3 · Exakte Analyse</p>
-            <p className="mt-1">
-              Für präzise Synastry (Mond, Aszendent, Häuser und Aspekt-Orbs) werden
-              für beide Personen Geburtsdatum, Zeit und Ort benötigt.
-            </p>
-            <p className="mt-2 text-amber-900/90 dark:text-amber-100/90">
-              Vollanalyse: {formatPaarPriceEur(PRICE_COMPAT_PAARANALYSE)} einmalig – nach
-              dem Ausfüllen startest du den sicheren Stripe-Checkout.
-            </p>
-          </section>
           <div className="grid gap-6 lg:grid-cols-1">
             <PersonFields
               title="Person A"
@@ -905,7 +1060,7 @@ export default function CompatibilityToolPage() {
         <div className="space-y-8">
           <section className="rounded-3xl border border-black/5 bg-white/70 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              Schritt 4 · Erst die zwei Profile
+              Große Analyse · Profile
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
               Eure Vollprofile im Überblick
@@ -914,23 +1069,151 @@ export default function CompatibilityToolPage() {
               Genau wie im ersten Tool: erst beide Profile sichtbar, dann daraus die
               Vergleichsanalyse.
             </p>
-            <div className="mt-6 grid gap-5 lg:grid-cols-2">
-              <CompactProfileCard
-                label="Profil Person A"
-                profile={report.a.profile}
-                big3={report.a.big3}
-              />
-              <CompactProfileCard
-                label="Profil Person B"
-                profile={report.b.profile}
-                big3={report.b.big3}
-              />
-            </div>
+            <p className="mt-2 text-xs leading-relaxed text-black/60 dark:text-white/60">
+              Warum diese Übersicht: Big 3 für Grundmuster, Venus/Mars für
+              Bindung und Sexualdynamik, Elemente für den emotionalen
+              Grundrhythmus und Hausfokus für konkrete Beziehungsthemen im
+              Alltag.
+            </p>
+            {(() => {
+              const big3A = [report.a.big3.sun, report.a.big3.moon, report.a.big3.ascendant];
+              const big3B = [report.b.big3.sun, report.b.big3.moon, report.b.big3.ascendant];
+              const big3Same = sharedCount(big3A, big3B);
+              const domA = dominantElementOf(report.a.profile);
+              const domB = dominantElementOf(report.b.profile);
+              const venusA = planetSign(report.a.profile, "venus");
+              const venusB = planetSign(report.b.profile, "venus");
+              const marsA = planetSign(report.a.profile, "mars");
+              const marsB = planetSign(report.b.profile, "mars");
+              const housesA = [...report.a.profile.houseFocus].sort((a, b) => b.count - a.count).slice(0, 2);
+              const housesB = [...report.b.profile.houseFocus].sort((a, b) => b.count - a.count).slice(0, 2);
+              const vmAspects = report.synastry.aspects.filter(
+                (a) =>
+                  (a.planetA === "venus" && a.planetB === "mars") ||
+                  (a.planetA === "mars" && a.planetB === "venus"),
+              );
+              return (
+                <div className="mt-5 space-y-4">
+                  <section className="rounded-3xl border border-black/10 bg-white/80 p-4 dark:border-white/10 dark:bg-black/20">
+                    <p className="text-xs font-semibold uppercase tracking-[0.14em] text-violet-700 dark:text-violet-300">
+                      Profilvergleich A ↔ B
+                    </p>
+                    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-black/55 dark:text-white/55">
+                      Sonne · Mond · Aszendent
+                    </p>
+                    <div className="mt-2 grid gap-4 lg:grid-cols-2">
+                      <div className="rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/10 dark:bg-black/20">
+                        <p className="text-sm font-semibold">Person A</p>
+                        <p className="mt-1 text-xs text-black/60 dark:text-white/60">{report.a.profile.archetype.title}</p>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                          <SignChip label="Sonne" sign={report.a.big3.sun} />
+                          <SignChip label="Mond" sign={report.a.big3.moon} />
+                          <SignChip label="Aszendent" sign={report.a.big3.ascendant} />
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/10 dark:bg-black/20">
+                        <p className="text-sm font-semibold">Person B</p>
+                        <p className="mt-1 text-xs text-black/60 dark:text-white/60">{report.b.profile.archetype.title}</p>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                          <SignChip label="Sonne" sign={report.b.big3.sun} />
+                          <SignChip label="Mond" sign={report.b.big3.moon} />
+                          <SignChip label="Aszendent" sign={report.b.big3.ascendant} />
+                        </div>
+                      </div>
+                    </div>
+                    <article className="mt-3 rounded-2xl border border-amber-500/25 bg-gradient-to-br from-amber-500/10 to-white p-4 dark:border-amber-300/20 dark:from-amber-500/15 dark:to-white/5">
+                      <p className="text-sm font-semibold">☉☽ ↗ Analyse zu Sonne, Mond, Aszendent</p>
+                      <p className="mt-2 text-sm text-black/75 dark:text-white/75">
+                        {big3Same === 3
+                          ? "Sehr ähnliche Grundwahrnehmung; achtet auf gemeinsame blinde Flecken."
+                          : big3Same >= 1
+                            ? "Teilweise gemeinsame Basis, teilweise Ergänzung durch Unterschiede."
+                            : "Starke Ergänzungskraft durch unterschiedliche Grundmuster."}
+                      </p>
+                      <p className="mt-2 text-xs text-black/60 dark:text-white/60">
+                        <span className="font-semibold">Bedeutung:</span> Sonne zeigt Richtung und Ich-Kern, Mond zeigt emotionale Bedürfnisse, Aszendent zeigt Auftreten und erste Reaktion im Kontakt.
+                      </p>
+                      <p className="mt-2 text-xs text-black/60 dark:text-white/60">
+                        <span className="font-semibold">Praxis:</span> Klärt bei Konflikten zuerst Ebene 1 (Sonne: Ziel), dann Ebene 2 (Mond: Gefühl), dann Ebene 3 (Aszendent: Ton/Verhalten).
+                      </p>
+                    </article>
+
+                    <p className="mt-4 text-xs font-semibold uppercase tracking-[0.12em] text-black/55 dark:text-white/55">
+                      Venus · Mars
+                    </p>
+                    <div className="mt-2 grid gap-4 lg:grid-cols-2">
+                      <div className="rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/10 dark:bg-black/20">
+                        <p className="text-sm font-semibold">Person A</p>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          <SignChip label="Venus · weiblich · langfristig" sign={venusA} />
+                          <SignChip label="Mars · männlich · sexuell" sign={marsA} />
+                        </div>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          {housesA.map((h) => (
+                            <div key={`a-house-${h.house}`} className="rounded-xl border border-black/10 bg-black/[0.02] px-3 py-2 text-xs dark:border-white/10 dark:bg-white/10">
+                              <p className="font-semibold">Haus {h.house}</p>
+                              <p className="mt-0.5 text-black/65 dark:text-white/65">{h.theme}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                      <div className="rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/10 dark:bg-black/20">
+                        <p className="text-sm font-semibold">Person B</p>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          <SignChip label="Venus · weiblich · langfristig" sign={venusB} />
+                          <SignChip label="Mars · männlich · sexuell" sign={marsB} />
+                        </div>
+                        <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                          {housesB.map((h) => (
+                            <div key={`b-house-${h.house}`} className="rounded-xl border border-black/10 bg-black/[0.02] px-3 py-2 text-xs dark:border-white/10 dark:bg-white/10">
+                              <p className="font-semibold">Haus {h.house}</p>
+                              <p className="mt-0.5 text-black/65 dark:text-white/65">{h.theme}</p>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    </div>
+                    <article className="mt-3 rounded-2xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 to-white p-4 dark:border-violet-300/20 dark:from-violet-500/15 dark:to-white/5">
+                      <p className="text-sm font-semibold">♀ ♂ Analyse zu Venus & Mars</p>
+                      <p className="mt-2 text-sm text-black/75 dark:text-white/75">
+                        Venus beschreibt Bindungsstil, Werte und Außenwirkung in Beziehung. Mars beschreibt Initiative, Führung, Begehren und Sexualimpuls.
+                      </p>
+                      <p className="mt-2 text-xs text-black/60 dark:text-white/60">
+                        {vmAspects.length > 0
+                          ? `Direkte Venus-Mars-Achse aktiv (${vmAspects.map((a) => a.aspectLabelDe).join(", ")}).`
+                          : "Keine direkte Venus-Mars-Hauptachse im klassischen Orb; die Dynamik läuft stärker indirekt über andere Aspekte."}
+                      </p>
+                      <p className="mt-2 text-xs text-black/60 dark:text-white/60">
+                        <span className="font-semibold">Praxis:</span> Trennt bewusst „Was gibt Sicherheit und Nähe?“ (Venus) von „Wie wird Wunsch/Führung/Sexualität ausgedrückt?“ (Mars), damit beides gleichwertig Raum bekommt.
+                      </p>
+                    </article>
+                    <div className="mt-4 grid gap-4 lg:grid-cols-2">
+                      <ElementCircle title="Elemente · Person A" profile={report.a.profile} />
+                      <ElementCircle title="Elemente · Person B" profile={report.b.profile} />
+                    </div>
+                    <article className="mt-4 rounded-2xl border border-sky-500/25 bg-gradient-to-br from-sky-500/10 to-white p-4 dark:border-sky-300/20 dark:from-sky-500/15 dark:to-white/5">
+                      <p className="text-sm font-semibold">◌ Analyse zu den Elementen</p>
+                      <p className="mt-2 text-sm text-black/75 dark:text-white/75">
+                        Dominant: A {domA} · B {domB}
+                      </p>
+                      <p className="mt-2 text-xs text-black/60 dark:text-white/60">
+                        {domA === domB
+                          ? "Gleiches Element fördert natürlichen Flow und ähnliches Beziehungstempo."
+                          : "Unterschiedliche Elemente bringen Ergänzung und verlangen klare Abstimmung bei Nähe, Rückzug und Entscheidungen."}
+                      </p>
+                      <p className="mt-2 text-xs text-black/60 dark:text-white/60">
+                        <span className="font-semibold">Praxis:</span> Nutzt euer dominantes Element als Stärke und plant gezielt Ausgleich über das Gegen-Element (z. B. bei viel Feuer bewusst Struktur durch Erde).
+                      </p>
+                    </article>
+                  </section>
+                </div>
+              );
+            })()}
           </section>
 
           <section className="rounded-3xl border border-violet-500/25 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-emerald-500/10 p-6 sm:p-8 dark:border-violet-400/20">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              Schritt 5 · Komplexe Vergleichsanalyse
+              Große Analyse · Vergleich
             </p>
             <div className="mt-3 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
               <div>
@@ -972,12 +1255,7 @@ export default function CompatibilityToolPage() {
                     key={`dim-${d.key}`}
                     className="rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/10 dark:bg-white/[0.03]"
                   >
-                    <p className="text-sm font-semibold">
-                      {a.headline}
-                      <span className="ml-2 text-xs font-normal text-black/55 dark:text-white/55">
-                        ({d.score}/100)
-                      </span>
-                    </p>
+                    <p className="text-sm font-semibold">{a.headline}</p>
                     <p className="mt-2 text-sm leading-relaxed text-black/75 dark:text-white/75">
                       {a.text}
                     </p>
@@ -987,125 +1265,80 @@ export default function CompatibilityToolPage() {
             </div>
           </section>
 
-          {report.deepComparison.sections.map((sec) => (
-            <section
-              key={sec.title}
-              className="rounded-3xl border border-black/5 bg-white/80 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
-            >
-              <h3 className="text-lg font-semibold tracking-tight">{sec.title}</h3>
-              <p className="mt-3 text-sm leading-relaxed text-black/75 dark:text-white/75">
-                {sec.body}
-              </p>
-            </section>
-          ))}
-
           <section className="rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-sky-500/10 p-6 sm:p-8 dark:from-violet-500/15 dark:to-sky-500/10">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-              <div>
-                <h2 className="text-2xl font-semibold tracking-tight">
-                  Harmonie-Index
-                </h2>
-                <p className="mt-1 text-sm text-black/65 dark:text-white/65">
-                  Heuristik aus harmonischen vs. herausfordernden Aspekten –
-                  nur Orientierung.
-                </p>
-              </div>
-              <p className="text-5xl font-semibold tabular-nums tracking-tight">
-                {report.synastry.harmonyScore}
-                <span className="text-2xl text-black/45 dark:text-white/45">
-                  /100
-                </span>
-              </p>
-            </div>
-            <p className="mt-6 text-sm leading-relaxed text-black/80 dark:text-white/80 [&_strong]:font-semibold">
-              {report.synastry.summary
-                .split("**")
-                .map((chunk, i) =>
-                  i % 2 === 1 ? (
-                    <strong key={i}>{chunk}</strong>
-                  ) : (
-                    <span key={i}>{chunk}</span>
-                  ),
-                )}
-            </p>
-            <p className="mt-4 text-sm text-black/70 dark:text-white/70">
-              {report.synastry.chemistryLine}
-            </p>
-          </section>
-
-          {report.synastry.sections.map((sec) => (
-            <section
-              key={sec.title}
-              className="rounded-3xl border border-black/5 bg-white/80 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5"
-            >
-              <h3 className="text-lg font-semibold tracking-tight">
-                {sec.title}
-              </h3>
-              <p className="mt-3 text-sm leading-relaxed text-black/75 dark:text-white/75">
-                {sec.body}
-              </p>
-            </section>
-          ))}
-
-          <section className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-            <h2 className="text-2xl font-semibold tracking-tight">
-              Zentrale Aspekte (Auswahl)
-            </h2>
-            <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-              Sortiert nach Relevanz für Paardynamik. Konjunktion, Opposition,
-              Trigon, Quadrat, Sextil mit klassischen Orbs.
-            </p>
-            <ul className="mt-6 space-y-5">
-              {report.synastry.aspects.map((asp, idx) => (
-                <li
-                  key={`${asp.planetA}-${asp.planetB}-${asp.aspect}-${idx}`}
-                  className="rounded-2xl border border-black/8 bg-black/[0.03] p-4 dark:border-white/10 dark:bg-white/10"
-                >
-                  <div className="flex flex-wrap items-baseline gap-2 text-sm">
-                    <span className="font-medium">
-                      {asp.nameA} – {asp.nameB}
-                    </span>
-                    <span className="rounded-full bg-violet-500/15 px-2 py-0.5 text-xs font-medium text-violet-900 dark:bg-violet-400/20 dark:text-violet-100">
-                      {asp.aspectLabelDe}
-                    </span>
-                    <span
-                      className={
-                        asp.tone === "harmonisch"
-                          ? "text-emerald-700 dark:text-emerald-300"
-                          : asp.tone === "herausfordernd"
-                            ? "text-amber-800 dark:text-amber-200"
-                            : "text-sky-800 dark:text-sky-200"
-                      }
-                    >
-                      {asp.tone}
-                    </span>
+            {(() => {
+              const harmonic = report.synastry.aspects.filter((a) => a.tone === "harmonisch").length;
+              const challenging = report.synastry.aspects.filter(
+                (a) => a.tone === "herausfordernd",
+              ).length;
+              const mixed = report.synastry.aspects.filter((a) => a.tone === "gemischt").length;
+              const leftRaw = harmonic + mixed * 0.5;
+              const rightRaw = challenging + mixed * 0.5;
+              const total = Math.max(1, leftRaw + rightRaw);
+              const flowPercent = Math.round((leftRaw / total) * 100);
+              const growthPercent = 100 - flowPercent;
+              return (
+                <>
+                  <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+                    <div>
+                      <h2 className="text-2xl font-semibold tracking-tight">
+                        Harmonie-Dynamik
+                      </h2>
+                      <p className="mt-1 text-sm text-black/65 dark:text-white/65">
+                        Zwei Pole statt Bewertung: Wie viel wirkt gerade eher fließend, wie
+                        viel als Entwicklungs-Reibung.
+                      </p>
+                    </div>
                   </div>
-                  <p className="mt-3 text-sm leading-relaxed text-black/80 dark:text-white/80">
-                    {report.synastry.aspectTexts[idx]}
+                  <div className="mt-6 rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/15 dark:bg-black/20">
+                    <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
+                      Polarität
+                    </p>
+                    <div className="mt-2 grid grid-cols-[auto_1fr_auto] items-center gap-3 text-xs">
+                      <div className="min-w-[120px] text-left">
+                        <p className="font-medium text-black/80 dark:text-white/80">
+                          Leichtigkeit &amp; Flow
+                        </p>
+                        <p className="tabular-nums text-black/55 dark:text-white/55">
+                          {flowPercent}%
+                        </p>
+                      </div>
+                      <div className="relative h-2 rounded-full bg-black/10 dark:bg-white/15">
+                        <div
+                          className="absolute top-1/2 h-4 w-4 -translate-y-1/2 rounded-full border border-violet-700 bg-violet-500 shadow-sm dark:border-violet-300 dark:bg-violet-400"
+                          style={{ left: `calc(${growthPercent}% - 8px)` }}
+                        />
+                      </div>
+                      <div className="min-w-[120px] text-right">
+                        <p className="font-medium text-black/80 dark:text-white/80">
+                          Reibung &amp; Wachstum
+                        </p>
+                        <p className="tabular-nums text-black/55 dark:text-white/55">
+                          {growthPercent}%
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <p className="mt-6 text-sm leading-relaxed text-black/80 dark:text-white/80 [&_strong]:font-semibold">
+                    {report.synastry.summary
+                      .split("**")
+                      .map((chunk, i) =>
+                        i % 2 === 1 ? (
+                          <strong key={i}>{chunk}</strong>
+                        ) : (
+                          <span key={i}>{chunk}</span>
+                        ),
+                      )}
                   </p>
-                </li>
-              ))}
-            </ul>
+                  <p className="mt-4 text-sm text-black/70 dark:text-white/70">
+                    {report.synastry.chemistryLine}
+                  </p>
+                </>
+              );
+            })()}
           </section>
 
-          <p className="text-xs leading-relaxed text-black/50 dark:text-white/50">
-            {report.synastry.disclaimer}
-          </p>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
-            <Link
-              href="/shop/compatibility-vollanalyse"
-              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              Erweiterte Pakete im Shop
-            </Link>
-            <Link
-              href="/freebie"
-              className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-            >
-              Kostenloser Guide
-            </Link>
-          </div>
+          <VollreportCoachingCta />
         </div>
       ) : null}
 

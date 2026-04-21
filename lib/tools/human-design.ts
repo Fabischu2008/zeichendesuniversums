@@ -38,6 +38,48 @@ export type HumanDesignResult = {
   perspective: string;
   cognition: string;
   designSense: string;
+  profileData: HumanDesignProfileData;
+};
+
+export type HumanDesignCore = {
+  type: HumanDesignType;
+  strategy: string;
+  authority: HumanDesignAuthority;
+  profile: `${number}/${number}`;
+  signature: string;
+  notSelfTheme: string;
+};
+
+export type HumanDesignMechanics = {
+  definition: "Single Definition" | "Split Definition";
+  definedCenters: string[];
+  openCenters: string[];
+  channels: string[];
+  gates: number[];
+};
+
+export type HumanDesignAdvanced = {
+  incarnationTheme: string;
+  incarnationCross: string;
+  digestion: string;
+  environment: string;
+  motivation: string;
+  perspective: string;
+  cognition: string;
+  designSense: string;
+};
+
+export type HumanDesignGuidance = {
+  today: string[];
+  week: string[];
+  avoid: string[];
+};
+
+export type HumanDesignProfileData = {
+  core: HumanDesignCore;
+  mechanics: HumanDesignMechanics;
+  advanced: HumanDesignAdvanced;
+  guidance: HumanDesignGuidance;
 };
 
 function mod(n: number, m: number) {
@@ -162,6 +204,90 @@ function notSelfForType(type: HumanDesignType): string {
       return "Wut";
     case "Reflector":
       return "Enttäuschung";
+  }
+}
+
+function guidanceForType(type: HumanDesignType): HumanDesignGuidance {
+  switch (type) {
+    case "Generator":
+      return {
+        today: [
+          "Achte auf das erste Bauch-„Ja“/„Nein“, bevor du zusagst.",
+          "Arbeite in klaren Blöcken an Aufgaben, die echte Resonanz erzeugen.",
+        ],
+        week: [
+          "Streiche eine Verpflichtung, die nur aus Pflichtgefühl läuft.",
+          "Plane zwei Reaktionsfenster, in denen du bewusst auf Chancen antwortest.",
+        ],
+        avoid: [
+          "Aus dem Kopf initiieren, wenn dein Sakral kein klares Signal gibt.",
+        ],
+      };
+    case "Manifesting Generator":
+      return {
+        today: [
+          "Erst reagieren, dann kurz informieren und erst danach handeln.",
+          "Erlaube dir, iterativ zu arbeiten statt sofort perfekt zu liefern.",
+        ],
+        week: [
+          "Bündle ähnliche Aufgaben in Sprints, um dein Tempo sinnvoll zu nutzen.",
+          "Baue bewusst Puffer ein, damit Kurswechsel nicht in Stress kippen.",
+        ],
+        avoid: ["Mehrere große Starts ohne Abschlussfenster parallel aufzuziehen."],
+      };
+    case "Projector":
+      return {
+        today: [
+          "Setze auf Qualität statt Quantität: ein klarer Beitrag mit Tiefe.",
+          "Achte auf Anerkennungssignale, bevor du Energie investierst.",
+        ],
+        week: [
+          "Plane Regenerationsfenster, damit deine Wahrnehmung scharf bleibt.",
+          "Führe ein kurzes Log: Wo wurdest du eingeladen – und wo nicht?",
+        ],
+        avoid: ["Dauerhaft wie ein Motor-Typ zu arbeiten und dich zu überlasten."],
+      };
+    case "Manifestor":
+      return {
+        today: [
+          "Informiere betroffene Personen vor einem Richtungswechsel.",
+          "Nutze deinen Initiationsimpuls für einen klaren ersten Schritt.",
+        ],
+        week: [
+          "Definiere 1–2 Initiativen, die wirklich dir gehören.",
+          "Setze Grenzen bei Mikro-Management von außen.",
+        ],
+        avoid: ["Impulse zu unterdrücken, bis Frust oder Wut hochkochen."],
+      };
+    case "Reflector":
+      return {
+        today: [
+          "Beobachte dein Umfeld: Wo fühlst du Weite, wo Enge?",
+          "Notiere deine Stimmung im Tagesverlauf ohne sofort zu bewerten.",
+        ],
+        week: [
+          "Große Entscheidungen über mehrere Tage spiegeln.",
+          "Zeit in unterstützenden Räumen und Menschen bewusst erhöhen.",
+        ],
+        avoid: ["Schnelle Festlegungen unter Druck ohne inneren Zyklus."],
+      };
+  }
+}
+
+function authorityTip(authority: HumanDesignAuthority) {
+  switch (authority) {
+    case "Emotional":
+      return "Wichtige Entscheidungen nicht im emotionalen Peak treffen, sondern über Wellen klären.";
+    case "Sacral":
+      return "Auf den unmittelbaren Körperimpuls achten: expansiv = ja, zusammenziehend = nein.";
+    case "Splenic":
+      return "Der erste leise Sicherheitsimpuls ist oft der richtige – nicht zerdenken.";
+    case "Ego":
+      return "Prüfen, ob du wirklich willst – nicht nur, ob du kannst.";
+    case "Self-Projected":
+      return "Entscheidungen laut aussprechen und auf innere Klarheit in der Stimme achten.";
+    case "Lunar":
+      return "Entscheidungen über Zeit und Spiegelung reifen lassen.";
   }
 }
 
@@ -360,6 +486,46 @@ export function buildHumanDesignResult(input: {
   const perspectiveOptions = ["Überblick", "Macht", "Möglichkeit", "Wahrscheinlichkeit", "Personal", "Kollektiv"];
   const cognitionOptions = ["Riechen", "Schmecken", "Sehen", "Fühlen", "Hören", "Inneres Wissen"];
   const designSenseOptions = ["Gefühl", "Berührung", "Rhythmus", "Klarheit", "Druck", "Wärme"];
+  const digestion = digestionOptions[mod(designSunGate, digestionOptions.length)];
+  const environment = environmentOptions[mod(designEarthGate, environmentOptions.length)];
+  const motivation = motivationOptions[mod(consciousSunGate, motivationOptions.length)];
+  const perspective = perspectiveOptions[mod(ascGate, perspectiveOptions.length)];
+  const cognition = cognitionOptions[mod(consciousSunGate + designSunGate, cognitionOptions.length)];
+  const designSense =
+    designSenseOptions[mod(consciousEarthGate + ascGate, designSenseOptions.length)];
+  const baseGuidance = guidanceForType(type);
+  const profileData: HumanDesignProfileData = {
+    core: {
+      type,
+      strategy: strategyForType(type),
+      authority,
+      profile,
+      signature: signatureForType(type),
+      notSelfTheme: notSelfForType(type),
+    },
+    mechanics: {
+      definition,
+      definedCenters,
+      openCenters,
+      channels,
+      gates,
+    },
+    advanced: {
+      incarnationTheme,
+      incarnationCross,
+      digestion,
+      environment,
+      motivation,
+      perspective,
+      cognition,
+      designSense,
+    },
+    guidance: {
+      today: [...baseGuidance.today, authorityTip(authority)],
+      week: baseGuidance.week,
+      avoid: baseGuidance.avoid,
+    },
+  };
 
   return {
     type,
@@ -385,11 +551,12 @@ export function buildHumanDesignResult(input: {
     openCenters,
     definedCenters,
     incarnationCross,
-    digestion: digestionOptions[mod(designSunGate, digestionOptions.length)],
-    environment: environmentOptions[mod(designEarthGate, environmentOptions.length)],
-    motivation: motivationOptions[mod(consciousSunGate, motivationOptions.length)],
-    perspective: perspectiveOptions[mod(ascGate, perspectiveOptions.length)],
-    cognition: cognitionOptions[mod(consciousSunGate + designSunGate, cognitionOptions.length)],
-    designSense: designSenseOptions[mod(consciousEarthGate + ascGate, designSenseOptions.length)],
+    digestion,
+    environment,
+    motivation,
+    perspective,
+    cognition,
+    designSense,
+    profileData,
   };
 }
