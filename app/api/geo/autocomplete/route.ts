@@ -19,15 +19,23 @@ function clampQuery(q: string) {
   return q.trim().slice(0, 80);
 }
 
+/** Optional 2-letter ISO country codes (comma-separated). Omit Nominatim param for worldwide search. */
+function parseCountryCodes(raw: string | null): string | null {
+  if (raw === null) return null;
+  const t = raw.trim();
+  if (t === "" || t === "*") return null;
+  const codes = t
+    .split(",")
+    .map((s) => s.trim().toLowerCase())
+    .filter((s) => /^[a-z]{2}$/.test(s));
+  if (codes.length === 0) return null;
+  return [...new Set(codes)].slice(0, 12).join(",");
+}
+
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const q = clampQuery(searchParams.get("q") || "");
-  const cc = (searchParams.get("countrycodes") || "de,at,ch")
-    .split(",")
-    .map((s) => s.trim().toLowerCase())
-    .filter(Boolean)
-    .slice(0, 3)
-    .join(",");
+  const countryCodes = parseCountryCodes(searchParams.get("countrycodes"));
 
   if (q.length < 2) {
     return NextResponse.json({ results: [] });
@@ -38,7 +46,9 @@ export async function GET(req: Request) {
   url.searchParams.set("addressdetails", "1");
   url.searchParams.set("limit", "8");
   url.searchParams.set("q", q);
-  url.searchParams.set("countrycodes", cc);
+  if (countryCodes) {
+    url.searchParams.set("countrycodes", countryCodes);
+  }
 
   const res = await fetch(url.toString(), {
     headers: {

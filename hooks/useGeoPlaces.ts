@@ -44,10 +44,9 @@ export function useGeoPlaces(query: string) {
     const t = setTimeout(async () => {
       setLoading(true);
       try {
-        const res = await fetch(
-          `/api/geo/autocomplete?q=${encodeURIComponent(q)}&countrycodes=de,at,ch`,
-          { signal: ac.signal },
-        );
+        const res = await fetch(`/api/geo/autocomplete?q=${encodeURIComponent(q)}`, {
+          signal: ac.signal,
+        });
         const raw = await res.text();
         const parsed = safeJsonParse(raw);
         const data = (parsed && typeof parsed === "object" ? parsed : {}) as {

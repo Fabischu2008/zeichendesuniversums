@@ -1,4 +1,5 @@
 import * as Astronomy from "astronomy-engine";
+import { chironGeocentricLongitudeDegrees } from "@/lib/astro/chiron-geocentric";
 import { buildElementAnalysis } from "@/lib/astro/element-analysis";
 import {
   signFromEclipticLongitude,
@@ -409,30 +410,23 @@ export function calculateAstroProfile(input: {
     },
   ];
 
-  const chironBody = (Astronomy.Body as unknown as Record<
-    string,
-    Astronomy.Body | undefined
-  >).Chiron;
-  if (chironBody) {
-    try {
-      const chironVec = Astronomy.GeoVector(chironBody, input.dateUtc, true);
-      const chironLon = normalizeDegrees(Astronomy.Ecliptic(chironVec).elon);
-      const chironSign = signFromEclipticLongitude(chironLon);
-      specialPoints.push({
-        key: "chiron",
-        name: "Chiron",
-        glyph: "⚷",
-        longitude: chironLon,
-        degreeInSign: degreeWithinSign(chironLon),
-        sign: chironSign,
-        signSymbol: symbolFromSign(chironSign),
-        element: ELEMENT_BY_SIGN[chironSign],
-        house: wholeSignHouseFromAsc(input.ascendantLongitude, chironLon),
-        note: "Heilungsthema: Ein sensibler Bereich, der mit Zeit zu Stärke und Wissen reift.",
-      });
-    } catch {
-      /* ignore */
-    }
+  try {
+    const chironLon = normalizeDegrees(chironGeocentricLongitudeDegrees(input.dateUtc));
+    const chironSign = signFromEclipticLongitude(chironLon);
+    specialPoints.push({
+      key: "chiron",
+      name: "Chiron (Lehrer-Asteroid)",
+      glyph: "⚷",
+      longitude: chironLon,
+      degreeInSign: degreeWithinSign(chironLon),
+      sign: chironSign,
+      signSymbol: symbolFromSign(chironSign),
+      element: ELEMENT_BY_SIGN[chironSign],
+      house: wholeSignHouseFromAsc(input.ascendantLongitude, chironLon),
+      note: "Der „weiße Lehrer“: ein sensibles Thema, an dem du über echte Erfahrung zu Klarheit, Mitgefühl und Weisheit reifen kannst.",
+    });
+  } catch {
+    /* Chiron optional bei Extremfällen */
   }
 
   const elementCounts: Record<Element, number> = {
@@ -477,10 +471,13 @@ export function calculateAstroProfile(input: {
     ? "Dein Wachstum passiert stark über Vision, Sichtbarkeit und mutige Entscheidungen."
     : "Dein Wachstum entsteht vor allem über stabile Routinen und bewusste Selbstführung.";
 
-  const nodesInsight = `Dein Nordknoten steht in ${northNodeSign} (Haus ${wholeSignHouseFromAsc(
+  const nodesInsight = `Deine Mondknoten-Achse verbindet Komfortzone und Aufgabe: Der Nordknoten steht in ${northNodeSign} (Haus ${wholeSignHouseFromAsc(
     input.ascendantLongitude,
     northNodeLon,
-  )}) – ein Bereich, in dem du dich bewusst weiterentwickeln darfst. Der Südknoten in ${southNodeSign} zeigt Muster, die dir vertraut sind und die du nicht komplett verwerfen musst, aber nicht allein steuern sollen.`;
+  )}) – hier darfst du dich bewusst weiterentwickeln und neue Qualitäten üben. Der Südknoten in ${southNodeSign} (Haus ${wholeSignHouseFromAsc(
+    input.ascendantLongitude,
+    southNodeLon,
+  )}) zeigt Muster, die dir vertraut sind: Stützen und Ressource, aber nicht der einzige Ort, an dem du hängen bleiben willst.`;
 
   const lilithInsight = `Lilith in ${lilithSign} (Haus ${wholeSignHouseFromAsc(
     input.ascendantLongitude,
@@ -494,7 +491,7 @@ export function calculateAstroProfile(input: {
 
   const chironPoint = specialPoints.find((s) => s.key === "chiron");
   const chironInsight = chironPoint
-    ? `Chiron in ${chironPoint.sign} (Haus ${chironPoint.house}) kann zeigen, wo Verletzlichkeit zu Empathie und Beratung werden kann – für dich und andere.`
+    ? `Chiron in ${chironPoint.sign} (Haus ${chironPoint.house}) wird oft als „weißer Lehrer“ gelesen: ein Bereich, in dem alte Verletztheit nicht zum Drama werden muss, sondern zu ruhiger Tiefe, ehrlicher Begleitung und einem Stil, den andere an dir spüren können. Praktisch heißt das: hier lohnt langsames Üben statt harter Selbstoptimierung.`
     : undefined;
 
   const asc = normalizeDegrees(input.ascendantLongitude);
@@ -531,7 +528,7 @@ export function calculateAstroProfile(input: {
 
   return {
     meta: {
-      model: "Whole-Sign-Häuser, mittlerer Mondknoten, mittleres Lilith (Apogäum), Pars Fortunae klassisch Tag/Nacht.",
+      model: `Whole-Sign-Häuser, mittlerer Mondknoten, Chiron geozentrisch (JPL SBDB-Oszulation, Näherung)${chironPoint ? "" : " — Chiron ausgelassen"}, mittleres Lilith (Apogäum), Pars Fortunae klassisch Tag/Nacht.`,
     },
     planets,
     specialPoints,

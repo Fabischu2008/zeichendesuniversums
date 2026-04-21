@@ -2,7 +2,11 @@ import type { AstroProfileResult } from "@/lib/astro/profile";
 import { AstroRadixChart } from "@/components/AstroRadixChart";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
 import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
-import { signFromEclipticLongitude, symbolFromSign } from "@/lib/astro/signs";
+import {
+  signFromEclipticLongitude,
+  symbolFromSign,
+  type ZodiacSign,
+} from "@/lib/astro/signs";
 
 const ELEMENT_BAR: Record<string, string> = {
   Feuer: "bg-orange-500/85",
@@ -112,6 +116,37 @@ function signAscKeyword(sign: string) {
   return map[sign] ?? "authentisch und eigen";
 }
 
+/** Chiron („weißer Lehrer“) im Kontext des Zeichens, in dem Chiron steht. */
+function chironSignExplanation(sign: string): string {
+  const map: Record<ZodiacSign, string> = {
+    Widder:
+      "In Widder wirkt dein Lehrer-Thema über Mut, Neuanfang und klare Grenzen: aus Verletzlichkeit wird oft eine ehrliche, direkte Art, andere zu stärken.",
+    Stier:
+      "In Stier zeigt sich Chiron über Werte, Nähe und Sicherheit: aus Unsicherheit wird oft ein feines Gespür dafür, was wirklich trägt – und wie man Ruhe schenkt.",
+    Zwillinge:
+      "In Zwillinge liegt das Thema in Worten, Lernen und Perspektiven: aus Missverständnissen wird oft ein Geschenk für klare, beruhigende Kommunikation.",
+    Krebs:
+      "In Krebs berührt Chiron Zuhause, Bindung und Verletzlichkeit: aus Rückzug wird oft eine warme Fähigkeit, emotionale Sicherheit für andere zu halten.",
+    Löwe:
+      "In Löwe geht es um Sichtbarkeit, Selbstwert und Herz: aus dem Gefühl, nicht gesehen zu werden, kann eine großzügige Art wachsen, andere wirklich zu feiern.",
+    Jungfrau:
+      "In Jungfrau zeigt sich das Muster im Alltag, im Körper und in der Hilfe: aus Kritik an sich selbst wird oft ein präziser, heilsamer Dienst an Klarheit und Gesundheit.",
+    Waage:
+      "In Waage spielt Chiron in Beziehung, Fairness und Harmonie: aus Unausgewogenheit wird oft ein feines Talent für Ausgleich – ohne dich selbst zu verlieren.",
+    Skorpion:
+      "In Skorpion berührt Chiron Vertrauen, Tiefe und Wandlung: aus Intensität wird oft eine ruhige Kraft, Tabus sanft zu benennen und echte Nähe zu ermöglichen.",
+    Schütze:
+      "In Schütze liegt das Thema bei Sinn, Freiheit und Wahrheit: aus Enttäuschung wird oft ein offener Blick, der anderen Orientierung und Hoffnung geben kann.",
+    Steinbock:
+      "In Steinbock zeigt sich Chiron über Verantwortung, Zeit und Ziele: aus Druck wird oft eine reife Art, Strukturen zu bauen, die Menschen langfristig tragen.",
+    Wassermann:
+      "In Wassermann geht es um Eigenständigkeit und Zukunft: aus Distanz wird oft ein klarer, humaner Blick für das Besondere – und dafür, ausgeschlossen zu werden.",
+    Fische:
+      "In Fische berührt Chiron Grenzenlosigkeit und Mitgefühl: aus Überforderung kann eine sanfte Weisheit wachsen, die andere intuitiv beruhigt und trägt.",
+  };
+  return map[sign as ZodiacSign] ?? `In ${sign} verbindet sich dein Chiron-Thema mit dem Qualitätsfeld dieses Zeichens: sensibel, persönlich und im Laufe der Zeit immer deutlicher erkennbar.`;
+}
+
 export function AstroProfileDisplay({
   profile,
   variant = "page",
@@ -185,7 +220,17 @@ export function AstroProfileDisplay({
         },
       ]
     : [];
-  const extraOrder = ["north_node", "south_node", "lilith", "part_of_fortune", "asc", "dsc", "mc", "ic"];
+  const extraOrder = [
+    "north_node",
+    "south_node",
+    "lilith",
+    "part_of_fortune",
+    "chiron",
+    "asc",
+    "dsc",
+    "mc",
+    "ic",
+  ];
   const extraRows = extraOrder
     .map((k) => overviewRows.find((row) => row.key === k))
     .filter((row): row is NonNullable<(typeof overviewRows)[number]> => Boolean(row));
@@ -202,7 +247,7 @@ export function AstroProfileDisplay({
     part_of_fortune:
       "Glückspunkt: Wenn du diese Qualität lebst, geht deine Energie in den erlösten Zustand – oft mit intensivem Flow, tiefer Erfüllung und einem Höhepunkt von Glücksgefühlen.",
     chiron:
-      "Heilungsthema: Ein sensibler Bereich, der mit Zeit zu Stärke und Wissen reift.",
+      "Der „weiße Lehrer“: sensibles Lernfeld, an dem du über Erfahrung zu Tiefe, Mitgefühl und klarer Begleitung reifen kannst.",
   };
   const angleNotes: Record<string, string> = {
     asc: "Aszendent: Deine unmittelbare Außenwirkung, dein spontaner Auftakt und die Art, wie du neue Situationen beginnst. Andere lesen darüber oft zuerst dein Temperament, deine Ausstrahlung und deinen natürlichen Grundmodus.",
@@ -212,6 +257,9 @@ export function AstroProfileDisplay({
   };
   const topHouse = profile.houseFocus[0];
   const secondHouse = profile.houseFocus[1];
+  const northNode = profile.specialPoints.find((p) => p.key === "north_node");
+  const southNode = profile.specialPoints.find((p) => p.key === "south_node");
+  const chiron = profile.specialPoints.find((p) => p.key === "chiron");
   const coreSummary =
     sun && moon && ascSign
       ? `Im Kern wirkst du mit Sonne in ${sun.sign} aus ${signCoreKeyword(sun.sign)}. Emotional reagierst du mit Mond in ${moon.sign} eher ${signEmotionKeyword(moon.sign)}. Nach außen erscheinst du durch den Aszendenten in ${ascSign} meist ${signAscKeyword(ascSign)}.`
@@ -325,11 +373,15 @@ export function AstroProfileDisplay({
               <div className="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {extraRows.map((row) => {
                   const specialPoint = specialPointByKey.get(row.key);
-                  const note =
+                  const baseNote =
                     specialNotes[row.key] ??
                     specialPoint?.note ??
                     angleNotes[row.key] ??
                     null;
+                  const note =
+                    row.key === "chiron" && baseNote
+                      ? `${baseNote} ${chironSignExplanation(row.sign)}`
+                      : baseNote;
                   return (
                     <article
                       key={`extra-${row.key}`}
@@ -437,6 +489,69 @@ export function AstroProfileDisplay({
             </div>
           ))}
         </div>
+      </section>
+
+      <section
+        className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
+      >
+        <h3 className="text-xl font-semibold tracking-tight">
+          Mondknoten · Aufgabe und Komfortzone
+        </h3>
+        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+          Der aufsteigende Mondknoten (Nordknoten) weist auf Qualitäten, die du in diesem Leben
+          bewusst üben und integrieren darfst. Der absteigende Knoten (Südknoten) beschreibt
+          vertraute Muster – hilfreich als Basis, aber nicht als einziger Aufenthaltsort.
+        </p>
+        <p className="mt-4 text-sm leading-relaxed text-black/80 dark:text-white/80">
+          {profile.narrative.nodesInsight}
+        </p>
+        {northNode && southNode ? (
+          <div className="mt-5 flex flex-wrap gap-2.5">
+            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/35 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/40 dark:bg-violet-500/20 dark:text-violet-50">
+              Nordknoten: {northNode.sign} · Haus {northNode.house}
+              <ZodiacSignIcon sign={northNode.sign} sizeClassName="h-5 w-5" />
+            </span>
+            <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm font-semibold text-black/85 dark:border-white/15 dark:bg-white/10 dark:text-white/90">
+              Südknoten: {southNode.sign} · Haus {southNode.house}
+              <ZodiacSignIcon sign={southNode.sign} sizeClassName="h-5 w-5" />
+            </span>
+          </div>
+        ) : null}
+        <p className="mt-4 text-xs text-black/50 dark:text-white/50">
+          Berechnung: mittlerer Mondknoten (ekliptikal), Whole-Sign-Häuser.
+        </p>
+      </section>
+
+      <section
+        className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
+      >
+        <h3 className="text-xl font-semibold tracking-tight">
+          Chiron · der „weiße Lehrer“
+        </h3>
+        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+          Chiron steht in der Astrologie oft für ein sensibles Lernfeld: wo alte Verletztheit zu
+          Weisheit, Mitgefühl und einem ruhigen inneren Lehrer werden kann – nicht als Moral,
+          sondern als gelebte Reife.
+        </p>
+        {profile.narrative.chironInsight && chiron ? (
+          <>
+            <p className="mt-4 text-sm leading-relaxed text-black/80 dark:text-white/80">
+              {profile.narrative.chironInsight}
+            </p>
+            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-amber-500/35 bg-amber-500/10 px-4 py-2 text-sm font-semibold text-amber-950 dark:border-amber-400/35 dark:bg-amber-500/15 dark:text-amber-50">
+              <span className="text-base" aria-hidden>
+                ⚷
+              </span>
+              Chiron: {chiron.sign} · Haus {chiron.house}
+              <ZodiacSignIcon sign={chiron.sign} sizeClassName="h-5 w-5" />
+            </div>
+          </>
+        ) : (
+          <p className="mt-4 text-sm text-black/65 dark:text-white/65">
+            Chiron konnte in dieser Engine-Version nicht berechnet werden. Planetenpositionen,
+            Mondknoten und übrige Punkte bleiben unverändert nutzbar.
+          </p>
+        )}
       </section>
 
       <section

@@ -309,7 +309,7 @@ export default function AstroMapToolPage() {
       setPlacesLoading(true);
       try {
         const res = await fetch(
-          `/api/geo/autocomplete?q=${encodeURIComponent(q)}&countrycodes=de,at,ch`,
+          `/api/geo/autocomplete?q=${encodeURIComponent(q)}`,
           { signal: ac.signal },
         );
         const raw = await res.text();
@@ -348,7 +348,7 @@ export default function AstroMapToolPage() {
       setAnalysisPlacesLoading(true);
       try {
         const res = await fetch(
-          `/api/geo/autocomplete?q=${encodeURIComponent(q)}&countrycodes=de,at,ch`,
+          `/api/geo/autocomplete?q=${encodeURIComponent(q)}`,
           { signal: ac.signal },
         );
         const raw = await res.text();
