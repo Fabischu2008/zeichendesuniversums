@@ -74,6 +74,13 @@ function sessionHasLegacyChartModel(s: StoredAstroSessionV1): boolean {
   return angularDistance(mc, approxMc) < 0.01;
 }
 
+/** Ältere gespeicherte Profile (vor Chiron-Engine) — einmal neu berechnen. */
+function sessionProfileMissingChiron(s: StoredAstroSessionV1): boolean {
+  const profile = s.profile as AstroProfileResult | null | undefined;
+  if (!profile?.specialPoints?.length) return true;
+  return !profile.specialPoints.some((p) => p.key === "chiron");
+}
+
 export default function BirthChartProfilePage() {
   const [birthdate, setBirthdate] = useState("");
   const [birthtime, setBirthtime] = useState("");
@@ -160,7 +167,8 @@ export default function BirthChartProfilePage() {
         unlocked &&
         s.profile &&
         sessionHasChart(s) &&
-        !sessionHasLegacyChartModel(s)
+        !sessionHasLegacyChartModel(s) &&
+        !sessionProfileMissingChiron(s)
       ) {
         setProfile(s.profile);
       }
@@ -177,7 +185,15 @@ export default function BirthChartProfilePage() {
       setVollreportAccess(next);
       if (next) {
         const s = readAstroSession();
-        if (s?.profile) setProfile(s.profile);
+        if (
+          s &&
+          sessionCanCalculate(s) &&
+          sessionProfileMissingChiron(s)
+        ) {
+          void fetchProfileFromSession(s);
+        } else if (s?.profile) {
+          setProfile(s.profile);
+        }
       }
     }
     window.addEventListener(VOLLREPORT_UNLOCK_STORAGE_EVENT, onUnlockEvent);
@@ -206,7 +222,10 @@ export default function BirthChartProfilePage() {
     if (
       s &&
       sessionCanCalculate(s) &&
-      (!s.profile || !sessionHasChart(s) || sessionHasLegacyChartModel(s))
+      (!s.profile ||
+        !sessionHasChart(s) ||
+        sessionHasLegacyChartModel(s) ||
+        sessionProfileMissingChiron(s))
     ) {
       autoFetchDone.current = true;
       void fetchProfileFromSession(s);
@@ -320,7 +339,13 @@ export default function BirthChartProfilePage() {
   /** Button nur, wenn man das Profil noch anstoßen muss (nicht schon da / nicht ladend). */
   const showRecalculateButton =
     vollreportAccess !== true ||
-    (!profile && !profileLoading);
+    (!profile && !profileLoading) ||
+    Boolean(
+      vollreportAccess === true &&
+        profile &&
+        !profileLoading &&
+        !profile.specialPoints?.some((p) => p.key === "chiron"),
+    );
 
   const showReportOnly = vollreportAccess === true && profile !== null;
   const showVollLoading =

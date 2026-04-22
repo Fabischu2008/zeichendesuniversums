@@ -147,6 +147,78 @@ function chironSignExplanation(sign: string): string {
   return map[sign as ZodiacSign] ?? `In ${sign} verbindet sich dein Chiron-Thema mit dem Qualitätsfeld dieses Zeichens: sensibel, persönlich und im Laufe der Zeit immer deutlicher erkennbar.`;
 }
 
+/** Nordknoten: Aufgabenpol im jeweiligen Zeichen (in dem der NK steht). */
+function northNodeSignExplanation(sign: string): string {
+  const map: Record<ZodiacSign, string> = {
+    Widder:
+      "In Widder geht es ums mutige Anfangen, klare Kanten und ehrliche Initiative – du darfst lernen, dich sichtbar zu behaupten, ohne alles sofort retten zu müssen.",
+    Stier:
+      "In Stier geht es um Beständigkeit, Werte und sinnliche Sicherheit – du darfst Stabilität aufbauen, ohne dich in Besitzdenken oder Starrheit zu verlieren.",
+    Zwillinge:
+      "In Zwillinge geht es um Neugier, Austausch und bewegliche Gedanken – du darfst dich intellektuell öffnen, ohne dich im oberflächlichen Getriebe zu verlieren.",
+    Krebs:
+      "In Krebs geht es um Nähe, Schutz und emotionale Tiefe – du darfst Bindung wagen, ohne dich nur noch um andere zu kreisen.",
+    Löwe:
+      "In Löwe geht es um Herz, Ausdruck und Selbstwert – du darfst strahlen und spielerisch führen, ohne Stolz zur Panzerung zu machen.",
+    Jungfrau:
+      "In Jungfrau geht es um Klarheit, Alltagstauglichkeit und heilsame Verbesserung – du darfst Ordnung schaffen, ohne dich im Perfektionismus zu erschöpfen.",
+    Waage:
+      "In Waage geht es um Beziehung, Fairness und stimmige Balance – du darfst verbinden und verhandeln, ohne Harmonie um jeden Preis zu kaufen.",
+    Skorpion:
+      "In Skorpion geht es um Vertrauen, Intensität und echte Wandlung – du darfst Tiefe gehen, ohne Kontrolle als einzigen Schutz zu nehmen.",
+    Schütze:
+      "In Schütze geht es um Sinn, Weite und ehrliche Orientierung – du darfst visionär werden, ohne aus Verbindlichkeit auszusteigen.",
+    Steinbock:
+      "In Steinbock geht es um Reife, Verantwortung und langfristigen Aufbau – du darfst Grenzen setzen, ohne Gefühle komplett einzufrieren.",
+    Wassermann:
+      "In Wassermann geht es um Eigenständigkeit, Perspektivwechsel und Gemeinschaft – du darfst anders denken, ohne dich emotional komplett abzuschotten.",
+    Fische:
+      "In Fische geht es um Mitgefühl, Intuition und Loslassen – du darfst weich und verbunden sein, ohne Grenzen komplett zu verwischen.",
+  };
+  return (
+    map[sign as ZodiacSign] ??
+    `In ${sign} zeigt sich dein Aufgabenpol über die Kernqualitäten dieses Zeichens – persönlich und im Laufe der Zeit immer klarer erkennbar.`
+  );
+}
+
+/** Südknoten: Komfortpol im jeweiligen Zeichen (in dem der SK steht). */
+function southNodeSignExplanation(sign: string): string {
+  const map: Record<ZodiacSign, string> = {
+    Widder:
+      "In Widder kennst du impulsiven Drive und schnelles Handeln gut – das kann trösten, wird aber leicht zur Gewohnheit; der Südknoten erinnert daran, nicht nur im Not-Modus zu leben.",
+    Stier:
+      "In Stier kennst du Sicherheit, Genuss und Beständigkeit gut – das gibt Halt, kann aber zu Festhalten führen, wenn Veränderung nötig wird.",
+    Zwillinge:
+      "In Zwillinge kennst du mentale Beweglichkeit und viele Kontakte gut – das macht leicht, kann aber innerlich unruhig werden, wenn Tiefe fehlt.",
+    Krebs:
+      "In Krebs kennst du Fürsorge, Rückzug und emotionale Intuition gut – das schützt, kann aber zu Überidentifikation mit „für andere da sein“ werden.",
+    Löwe:
+      "In Löwe kennst du Herz, Präsenz und Selbstausdruck gut – das stärkt, kann aber zu dramatischer Abhängigkeit von Anerkennung werden.",
+    Jungfrau:
+      "In Jungfrau kennst du Analyse, Hilfe und Verbesserung gut – das dient, kann aber zu Dauer-Kontrolle und Selbstkritik werden.",
+    Waage:
+      "In Waage kennst du Diplomatie, Harmonie und Paarbezug gut – das verbindet, kann aber zu Konfliktvermeidung und Außenorientierung werden.",
+    Skorpion:
+      "In Skorpion kennst du Tiefe, Loyalität und Intensität gut – das bindet stark, kann aber zu Misstrauen oder emotionaler Enge werden.",
+    Schütze:
+      "In Schütze kennst du Freiheit, Humor und Sinn gut – das erweitert, kann aber zu Flucht vor Verbindlichkeit werden.",
+    Steinbock:
+      "In Steinbock kennst du Pflicht, Kontrolle und langen Atem gut – das trägt, kann aber zu emotionaler Härte und Funktionieren werden.",
+    Wassermann:
+      "In Wassermann kennst du Distanz, Ideen und Unabhängigkeit gut – das klärt, kann aber zu innerer Isolation werden.",
+    Fische:
+      "In Fische kennst du Einfühlung, Auflösung und Intuition gut – das öffnet, kann aber zu Grenzenlosigkeit und Übernahme fremder Stimmungen werden.",
+  };
+  return (
+    map[sign as ZodiacSign] ??
+    `In ${sign} liegen dir vertraute Muster besonders nah – hilfreich als Ressource, nicht als einziger Ort, an dem du bleiben musst.`
+  );
+}
+
+function moonNodeCalculationHint(): string {
+  return "Berechnung: mittlerer Mondknoten (ekliptikal), Whole-Sign-Häuser.";
+}
+
 export function AstroProfileDisplay({
   profile,
   variant = "page",
@@ -238,16 +310,12 @@ export function AstroProfileDisplay({
     profile.specialPoints.map((p) => [p.key, p]),
   );
   const specialNotes: Record<string, string> = {
-    north_node:
-      "Entwicklungsrichtung: Dieses Haus zeigt, welche neuen Qualitäten du aktiv aufbauen solltest.",
-    south_node:
-      "Gewohnheitsmuster: Hier bist du sicher, kannst aber leicht im Alten stecken bleiben.",
     lilith:
       "Rohes Wahrheits-Thema: Wo du nichts beschonigen willst und klare innere Grenzen brauchst.",
     part_of_fortune:
       "Glückspunkt: Wenn du diese Qualität lebst, geht deine Energie in den erlösten Zustand – oft mit intensivem Flow, tiefer Erfüllung und einem Höhepunkt von Glücksgefühlen.",
     chiron:
-      "Der „weiße Lehrer“: sensibles Lernfeld, an dem du über Erfahrung zu Tiefe, Mitgefühl und klarer Begleitung reifen kannst.",
+      "Chiron als „weißer Lehrer“: ein sensibles Lernfeld, an dem du über echte Erfahrung zu Tiefe, Mitgefühl und klarer Begleitung reifen kannst.",
   };
   const angleNotes: Record<string, string> = {
     asc: "Aszendent: Deine unmittelbare Außenwirkung, dein spontaner Auftakt und die Art, wie du neue Situationen beginnst. Andere lesen darüber oft zuerst dein Temperament, deine Ausstrahlung und deinen natürlichen Grundmodus.",
@@ -257,8 +325,6 @@ export function AstroProfileDisplay({
   };
   const topHouse = profile.houseFocus[0];
   const secondHouse = profile.houseFocus[1];
-  const northNode = profile.specialPoints.find((p) => p.key === "north_node");
-  const southNode = profile.specialPoints.find((p) => p.key === "south_node");
   const chiron = profile.specialPoints.find((p) => p.key === "chiron");
   const coreSummary =
     sun && moon && ascSign
@@ -378,10 +444,23 @@ export function AstroProfileDisplay({
                     specialPoint?.note ??
                     angleNotes[row.key] ??
                     null;
-                  const note =
-                    row.key === "chiron" && baseNote
-                      ? `${baseNote} ${chironSignExplanation(row.sign)}`
-                      : baseNote;
+                  let note: string | null = baseNote;
+                  if (row.key === "north_node") {
+                    note = [
+                      "Der Nordknoten (aufsteigend) ist dein Aufgabenpol: Qualitäten, die du in diesem Leben bewusst üben und integrieren darfst.",
+                      northNodeSignExplanation(row.sign),
+                      `Haus ${row.house} zeigt das Lebensfeld, in dem sich diese Entwicklung besonders konkret anfühlt.`,
+                    ].join(" ");
+                  } else if (row.key === "south_node") {
+                    note = [
+                      "Der Südknoten (absteigend) ist dein Komfortpol: vertraute Muster und alte Sicherheit – hilfreich als Basis, aber nicht als einziger Aufenthaltsort.",
+                      southNodeSignExplanation(row.sign),
+                      `Haus ${row.house} beschreibt, wo dir dieser Stil am natürlichsten und vertrautesten ist.`,
+                      moonNodeCalculationHint(),
+                    ].join(" ");
+                  } else if (row.key === "chiron") {
+                    note = [baseNote, chironSignExplanation(row.sign)].filter(Boolean).join(" ");
+                  }
                   return (
                     <article
                       key={`extra-${row.key}`}
@@ -489,37 +568,6 @@ export function AstroProfileDisplay({
             </div>
           ))}
         </div>
-      </section>
-
-      <section
-        className={`rounded-3xl border border-black/5 bg-white dark:border-white/10 dark:bg-white/5 ${pad}`}
-      >
-        <h3 className="text-xl font-semibold tracking-tight">
-          Mondknoten · Aufgabe und Komfortzone
-        </h3>
-        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Der aufsteigende Mondknoten (Nordknoten) weist auf Qualitäten, die du in diesem Leben
-          bewusst üben und integrieren darfst. Der absteigende Knoten (Südknoten) beschreibt
-          vertraute Muster – hilfreich als Basis, aber nicht als einziger Aufenthaltsort.
-        </p>
-        <p className="mt-4 text-sm leading-relaxed text-black/80 dark:text-white/80">
-          {profile.narrative.nodesInsight}
-        </p>
-        {northNode && southNode ? (
-          <div className="mt-5 flex flex-wrap gap-2.5">
-            <span className="inline-flex items-center gap-2 rounded-full border border-violet-500/35 bg-violet-500/12 px-4 py-2 text-sm font-semibold text-violet-950 dark:border-violet-400/40 dark:bg-violet-500/20 dark:text-violet-50">
-              Nordknoten: {northNode.sign} · Haus {northNode.house}
-              <ZodiacSignIcon sign={northNode.sign} sizeClassName="h-5 w-5" />
-            </span>
-            <span className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/[0.03] px-4 py-2 text-sm font-semibold text-black/85 dark:border-white/15 dark:bg-white/10 dark:text-white/90">
-              Südknoten: {southNode.sign} · Haus {southNode.house}
-              <ZodiacSignIcon sign={southNode.sign} sizeClassName="h-5 w-5" />
-            </span>
-          </div>
-        ) : null}
-        <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-          Berechnung: mittlerer Mondknoten (ekliptikal), Whole-Sign-Häuser.
-        </p>
       </section>
 
       <section
