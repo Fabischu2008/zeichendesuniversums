@@ -219,6 +219,73 @@ function moonNodeCalculationHint(): string {
   return "Berechnung: mittlerer Mondknoten (ekliptikal), Whole-Sign-Häuser.";
 }
 
+function houseFieldHint(house: number): string {
+  const map: Record<number, string> = {
+    1: "Identität, Auftreten und Selbstführung",
+    2: "Werte, Sicherheit und Selbstwert",
+    3: "Denken, Lernen und Kommunikation",
+    4: "Zuhause, Herkunft und innere Basis",
+    5: "Kreativität, Freude und Herz-Ausdruck",
+    6: "Alltag, Gesundheit und hilfreiche Struktur",
+    7: "Beziehung, Spiegelung und Bindung",
+    8: "Tiefe Prozesse, Vertrauen und Wandlung",
+    9: "Sinn, Weltbild und Perspektive",
+    10: "Berufung, Sichtbarkeit und Richtung",
+    11: "Netzwerk, Gemeinschaft und Vision",
+    12: "Rückzug, Unterbewusstes und Regeneration",
+  };
+  return map[house] ?? "zentrale Lebensdynamik";
+}
+
+function lilithSignExplanation(sign: string): string {
+  const map: Record<ZodiacSign, string> = {
+    Widder: "Lilith in Widder will ungefilterte Ehrlichkeit und klare Selbstbehauptung.",
+    Stier: "Lilith in Stier fordert verkörperte Werte, Grenzen und echte Selbstachtung.",
+    Zwillinge: "Lilith in Zwillinge fordert unzensierte Sprache und geistige Eigenständigkeit.",
+    Krebs: "Lilith in Krebs fordert emotionalen Selbstschutz ohne Schuldgefühl.",
+    Löwe: "Lilith in Löwe fordert authentischen Selbstausdruck statt Anpassungs-Performance.",
+    Jungfrau: "Lilith in Jungfrau fordert Klarheit ohne Selbstabwertung und Dauerkritik.",
+    Waage: "Lilith in Waage fordert Beziehung auf Augenhöhe statt Harmoniedruck.",
+    Skorpion: "Lilith in Skorpion fordert radikale Wahrhaftigkeit in Nähe und Vertrauen.",
+    Schütze: "Lilith in Schütze fordert gelebte Wahrheit statt gefälliger Weltbilder.",
+    Steinbock: "Lilith in Steinbock fordert souveräne Grenzen gegen Pflicht-Übergriff.",
+    Wassermann: "Lilith in Wassermann fordert Freiheit, Anderssein und innere Unabhängigkeit.",
+    Fische: "Lilith in Fische fordert klare energetische Grenzen bei offenem Mitgefühl.",
+  };
+  return map[sign as ZodiacSign] ?? `Lilith in ${sign} fordert kompromisslose Ehrlichkeit mit deinem inneren Kompass.`;
+}
+
+function fortuneSignExplanation(sign: string): string {
+  const map: Record<ZodiacSign, string> = {
+    Widder: "Flow entsteht durch mutigen Start, direkte Entscheidungen und Handlung.",
+    Stier: "Flow entsteht durch Ruhe, Qualität, Körperbezug und wertige Kontinuität.",
+    Zwillinge: "Flow entsteht durch Austausch, Lernen, Schreiben und bewegliches Denken.",
+    Krebs: "Flow entsteht durch emotionale Sicherheit, Bindung und nährende Räume.",
+    Löwe: "Flow entsteht durch Herz, Kreativität, Spiel und sichtbaren Ausdruck.",
+    Jungfrau: "Flow entsteht durch sinnvolle Ordnung, Präzision und praktische Hilfe.",
+    Waage: "Flow entsteht durch Kooperation, Schönheit, Fairness und gute Abstimmung.",
+    Skorpion: "Flow entsteht durch Tiefe, Fokus, Transformationsbereitschaft und Wahrheit.",
+    Schütze: "Flow entsteht durch Sinn, Vision, Weite und inspirierende Perspektive.",
+    Steinbock: "Flow entsteht durch Verantwortung, Struktur, Timing und Verlässlichkeit.",
+    Wassermann: "Flow entsteht durch Innovation, Freiheit, Netzwerk und neue Ideen.",
+    Fische: "Flow entsteht durch Intuition, Mitgefühl, Kreativität und inneres Vertrauen.",
+  };
+  return map[sign as ZodiacSign] ?? `Flow zeigt sich bei ${sign}, wenn du die Kernqualität dieses Zeichens bewusst lebst.`;
+}
+
+function angleSignExplanation(key: string, sign: string): string {
+  if (key === "asc") {
+    return `Mit AC in ${sign} wirkst du im Erstkontakt oft ${signAscKeyword(sign)}.`;
+  }
+  if (key === "dsc") {
+    return `Mit DC in ${sign} suchst du in Beziehungen besonders ${signAscKeyword(sign)}e Qualitäten als Gegenpol.`;
+  }
+  if (key === "mc") {
+    return `Mit MC in ${sign} wird deine berufliche Sichtbarkeit über ${signCoreKeyword(sign)} geprägt.`;
+  }
+  return `Mit IC in ${sign} findest du innere Stabilität über ${signEmotionKeyword(sign)}e Selbstregulation.`;
+}
+
 export function AstroProfileDisplay({
   profile,
   variant = "page",
@@ -449,17 +516,47 @@ export function AstroProfileDisplay({
                     note = [
                       "Der Nordknoten (aufsteigend) ist dein Aufgabenpol: Qualitäten, die du in diesem Leben bewusst üben und integrieren darfst.",
                       northNodeSignExplanation(row.sign),
-                      `Haus ${row.house} zeigt das Lebensfeld, in dem sich diese Entwicklung besonders konkret anfühlt.`,
+                      `Haus ${row.house} zeigt das Lebensfeld (${houseFieldHint(row.house)}), in dem sich diese Entwicklung besonders konkret anfühlt.`,
                     ].join(" ");
                   } else if (row.key === "south_node") {
                     note = [
                       "Der Südknoten (absteigend) ist dein Komfortpol: vertraute Muster und alte Sicherheit – hilfreich als Basis, aber nicht als einziger Aufenthaltsort.",
                       southNodeSignExplanation(row.sign),
-                      `Haus ${row.house} beschreibt, wo dir dieser Stil am natürlichsten und vertrautesten ist.`,
+                      `Haus ${row.house} beschreibt (${houseFieldHint(row.house)}), wo dir dieser Stil am natürlichsten und vertrautesten ist.`,
                       moonNodeCalculationHint(),
                     ].join(" ");
                   } else if (row.key === "chiron") {
-                    note = [baseNote, chironSignExplanation(row.sign)].filter(Boolean).join(" ");
+                    note = [
+                      baseNote,
+                      chironSignExplanation(row.sign),
+                      `In Haus ${row.house} zeigt sich dieses Thema besonders über ${houseFieldHint(row.house).toLowerCase()}.`,
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
+                  } else if (row.key === "lilith") {
+                    note = [
+                      baseNote,
+                      lilithSignExplanation(row.sign),
+                      `In Haus ${row.house} wird das konkret bei ${houseFieldHint(row.house).toLowerCase()}.`,
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
+                  } else if (row.key === "part_of_fortune") {
+                    note = [
+                      baseNote,
+                      fortuneSignExplanation(row.sign),
+                      `In Haus ${row.house} wird dieser Flow besonders über ${houseFieldHint(row.house).toLowerCase()} aktiviert.`,
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
+                  } else if (["asc", "dsc", "mc", "ic"].includes(row.key)) {
+                    note = [
+                      baseNote,
+                      angleSignExplanation(row.key, row.sign),
+                      `Hausbezug hier: ${houseFieldHint(row.house)}.`,
+                    ]
+                      .filter(Boolean)
+                      .join(" ");
                   }
                   return (
                     <article
@@ -586,13 +683,6 @@ export function AstroProfileDisplay({
             <p className="mt-4 text-sm leading-relaxed text-black/80 dark:text-white/80">
               {profile.narrative.chironInsight}
             </p>
-            <div className="mt-5 inline-flex items-center gap-2 rounded-full border border-amber-500/35 bg-amber-500/10 px-4 py-2 text-sm font-semibold text-amber-950 dark:border-amber-400/35 dark:bg-amber-500/15 dark:text-amber-50">
-              <span className="text-base" aria-hidden>
-                ⚷
-              </span>
-              Chiron: {chiron.sign} · Haus {chiron.house}
-              <ZodiacSignIcon sign={chiron.sign} sizeClassName="h-5 w-5" />
-            </div>
           </>
         ) : (
           <p className="mt-4 text-sm text-black/65 dark:text-white/65">

@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { EmailForm } from "@/components/EmailForm";
 import { SITE_NAME } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
@@ -23,7 +22,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: `Kostenloses Partnerschafts-PDF · ${SITE_NAME}`,
     description:
-      "PDF zu Beziehung & Partnerschaft – kompakt, ohne Buzzwords. E-Mail eintragen, sofort downloaden.",
+      "PDF zu Beziehung & Partnerschaft – kompakt, ohne Buzzwords. Direkt kostenlos downloaden.",
     url,
     locale: "de_DE",
   },
@@ -85,18 +84,18 @@ export default function PartnerschaftFreebiePage() {
           Jetzt kostenlos laden
         </h2>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Vorname, Nachname und E‑Mail (Telefon optional). Danach öffnet sich die
-          Download‑Seite mit dem PDF.
+          Lade das Partnerschafts-PDF direkt und ohne Formular herunter.
         </p>
         <div className="mt-6">
-          <EmailForm
-            redirectTo="/partnerschaft/download"
-            source="freebie_partnerschaft"
-            submitLabel="PDF kostenlos laden"
-          />
+          <Link
+            href="/partnerschaft/download"
+            className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+          >
+            Kostenlos herunterladen
+          </Link>
         </div>
         <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-          Kein Spam. Abmelden jederzeit möglich.
+          Direktzugang zum PDF.
         </p>
       </div>
     </div>

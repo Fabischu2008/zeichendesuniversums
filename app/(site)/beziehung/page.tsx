@@ -167,8 +167,8 @@ export default function BeziehungLandingPage() {
           </p>
           <CTA
             title="Hol dir das PDF in einer Minute"
-            description="Formular ausfüllen, auf die Download‑Seite – Datei speichern. Fertig."
-            cta={{ label: "Zum Formular", href: funnelFormHref }}
+            description="Direkt öffnen, auf Download tippen – Datei speichern. Fertig."
+            cta={{ label: "Kostenlos herunterladen", href: funnelFormHref }}
           />
         </div>
         <div className="rounded-3xl border border-black/5 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 p-6 sm:p-8 dark:border-white/10">

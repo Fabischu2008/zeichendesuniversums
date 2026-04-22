@@ -66,7 +66,6 @@ export function chironGeocentricLongitudeDegrees(dateUtc: Date): number {
     r * (Math.cos(om) * cosu - Math.sin(om) * sinu * Math.cos(i));
   const yh =
     r * (Math.sin(om) * cosu + Math.cos(om) * sinu * Math.cos(i));
-  const zh = r * sinu * Math.sin(i);
 
   const earthHelio = Astronomy.HelioVector(Astronomy.Body.Earth, dateUtc);
   const earthEcl = Astronomy.Ecliptic(earthHelio);
@@ -75,12 +74,8 @@ export function chironGeocentricLongitudeDegrees(dateUtc: Date): number {
   const be = earthEcl.elat * DEG2RAD;
   const xe = rEarth * Math.cos(be) * Math.cos(le);
   const ye = rEarth * Math.cos(be) * Math.sin(le);
-  const ze = rEarth * Math.sin(be);
-
   const xg = xh - xe;
   const yg = yh - ye;
-  const zg = zh - ze;
-
   const lon = RAD2DEG * Math.atan2(yg, xg);
   return normalizeDegrees(lon);
 }

@@ -156,8 +156,8 @@ export default function Home() {
           </p>
           <CTA
             title="Hol dir den Guide in einer Minute"
-            description="Formular ausfüllen, auf die Download‑Seite – PDF speichern. Fertig."
-            cta={{ label: "Zum Formular", href: "/freebie" }}
+            description="Direkt öffnen, auf Download tippen – PDF speichern. Fertig."
+            cta={{ label: "Kostenlos herunterladen", href: "/freebie" }}
           />
         </div>
         <div className="rounded-3xl border border-black/5 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 p-6 sm:p-8 dark:border-white/10">
