@@ -5,6 +5,7 @@ import MobileNav from "@/components/SiteHeaderMobileNav";
 const nav = [
   { href: "/", label: "Startseite" },
   { href: "/freebie", label: "Kostenloser Guide" },
+  { href: "/tools", label: "Tools" },
 ];
 
 export function SiteHeader() {
