@@ -50,13 +50,13 @@ export function VollreportCoachingCta({
         <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
           <Link
             href={readingHref}
-            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
             {readingLabel}
           </Link>
           <Link
             href={VOLLREPORT_CTA_COACHING_HREF}
-            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full border border-black/12 bg-white/90 px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/12 bg-white/90 px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
           >
             Coaching buchen
           </Link>
