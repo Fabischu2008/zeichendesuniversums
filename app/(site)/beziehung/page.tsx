@@ -11,7 +11,7 @@ import {
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/beziehung";
-const funnelFormHref = "/partnerschaft";
+const funnelFormHref = "/freebie_beziehung";
 const ogImage = absoluteUrl(SOCIAL_PREVIEW_IMAGE);
 
 export const metadata: Metadata = {
@@ -69,18 +69,10 @@ export default function BeziehungLandingPage() {
           href: "#so-funktionierts",
         }}
         note="Lesezeit im PDF kompakt · Datei direkt nach dem Formular · kein Spam"
-        imageSrc="/images/hero-cosmic-eye.png"
-        imageAlt="Kosmischer Hintergrund mit blauem Auge"
+        imageSrc="/images/beziehung_hintergrund.PNG"
+        imageSrcMobile="/images/beziehung_handy.png"
+        imageAlt="Hintergrundbild Beziehung & Partnerschaft"
       />
-
-      <p className="text-center text-sm text-black/50 dark:text-white/50">
-        <Link
-          href="/"
-          className="underline decoration-black/20 underline-offset-4 hover:text-black dark:decoration-white/25 dark:hover:text-white"
-        >
-          ← Zur Hauptseite ({SITE_NAME})
-        </Link>
-      </p>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <div className="grid gap-6 md:grid-cols-3">

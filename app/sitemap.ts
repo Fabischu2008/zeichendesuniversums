@@ -14,7 +14,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
     },
     {
-      url: absoluteUrl("/partnerschaft"),
+      url: absoluteUrl("/freebie_beziehung"),
       lastModified: now,
       changeFrequency: "monthly",
     },

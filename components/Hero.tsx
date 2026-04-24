@@ -9,6 +9,8 @@ type HeroProps = {
   secondaryCta?: { label: string; href: string };
   note?: string;
   imageSrc?: string;
+  /** Optional portrait-optimized asset; shown below `sm`, `imageSrc` from `sm` up. */
+  imageSrcMobile?: string;
   imageAlt?: string;
 };
 
@@ -19,19 +21,41 @@ export function Hero({
   secondaryCta,
   note,
   imageSrc,
+  imageSrcMobile,
   imageAlt = "",
 }: HeroProps) {
   if (imageSrc) {
     return (
       <section className="relative isolate min-h-[min(520px,72vh)] overflow-hidden rounded-3xl border border-white/15 p-6 sm:p-10 lg:p-12">
-        <Image
-          src={imageSrc}
-          alt={imageAlt}
-          fill
-          priority
-          sizes="(max-width: 1280px) 100vw, 1280px"
-          className="object-cover object-[15%_50%] sm:object-[25%_50%]"
-        />
+        {imageSrcMobile ? (
+          <>
+            <Image
+              src={imageSrcMobile}
+              alt={imageAlt}
+              fill
+              priority
+              sizes="100vw"
+              className="object-cover object-center sm:hidden"
+            />
+            <Image
+              src={imageSrc}
+              alt={imageAlt}
+              fill
+              priority
+              sizes="(max-width: 1280px) 100vw, 1280px"
+              className="hidden object-cover object-[15%_50%] sm:block sm:object-[25%_50%]"
+            />
+          </>
+        ) : (
+          <Image
+            src={imageSrc}
+            alt={imageAlt}
+            fill
+            priority
+            sizes="(max-width: 1280px) 100vw, 1280px"
+            className="object-cover object-[15%_50%] sm:object-[25%_50%]"
+          />
+        )}
         <div className="relative z-10 max-w-2xl">
           <p className="text-base font-medium text-white/90 sm:text-lg">
             {SITE_TAGLINE}
