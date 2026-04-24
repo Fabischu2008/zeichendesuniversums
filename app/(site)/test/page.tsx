@@ -79,6 +79,33 @@ const trustPoints = [
   "Kostenlos starten, dann optional vertiefen",
 ] as const;
 
+const upsellFlows = [
+  {
+    badge: "Astroprofil-Flow",
+    title: "Nach dem Vollreport",
+    body: "Nutzer gehen von der Profilauswertung in passende Vertiefung: 30-Min Astro-Reading, 60-Min Astro+Tarot oder 1:1 Coaching.",
+    primaryCta: { label: "Astro-Readings ansehen", href: "/reading" },
+    secondaryCta: { label: "Coaching Einfluss", href: "/coaching" },
+    points: [
+      "Astro-Reading: 33 EUR / 30 Min",
+      "Astro + Tarot: 66,66 EUR / 60 Min",
+      "Coaching Einfluss: 2.500 EUR",
+    ],
+  },
+  {
+    badge: "Beziehungs-Flow",
+    title: "Nach der Paaranalyse",
+    body: "Nutzer werden in ein fokussiertes Beziehungs-Reading geführt, das direkt an Dynamik, Reibungspunkte und Verbindung anknüpft.",
+    primaryCta: { label: "Beziehungs-Reading", href: "/reading/beziehung" },
+    secondaryCta: { label: "Zur Paaranalyse", href: "/tools/compatibility" },
+    points: [
+      "Beziehungs-Reading: 44,44 EUR",
+      "Klarer Fokus auf Nähe, Grenzen, Kommunikation",
+      "Gleicher Stripe -> Success Flow",
+    ],
+  },
+] as const;
+
 export default function TestHomePage() {
   return (
     <div className="flex flex-col gap-10 sm:gap-14">
@@ -115,6 +142,65 @@ export default function TestHomePage() {
               >
                 {card.cta} →
               </Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] via-white to-violet-500/10 p-6 sm:p-8 dark:border-emerald-500/25 dark:from-emerald-500/10 dark:via-white/[0.04] dark:to-violet-500/10">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">
+              Monetarisierung 2.0
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+              Getrennte Upsell-Flows für Astro und Beziehung
+            </h2>
+            <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+              Damit Nutzer immer das passende Angebot sehen, werden Readings je
+              Tool-Kontext getrennt ausgespielt.
+            </p>
+          </div>
+          <Link
+            href="/shop"
+            className="inline-flex text-sm font-medium text-black/70 underline-offset-4 hover:underline dark:text-white/70"
+          >
+            Alle Produkte im Shop →
+          </Link>
+        </div>
+
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {upsellFlows.map((flow) => (
+            <article
+              key={flow.title}
+              className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5"
+            >
+              <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-100">
+                {flow.badge}
+              </span>
+              <h3 className="mt-4 text-xl font-semibold tracking-tight">{flow.title}</h3>
+              <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
+                {flow.body}
+              </p>
+              <ul className="mt-4 space-y-2 text-sm text-black/80 dark:text-white/80">
+                {flow.points.map((point) => (
+                  <li key={point}>• {point}</li>
+                ))}
+              </ul>
+              <div className="mt-5 flex flex-wrap gap-2">
+                <Link
+                  href={flow.primaryCta.href}
+                  className="inline-flex h-10 items-center justify-center rounded-full bg-black px-4 text-xs font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                >
+                  {flow.primaryCta.label}
+                </Link>
+                <Link
+                  href={flow.secondaryCta.href}
+                  className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-xs font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+                >
+                  {flow.secondaryCta.label}
+                </Link>
+              </div>
             </article>
           ))}
         </div>
