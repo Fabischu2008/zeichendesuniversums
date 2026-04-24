@@ -29,7 +29,12 @@ export function buildLeadEmailBodies(params: {
   phoneRaw: string;
 }) {
   const { resolvedSource, firstName, lastName, email, phoneRaw } = params;
+  const previewText = `Neuer Lead von ${firstName} ${lastName} (${resolvedSource}).`;
   const lines = [
+    previewText,
+    "",
+    `${SITE_NAME} - Lead Eingang`,
+    "------------------------------",
     `Quelle: ${resolvedSource}`,
     `Name: ${firstName} ${lastName}`,
     `E-Mail: ${email}`,
@@ -61,6 +66,9 @@ export function buildLeadEmailBodies(params: {
 <html lang="de">
 <head><meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/></head>
 <body style="margin:0;padding:24px;background:#f1f5f9;font-family:ui-sans-serif,system-ui,-apple-system,Segoe UI,sans-serif;">
+  <div style="display:none;max-height:0;overflow:hidden;opacity:0;color:transparent;">
+    ${escapeHtml(previewText)}
+  </div>
   <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:560px;margin:0 auto;">
     <tr>
       <td style="padding:0 0 20px 0;">
