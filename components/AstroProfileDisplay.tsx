@@ -704,7 +704,7 @@ export function AstroProfileDisplay({
         </p>
       </section>
 
-      <VollreportCoachingCta />
+      <VollreportCoachingCta context="astro" />
     </div>
   );
 }

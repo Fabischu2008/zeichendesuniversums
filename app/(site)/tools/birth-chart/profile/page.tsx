@@ -431,14 +431,14 @@ export default function BirthChartProfilePage() {
 
         <div className="mt-4">
           <label className="space-y-2">
-            <span className="text-sm font-medium">Geburtsort (DACH)</span>
+            <span className="text-sm font-medium">Geburtsort</span>
             <input
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
                 setPlace(null);
               }}
-              placeholder="z.B. Kaiserslautern"
+              placeholder="z. B. Tokyo, Nairobi oder Kaiserslautern"
               className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:focus:border-white/30"
             />
           </label>

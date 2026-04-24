@@ -213,7 +213,7 @@ export default function BirthChartToolPage() {
           Schritt 2 · Geburtsdaten
         </h2>
         <p className="mt-1 text-sm text-black/60 dark:text-white/60">
-          Für exakte Berechnung brauchen wir Datum, Uhrzeit und Ort (DACH).
+          Für exakte Berechnung brauchen wir Datum, Uhrzeit und Ort weltweit.
         </p>
         <div className="mt-6 grid gap-6 md:grid-cols-2">
           <label className="min-w-0 space-y-2">
@@ -239,14 +239,14 @@ export default function BirthChartToolPage() {
 
         <div className="mt-6">
           <label className="min-w-0 space-y-2">
-            <span className="text-sm font-medium">Geburtsort (DACH)</span>
+            <span className="text-sm font-medium">Geburtsort</span>
             <input
               value={query}
               onChange={(e) => {
                 setQuery(e.target.value);
                 setPlace(null);
               }}
-              placeholder="z. B. Kaiserslautern"
+              placeholder="z. B. Tokyo, Nairobi oder Kaiserslautern"
               className="h-12 w-full min-w-0 max-w-full rounded-2xl border border-black/10 bg-white px-4 text-sm box-border outline-none focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:focus:border-white/30"
             />
           </label>

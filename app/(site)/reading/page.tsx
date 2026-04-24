@@ -1,28 +1,36 @@
 import Link from "next/link";
 import type { Metadata } from "next";
+import {
+  checkoutHrefForProduct,
+  PRODUCT_ID_READING_PROFILE_30,
+  PRODUCT_ID_READING_TAROT_60,
+} from "@/lib/cms";
 
 export const metadata: Metadata = {
   title: "Reading",
-  description: "Persönliches Reading: 30 oder 60 Minuten – klar & praktisch.",
+  description:
+    "Persoenliche Readings: 30 Min Astro-Reading oder 60 Min Astro + Tarot-Reading mit Horoskopanalyse und klaren naechsten Schritten.",
 };
 
 const offers = [
   {
-    title: "30 Min Reading",
-    price: "49€",
+    productId: PRODUCT_ID_READING_PROFILE_30,
+    title: "Astro-Reading",
+    price: "33€",
     bullets: [
-      "Kernmuster & Trigger",
-      "1 Fokus-Thema (Liebe / Job / Selbstwert)",
-      "Konkreter Next-Step Plan",
+      "30 Minuten Reading mit Analyse deines Geburtsbilds/Horoskops",
+      "Klarheit fuer Alltag, Entscheidungen und Beziehungen",
+      "Konkrete Next Steps statt Theorie",
     ],
   },
   {
-    title: "60 Min Reading",
-    price: "89€",
+    productId: PRODUCT_ID_READING_TAROT_60,
+    title: "Astro + Tarot-Reading",
+    price: "66,66€",
     bullets: [
-      "Geburtshoroskop Analyse (Basic)",
-      "Beziehungs-/Karriere Muster",
-      "Q&A + persönlicher Action Plan",
+      "60 Minuten Reading mit gleicher Horoskop-Analyse",
+      "Zusaetzliche Tarot-Legung zu einem speziellen Thema",
+      "Intuitive Impulse mit klarem Umsetzungsfahrplan",
     ],
   },
 ];
@@ -35,8 +43,9 @@ export default function ReadingPage() {
           Persönliches Reading
         </h1>
         <p className="text-black/70 dark:text-white/70">
-          Keine Verwirrung, kein Rätselraten – wir übersetzen deine Muster in
-          klare Entscheidungen.
+          Beide Readings enthalten die Analyse deines Geburtsbilds/Horoskops.
+          Im 60-Minuten-Format bekommst du zusaetzlich eine Tarot-Legung zu
+          deinem speziellen Thema.
         </p>
       </div>
 
@@ -66,17 +75,11 @@ export default function ReadingPage() {
             </ul>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
-                href="/checkout"
+                href={checkoutHrefForProduct(o.productId)}
                 className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
                 Jetzt buchen (Stripe)
               </Link>
-              <a
-                href="#"
-                className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-              >
-                Calendly (später)
-              </a>
             </div>
           </section>
         ))}

@@ -27,9 +27,9 @@ export function buildCompatibilityAccessLinks(
   return {
     pairLink: buildUnlockUrlForPath(
       site,
-      "/tools/compatibility/access",
+      "/tools/compatibility",
       pairToken,
-      "paar-links",
+      "paaranalyse",
     ),
     profileLinkA: buildProfileAccessWithUnlockUrl(site, tokenA),
     profileLinkB: buildProfileAccessWithUnlockUrl(site, tokenB),

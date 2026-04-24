@@ -1653,7 +1653,7 @@ export default function CompatibilityToolPage() {
             })()}
           </section>
 
-          <VollreportCoachingCta />
+          <VollreportCoachingCta context="relationship" />
         </div>
       ) : null}
 

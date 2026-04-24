@@ -10,7 +10,11 @@ import { buildCompatibilityAccessLinks } from "@/lib/compatibility-access-links"
 import {
   getProducts,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_COACHING_EINFLUSS,
   PRODUCT_ID_COMPAT_PAARANALYSE,
+  PRODUCT_ID_READING_PROFILE_30,
+  PRODUCT_ID_READING_RELATIONSHIP,
+  PRODUCT_ID_READING_TAROT_60,
 } from "@/lib/cms";
 import {
   isValidProfileEmail,
@@ -70,6 +74,24 @@ export default async function SuccessPage({
 
   const isProfileProduct = productId === PRODUCT_ID_ASTRO_VOLLPROFIL;
   const isCompatProduct = productId === PRODUCT_ID_COMPAT_PAARANALYSE;
+  const isReadingProduct =
+    productId === PRODUCT_ID_READING_PROFILE_30 ||
+    productId === PRODUCT_ID_READING_TAROT_60 ||
+    productId === PRODUCT_ID_READING_RELATIONSHIP;
+  const isCoachingProduct = productId === PRODUCT_ID_COACHING_EINFLUSS;
+  const coachingCalendlyUrl =
+    process.env.NEXT_PUBLIC_CALENDLY_COACHING_URL?.trim() ||
+    "https://calendly.com/zeichendesuniversums-info/30min";
+  const readingCalendlyUrl =
+    productId === PRODUCT_ID_READING_TAROT_60
+      ? process.env.NEXT_PUBLIC_CALENDLY_READING_60_URL?.trim() ||
+        "https://calendly.com/zeichendesuniversums-info/60min-astroreading-tarot"
+      : productId === PRODUCT_ID_READING_RELATIONSHIP
+        ? process.env.NEXT_PUBLIC_CALENDLY_READING_RELATIONSHIP_URL?.trim() ||
+          process.env.NEXT_PUBLIC_CALENDLY_READING_URL?.trim() ||
+          "https://calendly.com/zeichendesuniversums-info/30min-astroreading"
+        : process.env.NEXT_PUBLIC_CALENDLY_READING_URL?.trim() ||
+          "https://calendly.com/zeichendesuniversums-info/30min-astroreading";
   const product = getProducts().find((p) => p.id === productId);
 
   const { mayIssue, stripeCustomerEmail, birthPayload } =
@@ -194,6 +216,84 @@ export default async function SuccessPage({
                   : "E-Mail konnte nicht gesendet werden – bitte Links manuell kopieren."}
               </p>
             ) : null}
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (isReadingProduct) {
+    return (
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl space-y-6">
+            <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/[0.08] p-6 sm:p-8 dark:border-emerald-400/30 dark:bg-emerald-500/10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/35 bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-800 dark:border-emerald-300/35 dark:bg-emerald-400/15 dark:text-emerald-200">
+                <span aria-hidden="true">✓</span>
+                Bezahlt
+              </div>
+              <h1 className="text-2xl font-semibold tracking-tight">Danke für deine Buchung</h1>
+              <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+                {product ? `${product.name} wurde erfolgreich bezahlt.` : "Dein Reading wurde erfolgreich bezahlt."}
+              </p>
+              <p className="mt-3 text-sm text-black/70 dark:text-white/70">
+                Bitte schicke bei Calendly kurz deinen persönlichen Astroprofil-Link mit und erwähne in 1-2 Sätzen,
+                was aktuell deine größten Herausforderungen im Leben sind.
+              </p>
+              <a
+                href={readingCalendlyUrl}
+                target="_blank"
+                rel="noreferrer"
+                className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-black px-5 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              >
+                Termin in Calendly buchen
+              </a>
+            </section>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (isCoachingProduct) {
+    const coachingMailTo = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Coaching Buchung - naechster Schritt")}&body=${encodeURIComponent(
+      "Hallo,\n\nich habe das Einfluss Coaching gebucht und moechte den naechsten Schritt abstimmen.\n\nName:\nThema:\n",
+    )}`;
+    return (
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl space-y-6">
+            <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/[0.08] p-6 sm:p-8 dark:border-emerald-400/30 dark:bg-emerald-500/10">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/35 bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-800 dark:border-emerald-300/35 dark:bg-emerald-400/15 dark:text-emerald-200">
+                <span aria-hidden="true">✓</span>
+                Bezahlt
+              </div>
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight">Danke fuer deine Buchung</h1>
+              <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+                {product ? `${product.name} wurde erfolgreich bezahlt.` : "Dein Coaching wurde erfolgreich bezahlt."}
+              </p>
+              <p className="mt-3 text-sm text-black/70 dark:text-white/70">
+                Wir melden uns zeitnah mit den naechsten Schritten bei dir, damit dein Einfluss Coaching direkt starten kann.
+              </p>
+              <div className="mt-5 flex flex-col gap-2 sm:flex-row">
+                <a
+                  href={coachingCalendlyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="inline-flex h-11 items-center justify-center rounded-xl bg-black px-5 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+                >
+                  Termin in Calendly buchen
+                </a>
+                <a
+                  href={coachingMailTo}
+                  className="inline-flex h-11 items-center justify-center rounded-xl border border-black/12 bg-white px-5 text-sm font-semibold text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+                >
+                  Optional per E-Mail senden
+                </a>
+              </div>
+            </section>
           </div>
         </main>
       </>
