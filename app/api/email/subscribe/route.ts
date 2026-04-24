@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { Resend } from "resend";
 import { buildLeadEmailBodies, leadEmailSubject } from "@/lib/email-lead";
 import { getResendFromForProfileMail } from "@/lib/email-resend-from";
-import { SITE_NAME } from "@/lib/brand";
 
 export const runtime = "nodejs";
 
@@ -12,44 +11,6 @@ function isValidEmail(addr: string) {
 
 /** Standard-Empfänger; per LEAD_TO_EMAIL in .env überschreiben. */
 const DEFAULT_LEAD_TO_EMAIL = "zeichendesuniversums.info@gmail.com";
-
-function buildNewsletterWelcome(params: {
-  firstName: string;
-  source: string;
-}) {
-  const { firstName, source } = params;
-  const hello = firstName || "du";
-  const sourceLine =
-    source && source !== "freebie"
-      ? `Dein Einstieg kam über: ${source}.`
-      : "Danke für dein Vertrauen in unsere Inhalte.";
-
-  const subject = `${SITE_NAME}: Willkommen im Newsletter`;
-  const text = [
-    `Hi ${hello},`,
-    "",
-    "danke für deine Anmeldung zum Newsletter.",
-    sourceLine,
-    "",
-    "Du erhältst in Zukunft klare Astro-Impulse, Tool-Updates und passende nächste Schritte.",
-    "",
-    "Wenn du Fragen hast, antworte einfach direkt auf diese E-Mail.",
-    "",
-    "Liebe Grüße",
-    SITE_NAME,
-  ].join("\n");
-
-  const html = `
-    <p>Hi ${hello},</p>
-    <p>danke für deine Anmeldung zum Newsletter.</p>
-    <p>${sourceLine}</p>
-    <p>Du erhältst in Zukunft klare Astro-Impulse, Tool-Updates und passende nächste Schritte.</p>
-    <p>Wenn du Fragen hast, antworte einfach direkt auf diese E-Mail.</p>
-    <p>Liebe Grüße<br/>${SITE_NAME}</p>
-  `;
-
-  return { subject, text, html };
-}
 
 /**
  * Leads per E-Mail (Resend).
@@ -173,25 +134,6 @@ export async function POST(req: Request) {
       });
     }
 
-    const welcome = buildNewsletterWelcome({
-      firstName,
-      source: resolvedSource,
-    });
-    const welcomeResult = await resend.emails.send({
-      from,
-      to: [email],
-      subject: welcome.subject,
-      text: welcome.text,
-      html: welcome.html,
-      replyTo: to,
-    });
-    if (welcomeResult.error) {
-      console.warn(
-        "[email/subscribe] Welcome-Mail fehlgeschlagen:",
-        JSON.stringify(welcomeResult.error),
-      );
-    }
-
     console.info(
       "[email/subscribe] Resend OK, email_id:",
       result.data?.id ?? "?",
@@ -199,12 +141,7 @@ export async function POST(req: Request) {
       to,
     );
 
-    return NextResponse.json({
-      ok: true,
-      source: resolvedSource,
-      saved: true,
-      welcomeSent: !welcomeResult.error,
-    });
+    return NextResponse.json({ ok: true, source: resolvedSource, saved: true });
   } catch (e) {
     console.error("[email/subscribe] Resend Netzwerk/Exception:", e);
     return NextResponse.json({
