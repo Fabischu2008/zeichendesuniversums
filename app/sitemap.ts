@@ -9,6 +9,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: absoluteUrl("/"), lastModified: now, changeFrequency: "weekly" },
     { url: absoluteUrl("/freebie"), lastModified: now, changeFrequency: "monthly" },
     {
+      url: absoluteUrl("/freebie-auswahl"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    {
+      url: absoluteUrl("/sternzeichen"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    {
       url: absoluteUrl("/beziehung"),
       lastModified: now,
       changeFrequency: "monthly",

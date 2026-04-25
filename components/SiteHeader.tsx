@@ -4,7 +4,7 @@ import MobileNav from "@/components/SiteHeaderMobileNav";
 
 const nav = [
   { href: "/", label: "Startseite" },
-  { href: "/freebie", label: "Kostenloser Guide" },
+  { href: "/freebie-auswahl", label: "Kostenlose Guides" },
   { href: "/tools", label: "Tools" },
 ];
 
@@ -38,10 +38,10 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-2">
           <Link
-            href="/freebie"
+            href="/freebie-auswahl"
             className="hidden rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:bg-black/90 md:inline-flex dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
-            Guide holen
+            Guides waehlen
           </Link>
           <MobileNav nav={nav} />
         </div>

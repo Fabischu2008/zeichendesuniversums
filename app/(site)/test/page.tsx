@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Image from "next/image";
 import Link from "next/link";
 import { EmailForm } from "@/components/EmailForm";
 import { Hero } from "@/components/Hero";
@@ -66,10 +67,10 @@ const toolTeaser = [
     badge: "Beziehung",
   },
   {
-    title: "Human Design",
-    body: "Typ, Strategie und Bodygraph als ergänzende Perspektive.",
-    href: "/tools/human-design",
-    badge: "Energie",
+    title: "Bewusstseins-Tool",
+    body: "Interaktive Fragen und klare Einordnung fuer deinen naechsten Entwicklungsschritt.",
+    href: "/tools/bewusstsein",
+    badge: "Bewusstsein",
   },
 ] as const;
 
@@ -100,30 +101,22 @@ const quickStart = [
   },
 ] as const;
 
-const upsellFlows = [
+const freebieTeasers = [
   {
-    badge: "Astroprofil-Flow",
-    title: "Nach dem Vollreport",
-    body: "Nutzer gehen von der Profilauswertung in passende Vertiefung: 30-Min Astro-Reading, 60-Min Astro+Tarot oder 1:1 Coaching.",
-    primaryCta: { label: "Astro-Readings ansehen", href: "/reading" },
-    secondaryCta: { label: "Coaching Einfluss", href: "/coaching" },
-    points: [
-      "Astro-Reading: 33 EUR / 30 Min",
-      "Astro + Tarot: 66,66 EUR / 60 Min",
-      "Coaching Einfluss: 2.500 EUR",
-    ],
+    title: "Sternzeichen-Freebie",
+    body: "Kurz, klar und sofort als PDF: dein Einstieg in Muster, Staerken und Alltag.",
+    href: "/sternzeichen",
+    cta: "Zur Sternzeichen-Landingpage",
+    imageDesktop: "/images/freebie_hintergrund.png",
+    imageMobile: "/images/freebie_handy.png",
   },
   {
-    badge: "Beziehungs-Flow",
-    title: "Nach der Paaranalyse",
-    body: "Nutzer werden in ein fokussiertes Beziehungs-Reading geführt, das direkt an Dynamik, Reibungspunkte und Verbindung anknüpft.",
-    primaryCta: { label: "Beziehungs-Reading", href: "/reading/beziehung" },
-    secondaryCta: { label: "Zur Paaranalyse", href: "/tools/compatibility" },
-    points: [
-      "Beziehungs-Reading: 44,44 EUR",
-      "Klarer Fokus auf Nähe, Grenzen, Kommunikation",
-      "Gleicher Stripe -> Success Flow",
-    ],
+    title: "Beziehungs-Freebie",
+    body: "Impulse zu Naehe, Kommunikation und Dynamik mit direktem PDF-Download.",
+    href: "/beziehung",
+    cta: "Zur Beziehungsseite",
+    imageDesktop: "/images/beziehung_hintergrund.PNG",
+    imageMobile: "/images/beziehung_handy.png",
   },
 ] as const;
 
@@ -132,13 +125,66 @@ export default function TestHomePage() {
     <div className="flex flex-col gap-10 sm:gap-14">
       <Hero
         headline="Astrologie, die dich ins Handeln bringt"
-        subline="Von kostenlosen Einstiegen bis zu Readings und Coaching: Diese Test-Homepage zeigt den kompletten Weg von erster Klarheit bis zur persönlichen Vertiefung."
-        primaryCta={{ label: "Jetzt Tools starten", href: "/tools" }}
-        secondaryCta={{ label: "Readings ansehen", href: "/reading" }}
-        note="Testroute: /test (noindex)"
+        subline="Starte kostenlos mit dem passenden Guide und gehe danach direkt in die Tools fuer deinen naechsten Schritt."
+        primaryCta={{ label: "Kostenlos starten", href: "/freebie-auswahl" }}
+        secondaryCta={{ label: "Tools benutzen", href: "/tools" }}
         imageSrc="/images/hero-cosmic-eye.png"
         imageAlt="Kosmischer Hintergrund"
       />
+
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+              Freebie Einstieg
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+              Waehle dein Freebie: Selbstverstaendnis oder Beziehungsklarheit
+            </h2>
+          </div>
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-2">
+          {freebieTeasers.map((teaser) => (
+            <Link
+              key={teaser.href}
+              href={teaser.href}
+              className="group relative isolate overflow-hidden rounded-2xl border border-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/70 dark:border-white/15"
+            >
+              <div className="relative min-h-[280px]">
+                <Image
+                  src={teaser.imageMobile}
+                  alt={`${teaser.title} Hintergrund mobil`}
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-center sm:hidden"
+                />
+                <Image
+                  src={teaser.imageDesktop}
+                  alt={`${teaser.title} Hintergrund`}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="hidden object-cover object-center sm:block"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/35 to-black/10 transition group-hover:from-black/80"
+                />
+                <div className="relative z-10 flex min-h-[280px] flex-col justify-end p-5 sm:p-6">
+                  <h3 className="text-xl font-semibold tracking-tight text-white">
+                    {teaser.title}
+                  </h3>
+                  <p className="mt-2 max-w-md text-sm leading-6 text-white/90">
+                    {teaser.body}
+                  </p>
+                  <span className="mt-4 inline-flex items-center text-sm font-medium text-white underline underline-offset-4">
+                    {teaser.cta} →
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
@@ -195,65 +241,6 @@ export default function TestHomePage() {
               >
                 {card.cta} →
               </Link>
-            </article>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] via-white to-violet-500/10 p-6 sm:p-8 dark:border-emerald-500/25 dark:from-emerald-500/10 dark:via-white/[0.04] dark:to-violet-500/10">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-700 dark:text-emerald-300">
-              Monetarisierung 2.0
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              Getrennte Upsell-Flows für Astro und Beziehung
-            </h2>
-            <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-              Damit Nutzer immer das passende Angebot sehen, werden Readings je
-              Tool-Kontext getrennt ausgespielt.
-            </p>
-          </div>
-          <Link
-            href="/shop"
-            className="inline-flex text-sm font-medium text-black/70 underline-offset-4 hover:underline dark:text-white/70"
-          >
-            Alle Produkte im Shop →
-          </Link>
-        </div>
-
-        <div className="mt-6 grid gap-4 md:grid-cols-2">
-          {upsellFlows.map((flow) => (
-            <article
-              key={flow.title}
-              className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5"
-            >
-              <span className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-100">
-                {flow.badge}
-              </span>
-              <h3 className="mt-4 text-xl font-semibold tracking-tight">{flow.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
-                {flow.body}
-              </p>
-              <ul className="mt-4 space-y-2 text-sm text-black/80 dark:text-white/80">
-                {flow.points.map((point) => (
-                  <li key={point}>• {point}</li>
-                ))}
-              </ul>
-              <div className="mt-5 flex flex-wrap gap-2">
-                <Link
-                  href={flow.primaryCta.href}
-                  className="inline-flex h-10 items-center justify-center rounded-full bg-black px-4 text-xs font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-                >
-                  {flow.primaryCta.label}
-                </Link>
-                <Link
-                  href={flow.secondaryCta.href}
-                  className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-xs font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-                >
-                  {flow.secondaryCta.label}
-                </Link>
-              </div>
             </article>
           ))}
         </div>
@@ -336,6 +323,30 @@ export default function TestHomePage() {
                 submitLabel="Kontakt speichern"
               />
             </div>
+          </div>
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-black/5 bg-white/50 p-5 sm:p-6 dark:border-white/10 dark:bg-white/[0.04]">
+        <div className="mx-auto flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <p className="text-sm text-black/65 dark:text-white/70">
+            Mehr von Zeichen des Universums:
+          </p>
+          <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
+            <Link
+              href="/links"
+              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-5 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            >
+              Alle Links ansehen
+            </Link>
+            <Link
+              href="https://calendly.com/zeichendesuniversums-info/30min"
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-black px-5 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              Erstgespraech buchen
+            </Link>
           </div>
         </div>
       </section>

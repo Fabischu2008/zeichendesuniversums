@@ -1,23 +1,36 @@
 import Link from "next/link";
 import type { Metadata } from "next";
-import { checkoutHrefForProduct, PRODUCT_ID_COACHING_EINFLUSS } from "@/lib/cms";
 
 export const metadata: Metadata = {
-  title: "Coaching",
+  title: "Coaching Erstgespraech",
   description:
-    "Einfluss Coaching: intensive Begleitung mit 2 Calls pro Woche für mehr Einklang, Verbundenheit und Fülle.",
+    "Unverbindliches Erstgespraech: direkt Termin buchen oder Anfrage per Mail senden.",
 };
+
+const COACHING_CALENDLY_URL = "https://calendly.com/zeichendesuniversums-info/30min";
+const COACHING_MAILTO_URL = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Anfrage Coaching Erstgespraech")}&body=${encodeURIComponent(
+  [
+    "Hi,",
+    "",
+    "ich moechte ein Coaching-Erstgespraech anfragen.",
+    "",
+    "Name:",
+    "Wunschtermin/Zeitraum:",
+    "Thema in 1-2 Saetzen:",
+    "",
+    "Danke!",
+  ].join("\n"),
+)}`;
 
 const offers = [
   {
     title: "Einfluss",
-    price: "2.500€",
+    price: "Erstgespraech",
     bullets: [
-      "Du bekommst einen persönlichen Coach an deine Seite gestellt.",
-      "Regelmäßige Calls: 2x pro Woche für kontinuierliche Integration.",
-      "Fokus auf Selbstreflexion und den Einfluss auf dein eigenes System.",
-      "Ziel: in Einklang und Verbundenheit kommen, dich wieder mehr spüren.",
-      "Für mehr Fülle, Anziehung und Wohlbefinden im Alltag.",
+      "Unverbindliches Beratungsgespraech zum Kennenlernen.",
+      "Wir klaeren dein Anliegen, Ziele und ob Coaching sinnvoll passt.",
+      "Du bekommst eine klare Empfehlung fuer den naechsten Schritt.",
+      "Aktuell keine Online-Zahlung auf dieser Seite.",
     ],
   },
 ];
@@ -61,16 +74,18 @@ export default function CoachingPage() {
             </ul>
             <div className="mt-6 flex flex-col gap-3 sm:flex-row">
               <Link
-                href={checkoutHrefForProduct(PRODUCT_ID_COACHING_EINFLUSS)}
+                href={COACHING_CALENDLY_URL}
+                target="_blank"
+                rel="noreferrer"
                 className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
-                Coaching buchen (Stripe)
+                Erstgespraech in Calendly buchen
               </Link>
               <a
-                href="#"
+                href={COACHING_MAILTO_URL}
                 className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
               >
-                Erstgespräch (später)
+                Anfrage per Mail senden
               </a>
             </div>
           </section>

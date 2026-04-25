@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { BuyButton } from "@/components/BuyButton";
 import { JsonLd } from "@/components/JsonLd";
-import { getProductBySlug } from "@/lib/cms";
+import { getProductBySlug, PRODUCT_ID_COACHING_EINFLUSS } from "@/lib/cms";
 import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
@@ -49,6 +49,7 @@ export default async function ProductPage({
   const { slug } = await params;
   const product = getProductBySlug(slug);
   if (!product) notFound();
+  const isCoaching = product.id === PRODUCT_ID_COACHING_EINFLUSS;
 
   const url = absoluteUrl(`/shop/${product.slug}`);
   const jsonLd = {
@@ -58,13 +59,17 @@ export default async function ProductPage({
     description: product.description,
     url,
     image: absoluteUrl(product.image),
-    offers: {
-      "@type": "Offer",
-      priceCurrency: "EUR",
-      price: product.price,
-      availability: "https://schema.org/InStock",
-      url,
-    },
+    ...(isCoaching
+      ? {}
+      : {
+          offers: {
+            "@type": "Offer",
+            priceCurrency: "EUR",
+            price: product.price,
+            availability: "https://schema.org/InStock",
+            url,
+          },
+        }),
   };
 
   return (
@@ -105,18 +110,44 @@ export default async function ProductPage({
       <aside className="rounded-3xl border border-black/5 bg-white p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <div className="flex items-start justify-between gap-4">
           <div>
-            <p className="text-sm text-black/60 dark:text-white/60">Preis</p>
-            <p className="mt-1 text-3xl font-semibold tracking-tight">
-              {formatEUR(product.price)}
-            </p>
+            {isCoaching ? (
+              <>
+                <p className="text-sm text-black/60 dark:text-white/60">Coaching</p>
+                <p className="mt-1 text-3xl font-semibold tracking-tight">
+                  Erstgespraech
+                </p>
+              </>
+            ) : (
+              <>
+                <p className="text-sm text-black/60 dark:text-white/60">Preis</p>
+                <p className="mt-1 text-3xl font-semibold tracking-tight">
+                  {formatEUR(product.price)}
+                </p>
+              </>
+            )}
           </div>
-          <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-            Sofort‑Download
-          </div>
+          {isCoaching ? (
+            <div className="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-medium text-violet-700 dark:text-violet-300">
+              Termin zuerst
+            </div>
+          ) : (
+            <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+              Sofort‑Download
+            </div>
+          )}
         </div>
 
         <div className="mt-6">
-          <BuyButton productId={product.id} />
+          {isCoaching ? (
+            <Link
+              href="/coaching"
+              className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            >
+              Termin buchen
+            </Link>
+          ) : (
+            <BuyButton productId={product.id} />
+          )}
         </div>
 
         <div className="mt-6 rounded-2xl border border-black/5 bg-black/[0.03] p-4 text-sm text-black/70 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
@@ -130,7 +161,9 @@ export default async function ProductPage({
         </div>
 
         <p className="mt-6 text-xs text-black/50 dark:text-white/50">
-          Zahlung sicher über Stripe. Kein Abo.
+          {isCoaching
+            ? "Aktuell nur unverbindliches Erstgespraech. Kein direkter Stripe-Kauf."
+            : "Zahlung sicher über Stripe. Kein Abo."}
         </p>
         <Link
           href="/shop"

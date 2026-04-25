@@ -21,6 +21,11 @@ const nextConfig: NextConfig = {
         destination: "/freebie_beziehung/download",
         permanent: true,
       },
+      {
+        source: "/test",
+        destination: "/",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

@@ -9,6 +9,29 @@ const legal = [
   { href: "/widerruf", label: "Widerruf" },
 ] as const;
 
+const socials = [
+  {
+    key: "instagram",
+    label: "Instagram",
+    href: "https://www.instagram.com/zeichen.des.universums",
+  },
+  {
+    key: "youtube",
+    label: "YouTube",
+    href: "https://www.youtube.com/@Zeichen.des.Universums",
+  },
+  {
+    key: "tiktok",
+    label: "TikTok",
+    href: "https://www.tiktok.com/@zeichen.des.universums",
+  },
+  {
+    key: "facebook",
+    label: "Facebook",
+    href: "https://www.facebook.com/zeichen.des.universums",
+  },
+] as const;
+
 const linkClass =
   "text-sm text-black/65 transition-colors hover:text-black dark:text-white/65 dark:hover:text-white";
 
@@ -64,10 +87,74 @@ export function SiteFooter() {
           </div>
         </div>
 
-        <div className="mt-12 border-t border-black/5 pt-8 dark:border-white/10">
+        <div className="mt-12 flex flex-col gap-4 border-t border-black/5 pt-8 dark:border-white/10 md:flex-row md:items-end md:justify-between">
           <p className="text-xs text-black/50 dark:text-white/50">
             © {year} {SITE_NAME}. Alle Rechte vorbehalten.
           </p>
+          <div className="flex items-center gap-2 self-start md:self-auto">
+            {socials.map((social) => (
+              <Link
+                key={social.key}
+                href={social.href}
+                target="_blank"
+                rel="noreferrer"
+                aria-label={social.label}
+                className="inline-flex h-9 w-9 items-center justify-center rounded-full border border-black/10 bg-white/80 text-black/75 transition hover:bg-black/5 hover:text-black dark:border-white/15 dark:bg-white/5 dark:text-white/75 dark:hover:bg-white/10 dark:hover:text-white"
+              >
+                {social.key === "instagram" ? (
+                  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5">
+                    <rect
+                      x="3"
+                      y="3"
+                      width="18"
+                      height="18"
+                      rx="5"
+                      className="fill-none stroke-current"
+                      strokeWidth="1.8"
+                    />
+                    <circle
+                      cx="12"
+                      cy="12"
+                      r="4"
+                      className="fill-none stroke-current"
+                      strokeWidth="1.8"
+                    />
+                    <circle cx="17.2" cy="6.8" r="0.9" className="fill-current" />
+                  </svg>
+                ) : null}
+                {social.key === "youtube" ? (
+                  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5">
+                    <rect
+                      x="3.2"
+                      y="6"
+                      width="17.6"
+                      height="12"
+                      rx="3"
+                      className="fill-none stroke-current"
+                      strokeWidth="1.8"
+                    />
+                    <path d="M11 10.2 15 12l-4 1.8v-3.6Z" className="fill-current" />
+                  </svg>
+                ) : null}
+                {social.key === "tiktok" ? (
+                  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5">
+                    <path
+                      className="fill-current"
+                      d="M15 5.2c.5 1.4 1.6 2.4 3 2.8v2.2c-1.1-.1-2.1-.4-3-0.9v4.7c0 3-2.1 4.8-4.5 4.8-2.1 0-4.5-1.5-4.5-4.4 0-2.7 2-4.3 4.2-4.3.4 0 .8 0 .8.1v2.3c-.1 0-.4-.1-.7-.1-1.1 0-2.1.7-2.1 2 0 1.3 1.1 2 2.1 2 1.2 0 2.1-.8 2.1-2.2V4h2.6V5.2Z"
+                    />
+                  </svg>
+                ) : null}
+                {social.key === "facebook" ? (
+                  <svg viewBox="0 0 24 24" className="h-4.5 w-4.5">
+                    <path
+                      className="fill-current"
+                      d="M13.4 20v-7h2.3l.4-2.8h-2.7V8.4c0-.8.2-1.4 1.4-1.4h1.5V4.5c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.7v2.1H8.5V13h2.2v7h2.7Z"
+                    />
+                  </svg>
+                ) : null}
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </footer>
