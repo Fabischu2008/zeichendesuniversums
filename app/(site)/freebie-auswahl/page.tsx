@@ -85,13 +85,22 @@ export default function FreebieAuswahlPage() {
         ))}
       </div>
 
-      <div>
-        <Link
-          href="/tools"
-          className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-5 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-        >
-          Lieber direkt zu den Tools
-        </Link>
+      <div className="rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.1] via-white to-sky-500/10 p-6 text-center dark:border-violet-400/25 dark:from-violet-500/15 dark:via-white/[0.04] dark:to-sky-500/10 sm:p-8">
+        <p className="text-sm text-black/70 dark:text-white/70">
+          Du willst direkt die volle Experience?
+        </p>
+        <p className="mt-1 text-sm text-black/70 dark:text-white/70">
+          Ueber die Tools bekommst du sofort tieferen Kontext zu Profil, Beziehung
+          und Bewusstsein.
+        </p>
+        <div className="mt-5 flex justify-center">
+          <Link
+            href="/tools"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white hover:bg-violet-600 dark:bg-violet-600 dark:text-violet-100 dark:hover:bg-violet-500"
+          >
+            Direkt Tools benutzen
+          </Link>
+        </div>
       </div>
     </div>
   );

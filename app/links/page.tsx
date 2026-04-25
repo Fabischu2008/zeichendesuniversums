@@ -37,6 +37,11 @@ const LINKS = [
     label: "Facebook",
     href: "https://www.facebook.com/zeichen.des.universums",
   },
+  {
+    key: "coaching",
+    label: "Erstgespraech buchen",
+    href: "https://calendly.com/zeichendesuniversums-info/30min",
+  },
 ] as const;
 
 export default function LinksPage() {
@@ -69,6 +74,8 @@ export default function LinksPage() {
                       ? "bg-black"
                     : l.key === "facebook"
                       ? "bg-[#1877F2]"
+                      : l.key === "coaching"
+                        ? "bg-emerald-600"
                       : "bg-black";
               return (
                 <Link
@@ -146,6 +153,17 @@ export default function LinksPage() {
                         <path
                           className="fill-current"
                           d="M13.4 20v-7h2.3l.4-2.8h-2.7V8.4c0-.8.2-1.4 1.4-1.4h1.5V4.5c-.3 0-1.1-.1-2.1-.1-2.1 0-3.5 1.3-3.5 3.7v2.1H8.5V13h2.2v7h2.7Z"
+                        />
+                      </svg>
+                    )}
+                    {l.key === "coaching" && (
+                      <svg
+                        viewBox="0 0 24 24"
+                        className="h-6 w-6 text-white dark:text-black"
+                      >
+                        <path
+                          className="fill-current"
+                          d="M19 4h-1V2h-2v2H8V2H6v2H5a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6a2 2 0 0 0-2-2Zm0 15H5V10h14v9Zm0-11H5V6h14v2Zm-7 9h-2v-2h2v2Zm4 0h-2v-2h2v2Zm-8 0H6v-2h2v2Z"
                         />
                       </svg>
                     )}

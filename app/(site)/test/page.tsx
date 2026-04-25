@@ -28,28 +28,22 @@ export const metadata: Metadata = {
 
 const entryCards = [
   {
-    title: "Astrologie-Tools",
-    body: "Big Three, Kompatibilität, Astro-Map, Human Design und Bewusstsein.",
+    title: "Kostenlose Guides",
+    body: "Sternzeichen- und Partnerschafts-Freebie mit direktem PDF-Download.",
+    href: "/freebie-auswahl",
+    cta: "Zu den Guides",
+  },
+  {
+    title: "Tools",
+    body: "Big Three, Paaranalyse, Astro-Map und Bewusstseins-Tool an einem Ort.",
     href: "/tools",
     cta: "Zu den Tools",
   },
   {
-    title: "Kostenlose Guides",
-    body: "Sternzeichen- und Partnerschafts-Freebie mit direktem PDF-Download.",
-    href: "/freebie",
-    cta: "Zum Astro-Freebie",
-  },
-  {
-    title: "Beziehungs-Funnel",
-    body: "Landingpage mit Fokus auf Partnerschaft, Kommunikation und Synastry.",
-    href: "/beziehung",
-    cta: "Zur Beziehungsseite",
-  },
-  {
-    title: "Blog",
-    body: "Artikel mit klaren CTAs direkt in die passenden Tools.",
-    href: "/blog",
-    cta: "Zum Blog",
+    title: "Reading & Coaching",
+    body: "Persoenliche Begleitung mit Readings oder Erstgespraech fuer Coaching.",
+    href: "/reading",
+    cta: "Zu Reading & Coaching",
   },
 ] as const;
 
@@ -199,21 +193,19 @@ export default function TestHomePage() {
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {quickStart.map((step) => (
-            <article
+            <Link
               key={step.title}
-              className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5"
+              href={step.href}
+              className="group rounded-2xl border border-black/5 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 dark:border-white/10 dark:bg-white/5"
             >
               <h3 className="text-lg font-semibold tracking-tight">{step.title}</h3>
               <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
                 {step.body}
               </p>
-              <Link
-                href={step.href}
-                className="mt-4 inline-flex text-sm font-medium text-violet-800 underline-offset-4 hover:underline dark:text-violet-200"
-              >
+              <span className="mt-4 inline-flex text-sm font-medium text-violet-800 underline-offset-4 group-hover:underline dark:text-violet-200">
                 {step.cta} →
-              </Link>
-            </article>
+              </span>
+            </Link>
           ))}
         </div>
       </section>
@@ -227,21 +219,19 @@ export default function TestHomePage() {
         </p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
           {entryCards.map((card) => (
-            <article
+            <Link
               key={card.href}
-              className="rounded-2xl border border-black/5 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-sm dark:border-white/10 dark:bg-white/5"
+              href={card.href}
+              className="group rounded-2xl border border-black/5 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 dark:border-white/10 dark:bg-white/5"
             >
               <h3 className="text-lg font-semibold tracking-tight">{card.title}</h3>
               <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
                 {card.body}
               </p>
-              <Link
-                href={card.href}
-                className="mt-4 inline-flex text-sm font-medium text-violet-800 underline-offset-4 hover:underline dark:text-violet-200"
-              >
+              <span className="mt-4 inline-flex text-sm font-medium text-violet-800 underline-offset-4 group-hover:underline dark:text-violet-200">
                 {card.cta} →
-              </Link>
-            </article>
+              </span>
+            </Link>
           ))}
         </div>
       </section>
