@@ -114,7 +114,7 @@ export default async function ProductPage({
               <>
                 <p className="text-sm text-black/60 dark:text-white/60">Coaching</p>
                 <p className="mt-1 text-3xl font-semibold tracking-tight">
-                  Erstgespraech
+                  Erstgespräch
                 </p>
               </>
             ) : (
@@ -162,7 +162,7 @@ export default async function ProductPage({
 
         <p className="mt-6 text-xs text-black/50 dark:text-white/50">
           {isCoaching
-            ? "Aktuell nur unverbindliches Erstgespraech. Kein direkter Stripe-Kauf."
+            ? "Aktuell nur unverbindliches Erstgespräch. Kein direkter Stripe-Kauf."
             : "Zahlung sicher über Stripe. Kein Abo."}
         </p>
         <Link

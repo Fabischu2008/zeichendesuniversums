@@ -41,7 +41,7 @@ export function SiteHeader() {
             href="/freebie-auswahl"
             className="hidden rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:bg-black/90 md:inline-flex dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
-            Guides waehlen
+            Guides wählen
           </Link>
           <MobileNav nav={nav} />
         </div>

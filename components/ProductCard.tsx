@@ -48,7 +48,7 @@ export function ProductCard({ product }: { product: Product }) {
         </p>
         <div className="mt-6 flex items-center justify-between">
           <span className="text-sm font-medium text-black underline-offset-4 group-hover:underline dark:text-white">
-            {isCoaching ? "Erstgespraech buchen →" : "Zum Tool →"}
+            {isCoaching ? "Erstgespräch buchen →" : "Zum Tool →"}
           </span>
           <span className="text-xs text-black/50 dark:text-white/50">
             Sofort verfügbar

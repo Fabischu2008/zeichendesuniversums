@@ -60,7 +60,7 @@ export function Hero({
           <p className="text-base font-medium text-white/90 sm:text-lg">
             {SITE_TAGLINE}
           </p>
-          <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight text-white sm:mt-5 sm:text-5xl lg:text-6xl">
+          <h1 className="mt-4 break-words text-3xl font-semibold tracking-tight text-white sm:mt-5 sm:text-4xl lg:text-5xl">
             {headline}
           </h1>
           <p className="mt-6 break-words max-w-xl py-5 text-base leading-[1.75] text-white/90 sm:mt-7 sm:text-lg sm:leading-[1.85] sm:py-6">
@@ -96,7 +96,7 @@ export function Hero({
         <p className="text-base font-medium text-black/70 dark:text-white/70 sm:text-lg">
           {SITE_TAGLINE}
         </p>
-        <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight sm:mt-5 sm:text-5xl lg:text-6xl">
+        <h1 className="mt-4 break-words text-3xl font-semibold tracking-tight sm:mt-5 sm:text-4xl lg:text-5xl">
           {headline}
         </h1>
         <p className="mt-6 break-words max-w-xl py-5 text-base leading-[1.75] text-black/75 dark:text-white/80 sm:mt-7 sm:text-lg sm:leading-[1.85] sm:py-6">

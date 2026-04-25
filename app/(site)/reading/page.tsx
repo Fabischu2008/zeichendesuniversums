@@ -9,7 +9,7 @@ import {
 export const metadata: Metadata = {
   title: "Reading",
   description:
-    "Persoenliche Readings: 30 Min Astro-Reading oder 60 Min Astro + Tarot-Reading mit Horoskopanalyse und klaren naechsten Schritten.",
+    "Persönliche Readings: 30 Min Astro-Reading oder 60 Min Astro + Tarot-Reading mit Horoskopanalyse und klaren nächsten Schritten.",
 };
 
 const offers = [
@@ -19,7 +19,7 @@ const offers = [
     price: "33€",
     bullets: [
       "30 Minuten Reading mit Analyse deines Geburtsbilds/Horoskops",
-      "Klarheit fuer Alltag, Entscheidungen und Beziehungen",
+      "Klarheit für Alltag, Entscheidungen und Beziehungen",
       "Konkrete Next Steps statt Theorie",
     ],
   },
@@ -29,7 +29,7 @@ const offers = [
     price: "66,66€",
     bullets: [
       "60 Minuten Reading mit gleicher Horoskop-Analyse",
-      "Zusaetzliche Tarot-Legung zu einem speziellen Thema",
+      "Zusätzliche Tarot-Legung zu einem speziellen Thema",
       "Intuitive Impulse mit klarem Umsetzungsfahrplan",
     ],
   },
@@ -44,7 +44,7 @@ export default function ReadingPage() {
         </h1>
         <p className="text-black/70 dark:text-white/70">
           Beide Readings enthalten die Analyse deines Geburtsbilds/Horoskops.
-          Im 60-Minuten-Format bekommst du zusaetzlich eine Tarot-Legung zu
+          Im 60-Minuten-Format bekommst du zusätzlich eine Tarot-Legung zu
           deinem speziellen Thema.
         </p>
       </div>

@@ -10,7 +10,7 @@ import TestHomePage from "./test/page";
 export const metadata: Metadata = {
   title: "Astrologie-Tools, kostenlose Guides & Bewusstsein",
   description:
-    "Zeichen des Universums: kostenlose Guides, Astrologie-Tools und klare naechste Schritte fuer Selbstverstaendnis, Beziehungsklarheit und Bewusstsein.",
+    "Zeichen des Universums: kostenlose Guides, Astrologie-Tools und klare nächste Schritte für Selbstverständnis, Beziehungsklarheit und Bewusstsein.",
   keywords: [
     "Astrologie Tools",
     "kostenlose Guides",
@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: `Zeichen des Universums · ${SITE_NAME}`,
     description:
-      "Kostenlose Guides, Astrologie-Tools und klare naechste Schritte fuer deinen Alltag.",
+      "Kostenlose Guides, Astrologie-Tools und klare nächste Schritte für deinen Alltag.",
     images: [absoluteUrl(SOCIAL_PREVIEW_IMAGE)],
   },
 };

@@ -1,27 +1,51 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
+import { SITE_NAME } from "@/lib/brand";
+import { absoluteUrl } from "@/lib/site";
 
+const path = "/freebie-auswahl";
 export const metadata: Metadata = {
-  title: "Kostenlos starten",
+  title: "Kostenlose Guides auswählen",
   description:
-    "Waehle dein passendes Freebie: Sternzeichen-Guide oder Beziehungs-PDF.",
+    "Wähle zwischen Sternzeichen-Guide und Beziehungs-PDF. Beide Freebies sind kostenlos und sofort verfügbar.",
+  keywords: [
+    "kostenlose Guides",
+    "Sternzeichen Guide kostenlos",
+    "Beziehungs PDF kostenlos",
+    "Astrologie Einstieg",
+    "Zeichen des Universums",
+  ],
+  alternates: { canonical: path },
+  openGraph: {
+    title: `Kostenlose Guides auswählen · ${SITE_NAME}`,
+    description:
+      "Starte kostenlos mit dem Sternzeichen-Guide oder dem Beziehungs-PDF - danach direkt in die passenden Tools.",
+    url: absoluteUrl(path),
+    locale: "de_DE",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Kostenlose Guides auswählen · ${SITE_NAME}`,
+    description:
+      "Sternzeichen-Guide oder Beziehungs-PDF: kostenlos starten und direkt vertiefen.",
+  },
 };
 
 const freebies = [
   {
     title: "Sternzeichen-Freebie",
-    body: "Dein kompakter Guide zu Persoenlichkeit, Staerken und Mustern im Alltag.",
+    body: "Dein kompakter Guide zu Persönlichkeit, Stärken und Mustern im Alltag.",
     href: "/sternzeichen",
-    cta: "Sternzeichen-Landingpage oeffnen",
+    cta: "Sternzeichen-Landingpage öffnen",
     imageDesktop: "/images/freebie_hintergrund.PNG",
     imageMobile: "/images/freebie_handy.png",
   },
   {
     title: "Beziehungs-Freebie",
-    body: "Impulse zu Naehe, Kommunikation und Dynamik fuer Dating und Partnerschaft.",
-    href: "/freebie_beziehung",
-    cta: "Beziehungs-Freebie oeffnen",
+    body: "Impulse zu Nähe, Kommunikation und Dynamik für Dating und Partnerschaft.",
+    href: "/beziehung",
+    cta: "Beziehungs-Freebie öffnen",
     imageDesktop: "/images/beziehung_hintergrund.PNG",
     imageMobile: "/images/beziehung_handy.png",
   },
@@ -35,10 +59,10 @@ export default function FreebieAuswahlPage() {
           Kostenlos starten
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Waehle den Freebie-Start, der zu dir passt
+          Wähle den Freebie-Start, der zu dir passt
         </h1>
         <p className="text-black/70 dark:text-white/70">
-          Beide Guides sind kostenlos und sofort verfuegbar. Waehle deinen Fokus
+          Beide Guides sind kostenlos und sofort verfügbar. Wähle deinen Fokus
           und starte direkt.
         </p>
       </div>
@@ -90,7 +114,7 @@ export default function FreebieAuswahlPage() {
           Du willst direkt die volle Experience?
         </p>
         <p className="mt-1 text-sm text-black/70 dark:text-white/70">
-          Ueber die Tools bekommst du sofort tieferen Kontext zu Profil, Beziehung
+          Über die Tools bekommst du sofort tieferen Kontext zu Profil, Beziehung
           und Bewusstsein.
         </p>
         <div className="mt-5 flex justify-center">

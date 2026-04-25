@@ -8,7 +8,7 @@ import {
 export const metadata: Metadata = {
   title: "Beziehungs-Reading",
   description:
-    "Beziehungs-Reading fuer 44,44 EUR: konkrete Impulse fuer Verbindung, Kommunikation und gemeinsame Entwicklung.",
+    "Beziehungs-Reading für 44,44 EUR: konkrete Impulse für Verbindung, Kommunikation und gemeinsame Entwicklung.",
 };
 
 export default function RelationshipReadingPage() {
@@ -39,9 +39,9 @@ export default function RelationshipReadingPage() {
           </div>
         </div>
         <ul className="mt-5 space-y-2 text-sm text-black/70 dark:text-white/70">
-          <li>• Fokus auf Beziehung, Naehe, Grenzen und Kommunikationsmuster</li>
+          <li>• Fokus auf Beziehung, Nähe, Grenzen und Kommunikationsmuster</li>
           <li>• Selbstreflexion statt Schuldzuweisung</li>
-          <li>• Klare naechste Schritte fuer mehr Verbindung im Alltag</li>
+          <li>• Klare nächste Schritte für mehr Verbindung im Alltag</li>
         </ul>
         <div className="mt-6">
           <Link

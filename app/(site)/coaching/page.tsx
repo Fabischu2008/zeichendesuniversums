@@ -2,21 +2,21 @@ import Link from "next/link";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "Coaching Erstgespraech",
+  title: "Coaching Erstgespräch",
   description:
-    "Unverbindliches Erstgespraech: direkt Termin buchen oder Anfrage per Mail senden.",
+    "Unverbindliches Erstgespräch: direkt Termin buchen oder Anfrage per Mail senden.",
 };
 
 const COACHING_CALENDLY_URL = "https://calendly.com/zeichendesuniversums-info/30min";
-const COACHING_MAILTO_URL = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Anfrage Coaching Erstgespraech")}&body=${encodeURIComponent(
+const COACHING_MAILTO_URL = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Anfrage Coaching Erstgespräch")}&body=${encodeURIComponent(
   [
     "Hi,",
     "",
-    "ich moechte ein Coaching-Erstgespraech anfragen.",
+    "ich möchte ein Coaching-Erstgespräch anfragen.",
     "",
     "Name:",
     "Wunschtermin/Zeitraum:",
-    "Thema in 1-2 Saetzen:",
+    "Thema in 1-2 Sätzen:",
     "",
     "Danke!",
   ].join("\n"),
@@ -25,11 +25,11 @@ const COACHING_MAILTO_URL = `mailto:zeichendesuniversums.info@gmail.com?subject=
 const offers = [
   {
     title: "Einfluss",
-    price: "Erstgespraech",
+    price: "Erstgespräch",
     bullets: [
-      "Unverbindliches Beratungsgespraech zum Kennenlernen.",
-      "Wir klaeren dein Anliegen, Ziele und ob Coaching sinnvoll passt.",
-      "Du bekommst eine klare Empfehlung fuer den naechsten Schritt.",
+      "Unverbindliches Beratungsgespräch zum Kennenlernen.",
+      "Wir klären dein Anliegen, Ziele und ob Coaching sinnvoll passt.",
+      "Du bekommst eine klare Empfehlung für den nächsten Schritt.",
       "Aktuell keine Online-Zahlung auf dieser Seite.",
     ],
   },
@@ -79,7 +79,7 @@ export default function CoachingPage() {
                 rel="noreferrer"
                 className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
               >
-                Erstgespraech in Calendly buchen
+                Erstgespräch in Calendly buchen
               </Link>
               <a
                 href={COACHING_MAILTO_URL}

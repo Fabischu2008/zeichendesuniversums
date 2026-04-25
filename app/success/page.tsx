@@ -257,8 +257,8 @@ export default async function SuccessPage({
   }
 
   if (isCoachingProduct) {
-    const coachingMailTo = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Coaching Buchung - naechster Schritt")}&body=${encodeURIComponent(
-      "Hallo,\n\nich habe das Einfluss Coaching gebucht und moechte den naechsten Schritt abstimmen.\n\nName:\nThema:\n",
+    const coachingMailTo = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Coaching Buchung - nächster Schritt")}&body=${encodeURIComponent(
+      "Hallo,\n\nich habe das Einfluss Coaching gebucht und möchte den nächsten Schritt abstimmen.\n\nName:\nThema:\n",
     )}`;
     return (
       <>
@@ -270,12 +270,12 @@ export default async function SuccessPage({
                 <span aria-hidden="true">✓</span>
                 Bezahlt
               </div>
-              <h1 className="mt-3 text-2xl font-semibold tracking-tight">Danke fuer deine Buchung</h1>
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight">Danke für deine Buchung</h1>
               <p className="mt-2 text-sm text-black/70 dark:text-white/70">
                 {product ? `${product.name} wurde erfolgreich bezahlt.` : "Dein Coaching wurde erfolgreich bezahlt."}
               </p>
               <p className="mt-3 text-sm text-black/70 dark:text-white/70">
-                Wir melden uns zeitnah mit den naechsten Schritten bei dir, damit dein Einfluss Coaching direkt starten kann.
+                Wir melden uns zeitnah mit den nächsten Schritten bei dir, damit dein Einfluss Coaching direkt starten kann.
               </p>
               <div className="mt-5 flex flex-col gap-2 sm:flex-row">
                 <a

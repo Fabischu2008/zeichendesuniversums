@@ -24,8 +24,8 @@ export function VollreportCoachingCta({
     context === "relationship" ? "Nach der Paaranalyse" : "Nach dem Vollreport";
   const body =
     context === "relationship"
-      ? "Wenn du eure Dynamik konkret aufloesen willst: buche ein Beziehungs-Reading oder gehe direkt ins Coaching."
-      : "Die Chart-Ansicht ist der Startpunkt. Wenn du Muster mit jemandem durchgehen, Fragen klaeren oder konkrete Schritte fuer Alltag & Beziehungen willst: waehle Reading oder Coaching.";
+      ? "Wenn du eure Dynamik konkret auflösen willst: buche ein Beziehungs-Reading oder gehe direkt ins Coaching."
+      : "Die Chart-Ansicht ist der Startpunkt. Wenn du Muster mit jemandem durchgehen, Fragen klären oder konkrete Schritte für Alltag & Beziehungen willst: wähle Reading oder Coaching.";
 
   return (
     <section

@@ -3,6 +3,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { EmailForm } from "@/components/EmailForm";
 import { Hero } from "@/components/Hero";
+import { JsonLd } from "@/components/JsonLd";
 import { SITE_NAME } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
@@ -41,7 +42,7 @@ const entryCards = [
   },
   {
     title: "Reading & Coaching",
-    body: "Persoenliche Begleitung mit Readings oder Erstgespraech fuer Coaching.",
+    body: "Persönliche Begleitung mit Readings oder Erstgespräch für Coaching.",
     href: "/reading",
     cta: "Zu Reading & Coaching",
   },
@@ -62,7 +63,7 @@ const toolTeaser = [
   },
   {
     title: "Bewusstseins-Tool",
-    body: "Interaktive Fragen und klare Einordnung fuer deinen naechsten Entwicklungsschritt.",
+    body: "Interaktive Fragen und klare Einordnung für deinen nächsten Entwicklungsschritt.",
     href: "/tools/bewusstsein",
     badge: "Bewusstsein",
   },
@@ -77,7 +78,7 @@ const trustPoints = [
 const freebieTeasers = [
   {
     title: "Sternzeichen-Freebie",
-    body: "Kurz, klar und sofort als PDF: dein Einstieg in Muster, Staerken und Alltag.",
+    body: "Kurz, klar und sofort als PDF: dein Einstieg in Muster, Stärken und Alltag.",
     href: "/sternzeichen",
     cta: "Zur Sternzeichen-Landingpage",
     imageDesktop: "/images/freebie_hintergrund.PNG",
@@ -85,7 +86,7 @@ const freebieTeasers = [
   },
   {
     title: "Beziehungs-Freebie",
-    body: "Impulse zu Naehe, Kommunikation und Dynamik mit direktem PDF-Download.",
+    body: "Impulse zu Nähe, Kommunikation und Dynamik mit direktem PDF-Download.",
     href: "/beziehung",
     cta: "Zur Beziehungsseite",
     imageDesktop: "/images/beziehung_hintergrund.PNG",
@@ -93,12 +94,49 @@ const freebieTeasers = [
   },
 ] as const;
 
+const homeFaqs = [
+  {
+    question: "Wie starte ich am besten?",
+    answer:
+      "Am einfachsten startest du mit der Freebie-Auswahl. Dort wählst du zwischen Sternzeichen- und Beziehungs-Guide und bekommst danach direkte nächste Schritte.",
+  },
+  {
+    question: "Sind die Guides wirklich kostenlos?",
+    answer:
+      "Ja. Beide Freebies sind kostenlos. Nach dem kurzen Formular kannst du die PDF-Datei direkt herunterladen.",
+  },
+  {
+    question: "Was bringt mir der Einstieg über Tools?",
+    answer:
+      "Die Tools liefern dir sofort tieferen Kontext, z. B. zu Big Three, Paaranalyse oder Bewusstsein. So bekommst du schneller Klarheit für deinen Alltag.",
+  },
+  {
+    question: "Wann machen Readings oder Coaching Sinn?",
+    answer:
+      "Wenn du nach Guide und Tools tiefer gehen willst, sind Readings der nächste Schritt. Für persönliche Begleitung kannst du ein Erstgespräch fürs Coaching buchen.",
+  },
+] as const;
+
+const homeFaqJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  mainEntity: homeFaqs.map((faq) => ({
+    "@type": "Question",
+    name: faq.question,
+    acceptedAnswer: {
+      "@type": "Answer",
+      text: faq.answer,
+    },
+  })),
+};
+
 export default function TestHomePage() {
   return (
     <div className="flex flex-col gap-10 sm:gap-14">
+      <JsonLd id="jsonld-home-faq" data={homeFaqJsonLd} />
       <Hero
-        headline="Astrologie, die dich ins Handeln bringt"
-        subline="Starte kostenlos mit dem passenden Guide und bekomme klare, alltagstaugliche Impulse zu Persoenlichkeit, Beziehungen und wiederkehrenden Mustern. Danach kannst du direkt in die Tools wechseln, um dein Profil zu vertiefen und deinen naechsten Schritt mit mehr Klarheit zu gehen."
+        headline="Astrologie-Tools, Guides und Readings für klare nächste Schritte"
+        subline="Starte kostenlos mit dem passenden Guide und bekomme klare, alltagstaugliche Impulse zu Persönlichkeit, Beziehungen und wiederkehrenden Mustern. Danach kannst du direkt in die Tools wechseln und deinen nächsten Schritt mit mehr Klarheit gehen."
         primaryCta={{ label: "Kostenlos starten", href: "/freebie-auswahl" }}
         secondaryCta={{ label: "Tools benutzen", href: "/tools" }}
         imageSrc="/images/hero-cosmic-eye.png"
@@ -112,7 +150,7 @@ export default function TestHomePage() {
               Freebie Einstieg
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              Waehle dein Freebie: Selbstverstaendnis oder Beziehungsklarheit
+              Kostenlose Guides: Selbstverständnis oder Beziehungsklarheit
             </h2>
           </div>
         </div>
@@ -227,6 +265,32 @@ export default function TestHomePage() {
         </div>
       </section>
 
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
+        <div className="max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+            FAQ
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Häufige Fragen zum Einstieg
+          </h2>
+        </div>
+        <div className="mt-6 space-y-3">
+          {homeFaqs.map((faq) => (
+            <details
+              key={faq.question}
+              className="group rounded-2xl border border-black/5 bg-white p-4 dark:border-white/10 dark:bg-white/5"
+            >
+              <summary className="cursor-pointer list-none font-medium text-black dark:text-white">
+                {faq.question}
+              </summary>
+              <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
+                {faq.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       <section
         id="newsletter"
         className="rounded-3xl border border-black/5 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 p-6 sm:p-8 dark:border-white/10"
@@ -240,7 +304,7 @@ export default function TestHomePage() {
               Astro-Impulse direkt in dein Postfach
             </h2>
             <p className="text-sm leading-7 text-black/75 dark:text-white/75">
-              Regelmaessige Updates zu Sternzeichen, Beziehungen und passenden
+              Regelmäßige Updates zu Sternzeichen, Beziehungen und passenden
               Tools - kurz, alltagstauglich und ohne Spam.
             </p>
             <ul className="space-y-2 pt-1 text-sm text-black/80 dark:text-white/80">
@@ -272,7 +336,7 @@ export default function TestHomePage() {
               Alle Profile, Inhalte und Kontaktwege an einem Ort.
             </p>
             <p className="mt-1 text-xs text-black/60 dark:text-white/60">
-              Ueber die Link-Seite kommst du gesammelt zu allen Kanaelen.
+              Über die Link-Seite kommst du gesammelt zu allen Kanälen.
             </p>
           </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
@@ -288,7 +352,7 @@ export default function TestHomePage() {
               rel="noreferrer"
               className="inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
             >
-              Erstgespraech buchen
+              Erstgespräch buchen
             </Link>
           </div>
         </div>

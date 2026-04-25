@@ -39,7 +39,7 @@ const LINKS = [
   },
   {
     key: "coaching",
-    label: "Erstgespraech buchen",
+    label: "Erstgespräch buchen",
     href: "https://calendly.com/zeichendesuniversums-info/30min",
   },
 ] as const;
