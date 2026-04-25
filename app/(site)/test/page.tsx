@@ -74,27 +74,6 @@ const trustPoints = [
   "Kostenlos starten, dann optional vertiefen",
 ] as const;
 
-const quickStart = [
-  {
-    title: "1) Kostenlos starten",
-    body: "Freebie laden oder direkt mit dem Geburtshoroskop-Tool starten.",
-    href: "/freebie",
-    cta: "Kostenlos starten",
-  },
-  {
-    title: "2) Passenden Flow wählen",
-    body: "Self-Discovery mit Astroprofil oder Beziehungsklarheit mit Paaranalyse.",
-    href: "/tools",
-    cta: "Zu den Tools",
-  },
-  {
-    title: "3) Persönlich vertiefen",
-    body: "Reading oder Coaching buchen, wenn du konkrete Begleitung willst.",
-    href: "/shop",
-    cta: "Zu Readings & Coaching",
-  },
-] as const;
-
 const freebieTeasers = [
   {
     title: "Sternzeichen-Freebie",
@@ -181,43 +160,13 @@ export default function TestHomePage() {
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
-        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
-          <div>
-            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              Schnellstart
-            </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
-              In drei Schritten zum passenden Angebot
-            </h2>
-          </div>
-        </div>
-        <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {quickStart.map((step) => (
-            <Link
-              key={step.title}
-              href={step.href}
-              className="group rounded-2xl border border-black/5 bg-white p-5 transition hover:-translate-y-0.5 hover:shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/60 dark:border-white/10 dark:bg-white/5"
-            >
-              <h3 className="text-lg font-semibold tracking-tight">{step.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
-                {step.body}
-              </p>
-              <span className="mt-4 inline-flex text-sm font-medium text-violet-800 underline-offset-4 group-hover:underline dark:text-violet-200">
-                {step.cta} →
-              </span>
-            </Link>
-          ))}
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
         <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-          Haupt-Einstiege
+          Übersicht
         </h2>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Diese vier Einstiege sollen die Nutzer sofort in den richtigen Bereich bringen.
+          Drei klare Bereiche, damit du direkt den passenden Einstieg findest.
         </p>
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="mt-6 grid gap-4 lg:grid-cols-3">
           {entryCards.map((card) => (
             <Link
               key={card.href}
