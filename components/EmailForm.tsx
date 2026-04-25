@@ -16,13 +16,11 @@ export function EmailForm({
   redirectTo = "/freebie/download",
   source = "freebie",
   submitLabel = "Kostenloser Guide",
-  buttonVariant = "default",
 }: {
   redirectTo?: string | null;
   source?: string;
   /** z. B. „PDF kostenlos laden“ auf thematischen Landingpages */
   submitLabel?: string;
-  buttonVariant?: "default" | "violet";
 }) {
   const router = useRouter();
   const [firstName, setFirstName] = useState("");
@@ -147,21 +145,10 @@ export function EmailForm({
 
       <button
         type="submit"
-        disabled={status === "loading" || status === "success"}
-        className={[
-          "inline-flex h-12 w-full items-center justify-center rounded-2xl px-5 text-sm font-medium transition disabled:opacity-70",
-          status === "success"
-            ? "bg-emerald-600 text-white hover:bg-emerald-600 dark:bg-emerald-500 dark:text-white dark:hover:bg-emerald-500"
-            : buttonVariant === "violet"
-              ? "bg-violet-700 text-white hover:bg-violet-600 dark:bg-violet-600 dark:text-violet-100 dark:hover:bg-violet-500"
-              : "bg-black text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90",
-        ].join(" ")}
+        disabled={status === "loading"}
+        className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
       >
-        {status === "loading"
-          ? "Sende…"
-          : status === "success"
-            ? "Gespeichert ✓"
-            : submitLabel}
+        {status === "loading" ? "Sende…" : submitLabel}
       </button>
 
       {status === "error" ? (
@@ -169,7 +156,7 @@ export function EmailForm({
       ) : null}
       {status === "success" ? (
         <p className="text-sm text-emerald-700 dark:text-emerald-400">
-          {redirectTo ? "Danke! Weiterleitung…" : "Danke! Du bist erfolgreich eingetragen."}
+          Danke! Weiterleitung…
         </p>
       ) : null}
     </form>

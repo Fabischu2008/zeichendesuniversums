@@ -320,7 +320,6 @@ export default function TestHomePage() {
                 source="homepage_newsletter"
                 redirectTo={null}
                 submitLabel="Newsletter abonnieren"
-                buttonVariant="violet"
               />
             </div>
           </div>
