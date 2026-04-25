@@ -125,7 +125,7 @@ export default function TestHomePage() {
     <div className="flex flex-col gap-10 sm:gap-14">
       <Hero
         headline="Astrologie, die dich ins Handeln bringt"
-        subline="Starte kostenlos mit dem passenden Guide und gehe danach direkt in die Tools fuer deinen naechsten Schritt."
+        subline="Starte kostenlos mit dem passenden Guide und bekomme klare, alltagstaugliche Impulse zu Persoenlichkeit, Beziehungen und wiederkehrenden Mustern. Danach kannst du direkt in die Tools wechseln, um dein Profil zu vertiefen und deinen naechsten Schritt mit mehr Klarheit zu gehen."
         primaryCta={{ label: "Kostenlos starten", href: "/freebie-auswahl" }}
         secondaryCta={{ label: "Tools benutzen", href: "/tools" }}
         imageSrc="/images/hero-cosmic-eye.png"
@@ -320,29 +320,35 @@ export default function TestHomePage() {
                 source="homepage_newsletter"
                 redirectTo={null}
                 submitLabel="Newsletter abonnieren"
+                buttonVariant="violet"
               />
             </div>
           </div>
         </div>
       </section>
 
-      <section className="rounded-3xl border border-black/5 bg-white/50 p-5 sm:p-6 dark:border-white/10 dark:bg-white/[0.04]">
+      <section className="rounded-3xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] via-white to-violet-500/10 p-5 sm:p-6 dark:border-emerald-500/25 dark:from-emerald-500/10 dark:via-white/[0.04] dark:to-violet-500/10">
         <div className="mx-auto flex max-w-3xl flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <p className="text-sm text-black/65 dark:text-white/70">
-            Mehr von Zeichen des Universums:
-          </p>
+          <div>
+            <p className="text-sm font-medium text-black/80 dark:text-white/80">
+              Alle Profile, Inhalte und Kontaktwege an einem Ort.
+            </p>
+            <p className="mt-1 text-xs text-black/60 dark:text-white/60">
+              Ueber die Link-Seite kommst du gesammelt zu allen Kanaelen.
+            </p>
+          </div>
           <div className="flex w-full flex-col gap-3 sm:w-auto sm:flex-row">
             <Link
               href="/links"
               className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-5 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
             >
-              Alle Links ansehen
+              Zu allen Profilen
             </Link>
             <Link
               href="https://calendly.com/zeichendesuniversums-info/30min"
               target="_blank"
               rel="noreferrer"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-black px-5 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className="inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
             >
               Erstgespraech buchen
             </Link>
