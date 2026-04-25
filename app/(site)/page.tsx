@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { CTA } from "@/components/CTA";
 import { Hero } from "@/components/Hero";
-import { Testimonial } from "@/components/Testimonial";
 import {
   SITE_NAME,
   SOCIAL_PREVIEW_IMAGE,
@@ -114,32 +113,6 @@ export default function Home() {
           <p className="mt-2 text-xs text-black/50 dark:text-white/50">
             Kostenlos · danach sofort PDF · Abmelden jederzeit möglich
           </p>
-        </div>
-      </section>
-
-      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 backdrop-blur sm:p-8 dark:border-white/10 dark:bg-white/5">
-        <div className="grid gap-6 sm:gap-8 md:grid-cols-3">
-          <div>
-            <p className="text-sm font-medium text-black/70 dark:text-white/70">
-              Vertrauen
-            </p>
-            <p className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
-              100k+ Views
-            </p>
-            <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-              Inhalte, die nicht nur gut klingen – sondern ankommen.
-            </p>
-          </div>
-          <Testimonial
-            quote="Kurz, klar, ohne Schnickschnack – endlich was, das ich mir aufhebe und wirklich nutze."
-            name="Lea"
-            detail="hat den Guide geladen"
-          />
-          <Testimonial
-            quote="Dachte, wieder so ein PDF-Schmarren – war überrascht, wie konkret die Punkte sind."
-            name="Jonas"
-            detail="hat den Guide geladen"
-          />
         </div>
       </section>
 
