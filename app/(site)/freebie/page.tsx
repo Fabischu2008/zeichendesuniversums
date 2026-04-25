@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { EmailForm } from "@/components/EmailForm";
 
 export const metadata: Metadata = {
   title: "Kostenloser Guide",
@@ -54,18 +54,17 @@ export default function FreebiePage() {
           Jetzt kostenlos laden
         </h2>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Lade den Guide direkt und ohne Formular herunter.
+          Trage dich kurz ein und lade den Guide danach direkt herunter.
         </p>
         <div className="mt-6">
-          <Link
-            href="/freebie/download"
-            className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Kostenlos herunterladen
-          </Link>
+          <EmailForm
+            source="freebie_homepage"
+            redirectTo="/freebie/download"
+            submitLabel="Kostenlosen Guide laden"
+          />
         </div>
         <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-          Direktzugang zum PDF.
+          Vorname, Nachname, E-Mail und optional Telefonnummer.
         </p>
       </div>
     </div>

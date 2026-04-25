@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { EmailForm } from "@/components/EmailForm";
 import { SITE_NAME } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
@@ -84,18 +85,17 @@ export default function FreebieBeziehungPage() {
             Jetzt kostenlos laden
           </h2>
           <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-            Lade das Partnerschafts-PDF direkt und ohne Formular herunter.
+            Trage dich kurz ein und lade das Partnerschafts-PDF danach direkt herunter.
           </p>
           <div className="mt-6">
-            <Link
-              href="/freebie_beziehung/download"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              Kostenlos herunterladen
-            </Link>
+            <EmailForm
+              source="freebie_beziehung_homepage"
+              redirectTo="/freebie_beziehung/download"
+              submitLabel="Kostenloses PDF laden"
+            />
           </div>
           <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-            Direktzugang zum PDF.
+            Vorname, Nachname, E-Mail und optional Telefonnummer.
           </p>
         </div>
       </div>
