@@ -295,15 +295,14 @@ export default function TestHomePage() {
         <div className="grid gap-6 md:grid-cols-[1.1fr_1fr] md:items-center">
           <div className="space-y-3">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              Newsletter (Nächster Schritt)
+              Newsletter
             </p>
             <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-              Newsletter-Block als Conversion-Hebel
+              Astro-Impulse direkt in dein Postfach
             </h2>
             <p className="text-sm leading-7 text-black/75 dark:text-white/75">
-              Trage Kontakte ein, damit ihr Interessenten direkt per E-Mail
-              zurückkontaktieren könnt. Der Lead geht in euren bestehenden
-              Resend-Flow.
+              Regelmaessige Updates zu Sternzeichen, Beziehungen und passenden
+              Tools - kurz, alltagstauglich und ohne Spam.
             </p>
             <ul className="space-y-2 pt-1 text-sm text-black/80 dark:text-white/80">
               {trustPoints.map((point) => (
@@ -312,15 +311,15 @@ export default function TestHomePage() {
             </ul>
           </div>
           <div className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5">
-            <p className="text-sm font-semibold tracking-tight">Kontakt erfassen</p>
+            <p className="text-sm font-semibold tracking-tight">Jetzt anmelden</p>
             <p className="mt-1 text-xs text-black/60 dark:text-white/60">
               Vorname, Nachname, E-Mail (Telefon optional)
             </p>
             <div className="mt-4">
               <EmailForm
-                source="homepage_test_newsletter"
-                redirectTo="/test"
-                submitLabel="Kontakt speichern"
+                source="homepage_newsletter"
+                redirectTo={null}
+                submitLabel="Newsletter abonnieren"
               />
             </div>
           </div>

@@ -17,7 +17,7 @@ export function EmailForm({
   source = "freebie",
   submitLabel = "Kostenloser Guide",
 }: {
-  redirectTo?: string;
+  redirectTo?: string | null;
   source?: string;
   /** z. B. „PDF kostenlos laden“ auf thematischen Landingpages */
   submitLabel?: string;
@@ -76,7 +76,9 @@ export function EmailForm({
       }
 
       setStatus("success");
-      router.push(redirectTo);
+      if (redirectTo) {
+        router.push(redirectTo);
+      }
     } catch (err) {
       setStatus("error");
       setError(err instanceof Error ? err.message : "Unbekannter Fehler");
