@@ -64,7 +64,7 @@ export default function SternzeichenLandingPage() {
         primaryCta={{ label: "Jetzt Guide holen", href: "/freebie" }}
         secondaryCta={{ label: "So funktioniert's", href: "#so-funktionierts" }}
         note="Lesezeit unter 3 Minuten - PDF direkt nach dem Formular - kein Spam"
-        imageSrc="/images/freebie_hintergrund.png"
+        imageSrc="/images/freebie_hintergrund.PNG"
         imageSrcMobile="/images/freebie_handy.png"
         imageAlt="Kosmischer Hintergrund fuer den Sternzeichen-Guide"
       />

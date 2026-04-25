@@ -14,7 +14,7 @@ const freebies = [
     body: "Dein kompakter Guide zu Persoenlichkeit, Staerken und Mustern im Alltag.",
     href: "/sternzeichen",
     cta: "Sternzeichen-Landingpage oeffnen",
-    imageDesktop: "/images/freebie_hintergrund.png",
+    imageDesktop: "/images/freebie_hintergrund.PNG",
     imageMobile: "/images/freebie_handy.png",
   },
   {

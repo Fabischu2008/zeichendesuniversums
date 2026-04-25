@@ -107,7 +107,7 @@ const freebieTeasers = [
     body: "Kurz, klar und sofort als PDF: dein Einstieg in Muster, Staerken und Alltag.",
     href: "/sternzeichen",
     cta: "Zur Sternzeichen-Landingpage",
-    imageDesktop: "/images/freebie_hintergrund.png",
+    imageDesktop: "/images/freebie_hintergrund.PNG",
     imageMobile: "/images/freebie_handy.png",
   },
   {
