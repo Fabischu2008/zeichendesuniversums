@@ -11,6 +11,34 @@ function isValidEmail(addr: string) {
 
 /** Standard-Empfänger; per LEAD_TO_EMAIL in .env überschreiben. */
 const DEFAULT_LEAD_TO_EMAIL = "zeichendesuniversums.info@gmail.com";
+const LEADS_WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL?.trim() || "";
+
+type SheetLeadPayload = {
+  source: string;
+  first_name: string;
+  last_name: string;
+  email: string;
+  phone?: string;
+  page?: string;
+};
+
+async function sendLeadToSheet(payload: SheetLeadPayload) {
+  if (!LEADS_WEBHOOK_URL) return;
+  try {
+    await fetch(LEADS_WEBHOOK_URL, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({
+        created_at: new Date().toISOString(),
+        ...payload,
+      }),
+      cache: "no-store",
+    });
+  } catch (e) {
+    // Ein fehlgeschlagenes Sheet-Logging darf niemals den Formularfluss blockieren.
+    console.error("[email/subscribe] Google Sheets Webhook fehlgeschlagen:", e);
+  }
+}
 
 /**
  * Leads per E-Mail (Resend).
@@ -68,6 +96,15 @@ export async function POST(req: Request) {
   const from = getResendFromForProfileMail();
 
   if (!apiKey) {
+    await sendLeadToSheet({
+      source: resolvedSource,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone: phoneRaw || undefined,
+      page: "/api/email/subscribe",
+    });
+
     // Kein harter Fehler: Nutzer soll trotzdem zum PDF. E-Mail nur, wenn Key gesetzt ist.
     console.warn(
       "[email/subscribe] RESEND_API_KEY fehlt – Lead-E-Mail nicht gesendet. .env.local: RESEND_API_KEY=re_… (resend.com) bzw. in Vercel → Environment Variables.",
@@ -140,6 +177,15 @@ export async function POST(req: Request) {
       "an",
       to,
     );
+
+    await sendLeadToSheet({
+      source: resolvedSource,
+      first_name: firstName,
+      last_name: lastName,
+      email,
+      phone: phoneRaw || undefined,
+      page: "/api/email/subscribe",
+    });
 
     return NextResponse.json({ ok: true, source: resolvedSource, saved: true });
   } catch (e) {

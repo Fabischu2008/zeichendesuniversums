@@ -109,6 +109,13 @@ function getStripe(): Stripe | null {
   return new Stripe(key);
 }
 
+function requiresRealStripeCheckout(): boolean {
+  return (
+    process.env.NODE_ENV === "production" ||
+    process.env.VERCEL_ENV === "production"
+  );
+}
+
 type ResolvedCheckoutProduct = {
   id: string;
   name: string;
@@ -174,6 +181,13 @@ export async function createCheckoutSessionForProduct(
 
   const stripe = getStripe();
   if (!stripe) {
+    if (requiresRealStripeCheckout()) {
+      return {
+        error:
+          "Checkout ist aktuell nicht konfiguriert. Bitte STRIPE_SECRET_KEY in Production setzen.",
+      };
+    }
+
     let url = `/success?productId=${encodeURIComponent(product.id)}`;
     const astro = options?.astro;
     if (
