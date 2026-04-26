@@ -45,6 +45,16 @@ export const metadata: Metadata = {
   },
 };
 
+function sanitizeStripeCustomerEmail(email?: string | null): string | null {
+  if (!email) return null;
+  const normalized = email.trim().toLowerCase();
+  if (!normalized) return null;
+  // Stripe can provide placeholder emails in some checkout/payment-method flows.
+  if (/^generated_email_[^@]*@example\.com$/.test(normalized)) return null;
+  if (!isValidProfileEmail(normalized)) return null;
+  return normalized;
+}
+
 export default async function SuccessPage({
   searchParams,
 }: {
@@ -96,6 +106,7 @@ export default async function SuccessPage({
 
   const { mayIssue, stripeCustomerEmail, birthPayload } =
     await resolveProfileAccessForSuccess(isProfileProduct, sessionId);
+  const safeStripeCustomerEmail = sanitizeStripeCustomerEmail(stripeCustomerEmail);
 
   const birthFromNoStripe =
     isProfileProduct && apParam ? decodeAstroSuccessPack(apParam) : null;
@@ -154,7 +165,7 @@ export default async function SuccessPage({
   if (isProfileProduct && profileAccessUrl) {
     const showStripeClientMail =
       Boolean(sessionId) &&
-      Boolean(stripeCustomerEmail) &&
+      Boolean(safeStripeCustomerEmail) &&
       !queryEmailRecipient;
 
     return (
@@ -166,13 +177,13 @@ export default async function SuccessPage({
               <StripeProfileEmailOnce
                 sessionId={sessionId!}
                 profileUrl={profileAccessUrl}
-                customerEmail={stripeCustomerEmail!}
+                customerEmail={safeStripeCustomerEmail!}
               />
             ) : null}
             {rawQueryEmail || apParam ? <StripSuccessEmailQuery /> : null}
             <ProfileAccessLinkCard
               profileUrl={profileAccessUrl}
-              defaultEmail={stripeCustomerEmail}
+              defaultEmail={safeStripeCustomerEmail}
               queryEmailNotice={queryEmailNotice}
             />
           </div>

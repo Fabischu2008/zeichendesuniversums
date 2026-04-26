@@ -35,7 +35,7 @@ const LINKS = [
   {
     key: "facebook",
     label: "Facebook",
-    href: "https://www.facebook.com/zeichen.des.universums",
+    href: "https://www.facebook.com/profile.php?id=61577542791928",
   },
   {
     key: "coaching",

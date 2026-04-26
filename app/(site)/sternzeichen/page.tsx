@@ -111,32 +111,32 @@ export default function SternzeichenLandingPage() {
         <div className="grid gap-6 md:grid-cols-3">
           <div className="md:col-span-1">
             <p className="text-sm font-medium text-black/70 dark:text-white/70">
-              Im Guide steckt
+              Was dich im Guide erwartet
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-              Konkrete Aha-Momente statt Vibes
+              Klarheit für deinen Alltag statt allgemeiner Sternzeichen-Floskeln
             </h2>
             <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-              Drei Schwerpunkte, die du im Alltag spüren kannst - kompakt erklärt.
+              Drei kompakte Bereiche, mit denen du dich besser einordnen und direkt etwas mitnehmen kannst.
             </p>
           </div>
           <ul className="grid gap-3 sm:grid-cols-3 md:col-span-2">
             <li className="rounded-2xl border border-black/5 bg-white p-4 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-              <p className="font-medium">Warum du oft anders reagierst</p>
+              <p className="font-medium">Deine Reaktionen besser verstehen</p>
               <p className="mt-1 text-black/70 dark:text-white/70">
-                Stressmuster erkennen - ohne dich kleinzureden.
+                Erkenne typische Stressmuster und was dir in solchen Momenten wirklich hilft.
               </p>
             </li>
             <li className="rounded-2xl border border-black/5 bg-white p-4 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-              <p className="font-medium">Beziehungsmuster verstehen</p>
+              <p className="font-medium">Muster in Beziehungen erkennen</p>
               <p className="mt-1 text-black/70 dark:text-white/70">
-                Nähe, Distanz, Tempo: was dich immer wieder triggert.
+                Verstehe Dynamiken rund um Nähe, Distanz und Kommunikation klarer.
               </p>
             </li>
             <li className="rounded-2xl border border-black/5 bg-white p-4 text-sm text-black/80 dark:border-white/10 dark:bg-white/5 dark:text-white/80">
-              <p className="font-medium">Stärken gezielt nutzen</p>
+              <p className="font-medium">Stärken konkret einsetzen</p>
               <p className="mt-1 text-black/70 dark:text-white/70">
-                Drei Schritte, die du heute ausprobieren kannst.
+                Nimm einfache Impulse mit, die du direkt in deinem Alltag umsetzen kannst.
               </p>
             </li>
           </ul>
@@ -146,7 +146,7 @@ export default function SternzeichenLandingPage() {
             href="/freebie"
             className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
           >
-            Zum kostenlosen Guide
+            Jetzt kostenlos starten
           </Link>
         </div>
       </section>

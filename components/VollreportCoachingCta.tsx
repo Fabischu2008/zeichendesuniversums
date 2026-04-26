@@ -58,7 +58,7 @@ export function VollreportCoachingCta({
             href={VOLLREPORT_CTA_COACHING_HREF}
             className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/12 bg-white/90 px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
           >
-            Coaching buchen
+            Coaching anfragen
           </Link>
         </div>
       </div>

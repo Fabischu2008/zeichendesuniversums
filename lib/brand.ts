@@ -29,7 +29,7 @@ export const SITE_SAME_AS = [
   "https://www.instagram.com/zeichen.des.universums",
   "https://www.youtube.com/@Zeichen.des.Universums",
   "https://www.tiktok.com/@zeichen.des.universums",
-  "https://www.facebook.com/zeichen.des.universums",
+  "https://www.facebook.com/profile.php?id=61577542791928",
 ] as const;
 
 export const SITE_TAGLINE = "Astrology, aber praktisch.";
