@@ -11,7 +11,6 @@ function isValidEmail(addr: string) {
 
 /** Standard-Empfänger; per LEAD_TO_EMAIL in .env überschreiben. */
 const DEFAULT_LEAD_TO_EMAIL = "zeichendesuniversums.info@gmail.com";
-const LEADS_WEBHOOK_URL = process.env.LEADS_WEBHOOK_URL?.trim() || "";
 
 type SheetLeadPayload = {
   source: string;
@@ -23,9 +22,11 @@ type SheetLeadPayload = {
 };
 
 async function sendLeadToSheet(payload: SheetLeadPayload) {
-  if (!LEADS_WEBHOOK_URL) return;
+  /** Read at request time — top-level `process.env.*` can be inlined empty at build on Vercel. */
+  const webhookUrl = process.env.LEADS_WEBHOOK_URL?.trim() || "";
+  if (!webhookUrl) return;
   try {
-    await fetch(LEADS_WEBHOOK_URL, {
+    const res = await fetch(webhookUrl, {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({
@@ -34,6 +35,15 @@ async function sendLeadToSheet(payload: SheetLeadPayload) {
       }),
       cache: "no-store",
     });
+    if (!res.ok) {
+      console.warn(
+        "[email/subscribe] LEADS_WEBHOOK_URL HTTP",
+        res.status,
+        await res.text().catch(() => ""),
+      );
+    } else {
+      console.info("[email/subscribe] Lead webhook OK", res.status);
+    }
   } catch (e) {
     // Ein fehlgeschlagenes Sheet-Logging darf niemals den Formularfluss blockieren.
     console.error("[email/subscribe] Google Sheets Webhook fehlgeschlagen:", e);
