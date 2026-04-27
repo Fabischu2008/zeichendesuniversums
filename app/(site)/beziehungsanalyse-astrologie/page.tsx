@@ -60,31 +60,24 @@ export default function BeziehungsanalyseAstrologiePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <JsonLd id="jsonld-beziehungsanalyse-faq" data={faqJsonLd} />
-      <header className="space-y-4">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Beziehungsanalyse mit Astrologie: worauf es ankommt
-        </h1>
-        <p className="text-black/70 dark:text-white/70">
-          Gute Beziehungsanalyse bedeutet nicht Schubladendenken, sondern Klarheit.
-          Du siehst, wo ihr euch stärkt, wo Trigger liegen und welche Hebel eure
-          Verbindung stabiler machen.
-        </p>
-      </header>
-
-      <section className="relative overflow-hidden rounded-3xl border border-black/10">
-        <div className="relative min-h-[250px] sm:min-h-[300px]">
+      <section className="relative isolate overflow-hidden rounded-3xl border border-black/10">
+        <div className="relative min-h-[300px] sm:min-h-[360px]">
           <Image
-            src="/images/freebie_handy.png"
+            src="/images/landing/lp-beziehungsanalyse-astrologie-v2.jpg"
             alt="Astrologische Beziehungsanalyse"
             fill
             sizes="100vw"
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10" />
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <p className="max-w-2xl text-sm text-white/90">
-              Eine gute Beziehungsanalyse liefert dir nicht nur Deutung, sondern
-              konkrete nächste Schritte für echte Veränderung im Alltag.
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
+          <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
+            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Beziehungsanalyse mit Astrologie: worauf es ankommt
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
+              Gute Beziehungsanalyse bedeutet nicht Schubladendenken, sondern Klarheit.
+              Du siehst, wo ihr euch stärkt, wo Trigger liegen und welche Hebel eure
+              Verbindung stabiler machen.
             </p>
           </div>
         </div>

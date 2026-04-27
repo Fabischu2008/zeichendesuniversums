@@ -52,20 +52,19 @@ export default function SternzeichenKompatibilitaetPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <JsonLd id="jsonld-sternzeichen-kompatibilitaet-faq" data={faqJsonLd} />
-      <header className="space-y-4">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Sternzeichen Kompatibilität: Was sie wirklich zeigt
-        </h1>
-        <p className="text-black/70 dark:text-white/70">
-          Ein Sternzeichen-Vergleich ist ein guter Einstieg. Für echte Beziehungsdynamik
-          brauchst du aber den Blick auf beide vollständigen Horoskope.
-        </p>
-      </header>
-
-      <section className="relative overflow-hidden rounded-3xl border border-black/10">
-        <div className="relative min-h-[260px]">
-          <Image src="/images/beziehung_hintergrund.PNG" alt="Kompatibilität in Beziehungen" fill sizes="100vw" className="object-cover" />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10" />
+      <section className="relative isolate overflow-hidden rounded-3xl border border-black/10">
+        <div className="relative min-h-[300px] sm:min-h-[360px]">
+          <Image src="/images/landing/lp-sternzeichen-kompatibilitaet-v2.jpg" alt="Kompatibilität in Beziehungen" fill sizes="100vw" className="object-cover" />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
+          <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
+            <h1 className="max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Sternzeichen Kompatibilität: Was sie wirklich zeigt
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
+              Ein Sternzeichen-Vergleich ist ein guter Einstieg. Für echte Beziehungsdynamik
+              brauchst du aber den Blick auf beide vollständigen Horoskope.
+            </p>
+          </div>
         </div>
       </section>
 

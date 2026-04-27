@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
@@ -70,6 +71,57 @@ const pathBewusstsein = {
   ],
   cta: "Zum Bewusstseins-Tool",
 };
+
+const landingPages = [
+  {
+    href: "/aszendent-berechnen",
+    title: "Aszendent berechnen (gratis) + Bedeutung",
+    imageDesktop: "/images/landing/lp-aszendent-berechnen-v2.jpg",
+    imageMobile: "/images/landing/lp-aszendent-berechnen-v2.jpg",
+  },
+  {
+    href: "/mondzeichen-beziehung",
+    title: "Mondzeichen in Beziehungen: Nähe & Trigger",
+    imageDesktop: "/images/landing/lp-mondzeichen-beziehung-v2.jpg",
+    imageMobile: "/images/landing/lp-mondzeichen-beziehung-v2.jpg",
+  },
+  {
+    href: "/synastrie-einfach-erklaert",
+    title: "Synastrie einfach erklärt: Paaranalyse verstehen",
+    imageDesktop: "/images/landing/lp-synastrie-einfach-erklaert-v2.jpg",
+    imageMobile: "/images/landing/lp-synastrie-einfach-erklaert-v2.jpg",
+  },
+  {
+    href: "/beziehungsanalyse-astrologie",
+    title: "Beziehungsanalyse: klar und alltagstauglich",
+    imageDesktop: "/images/landing/lp-beziehungsanalyse-astrologie-v2.jpg",
+    imageMobile: "/images/landing/lp-beziehungsanalyse-astrologie-v2.jpg",
+  },
+  {
+    href: "/big-3-bedeutung",
+    title: "Big 3 verstehen: Sonne, Mond, Aszendent",
+    imageDesktop: "/images/landing/lp-big3-bedeutung-v2.jpg",
+    imageMobile: "/images/landing/lp-big3-bedeutung-v2.jpg",
+  },
+  {
+    href: "/sternzeichen-kompatibilitaet",
+    title: "Sternzeichen-Kompatibilität: Schnellcheck",
+    imageDesktop: "/images/landing/lp-sternzeichen-kompatibilitaet-v2.jpg",
+    imageMobile: "/images/landing/lp-sternzeichen-kompatibilitaet-v2.jpg",
+  },
+  {
+    href: "/venus-mars-kompatibilitaet",
+    title: "Venus & Mars: Anziehung besser verstehen",
+    imageDesktop: "/images/landing/lp-venus-mars-kompatibilitaet-v2.jpg",
+    imageMobile: "/images/landing/lp-venus-mars-kompatibilitaet-v2.jpg",
+  },
+  {
+    href: "/astrologie-beziehungstipps",
+    title: "7 Beziehungstipps für den Alltag",
+    imageDesktop: "/images/landing/lp-astrologie-beziehungstipps-v2.jpg",
+    imageMobile: "/images/landing/lp-astrologie-beziehungstipps-v2.jpg",
+  },
+] as const;
 
 export default function ToolsPage() {
   return (
@@ -210,89 +262,94 @@ export default function ToolsPage() {
 
       </div>
 
-      <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">
-        <p className="text-sm font-medium text-black/80 dark:text-white/80">
-          Danach: Guide, Shop oder nächstes Tool
-        </p>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-          Viele starten mit dem{" "}
-          <Link
-            href="/freebie"
-            className="font-medium text-violet-700 underline-offset-2 hover:underline dark:text-violet-300"
-          >
-            kostenlosen PDF-Guide
-          </Link>{" "}
-          oder schauen im{" "}
-          <Link
-            href="/shop"
-            className="font-medium text-violet-700 underline-offset-2 hover:underline dark:text-violet-300"
-          >
-            Shop
-          </Link>{" "}
-          vorbei.
-        </p>
-      </section>
-
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5 sm:p-8">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
           <div>
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-              SEO-Ratgeber
+              Orientierung
             </p>
             <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-              Grundlagen, bevor du startest
+              Du bist unsicher, welches Tool für dich passt?
             </h2>
+            <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+              Dann starte mit einer kurzen Erklärseite. So verstehst du schnell, worum es
+              geht, und kannst danach das passende Tool für deinen nächsten Schritt wählen.
+            </p>
           </div>
         </div>
-        <div className="mt-6 grid gap-3 sm:grid-cols-2">
-          <Link
-            href="/aszendent-berechnen"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Aszendent berechnen: Bedeutung + kostenloses Tool
-          </Link>
-          <Link
-            href="/mondzeichen-beziehung"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Mondzeichen Bedeutung in Beziehungen
-          </Link>
-          <Link
-            href="/synastrie-einfach-erklaert"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Synastrie einfach erklärt: So funktioniert Paaranalyse
-          </Link>
-          <Link
-            href="/beziehungsanalyse-astrologie"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Beziehungsanalyse mit Astrologie: worauf es ankommt
-          </Link>
-          <Link
-            href="/big-3-bedeutung"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Big 3 Bedeutung: Sonne, Mond, Aszendent verstehen
-          </Link>
-          <Link
-            href="/sternzeichen-kompatibilitaet"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Sternzeichen Kompatibilität: Was sie wirklich zeigt
-          </Link>
-          <Link
-            href="/venus-mars-kompatibilitaet"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Venus und Mars in der Beziehung: Kompatibilität erklärt
-          </Link>
-          <Link
-            href="/astrologie-beziehungstipps"
-            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
-          >
-            Astrologie Beziehungstipps: 7 alltagstaugliche Impulse
-          </Link>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {landingPages.map((item) => (
+            <Link
+              key={item.href}
+              href={item.href}
+              className="group relative isolate overflow-hidden rounded-2xl border border-black/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-violet-500/70 dark:border-white/15"
+            >
+              <div className="relative min-h-[170px]">
+                <Image
+                  src={item.imageMobile}
+                  alt={`${item.title} Hintergrund mobil`}
+                  fill
+                  sizes="100vw"
+                  className="object-cover object-center sm:hidden"
+                />
+                <Image
+                  src={item.imageDesktop}
+                  alt={`${item.title} Hintergrund`}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  className="hidden object-cover object-center sm:block"
+                />
+                <div
+                  aria-hidden
+                  className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/35 to-black/10 transition group-hover:from-black/85"
+                />
+                <div className="relative z-10 flex min-h-[170px] flex-col justify-end p-4">
+                  <p className="text-sm font-semibold leading-snug text-white">
+                    {item.title}
+                  </p>
+                  <span className="mt-2 inline-flex items-center text-xs font-medium text-white/90">
+                    Jetzt öffnen <span className="ml-1" aria-hidden>→</span>
+                  </span>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
+      <section className="rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.14] via-white to-sky-500/[0.14] p-6 shadow-sm sm:p-8 dark:border-violet-400/25 dark:from-violet-500/20 dark:via-white/[0.04] dark:to-sky-500/15">
+        <div className="mx-auto max-w-3xl">
+          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-800 dark:text-violet-200">
+            Weiter geht's
+          </p>
+          <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+            Was möchtest du als Nächstes machen?
+          </h2>
+          <p className="mt-2 text-sm leading-6 text-black/70 dark:text-white/70">
+            Wenn du noch Orientierung willst, starte mit einem kostenlosen Guide.
+            Wenn du dir erst einen Überblick über alles holen möchtest, geh zurück
+            zur Startseite.
+          </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <Link
+              href="/freebie-auswahl"
+              className="group inline-flex h-12 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white transition hover:-translate-y-0.5 hover:bg-violet-600 dark:bg-violet-600 dark:hover:bg-violet-500"
+            >
+              Kostenlosen Guide wählen
+              <span aria-hidden className="ml-2 transition group-hover:translate-x-0.5">
+                →
+              </span>
+            </Link>
+            <Link
+              href="/"
+              className="group inline-flex h-12 items-center justify-center rounded-full border border-black/10 bg-white px-5 text-sm font-medium text-black transition hover:-translate-y-0.5 hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+            >
+              Zur Startseite
+              <span aria-hidden className="ml-2 transition group-hover:translate-x-0.5">
+                →
+              </span>
+            </Link>
+          </div>
         </div>
       </section>
     </div>

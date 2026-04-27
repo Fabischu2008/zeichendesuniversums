@@ -66,34 +66,27 @@ export default function AszendentBerechnenPage() {
     <div className="mx-auto max-w-4xl space-y-8">
       <JsonLd id="jsonld-aszendent-faq" data={faqJsonLd} />
 
-      <header className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
-          Astrologie Grundlagen
-        </p>
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Aszendent berechnen: Bedeutung und kostenloses Tool
-        </h1>
-        <p className="text-black/70 dark:text-white/70">
-          Der Aszendent zeigt, wie du auf Menschen wirkst, wie du in neue Situationen
-          startest und welchen ersten Eindruck du hinterlässt. Mit exakten Geburtsdaten
-          kannst du ihn in wenigen Minuten korrekt berechnen.
-        </p>
-      </header>
-
-      <section className="relative overflow-hidden rounded-3xl border border-black/10">
-        <div className="relative min-h-[250px] sm:min-h-[300px]">
+      <section className="relative isolate overflow-hidden rounded-3xl border border-black/10">
+        <div className="relative min-h-[300px] sm:min-h-[360px]">
           <Image
-            src="/images/freebie_hintergrund.PNG"
+            src="/images/landing/lp-aszendent-berechnen-v2.jpg"
             alt="Astrologischer Hintergrund"
             fill
             sizes="100vw"
             className="object-cover object-center"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/35 to-black/10" />
-          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-6">
-            <p className="max-w-2xl text-sm text-white/90">
-              Der Aszendent ist dein sichtbarer Stil im Leben: Auftreten, erste Reaktion
-              und die Art, wie du neue Situationen betrittst.
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/45 to-black/15" />
+          <div className="absolute inset-0 flex flex-col justify-end p-6 sm:p-8">
+            <p className="text-xs font-semibold uppercase tracking-[0.2em] text-white/85">
+              Astrologie Grundlagen
+            </p>
+            <h1 className="mt-2 max-w-3xl text-3xl font-semibold tracking-tight text-white sm:text-4xl">
+              Aszendent berechnen: Bedeutung und kostenloses Tool
+            </h1>
+            <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
+              Der Aszendent zeigt, wie du auf Menschen wirkst, wie du in neue Situationen
+              startest und welchen ersten Eindruck du hinterlässt. Mit exakten Geburtsdaten
+              kannst du ihn in wenigen Minuten korrekt berechnen.
             </p>
           </div>
         </div>
