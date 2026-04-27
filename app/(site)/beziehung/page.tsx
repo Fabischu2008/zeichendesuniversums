@@ -106,8 +106,8 @@ export default function BeziehungLandingPage() {
           href: "#so-funktionierts",
         }}
         note="Lesezeit im PDF kompakt · Datei direkt nach dem Formular · kein Spam"
-        imageSrc="/images/beziehung_hintergrund.PNG"
-        imageSrcMobile="/images/beziehung_handy.png"
+        imageSrc="/images/beziehung_hintergrund.jpg"
+        imageSrcMobile="/images/beziehung_handy.jpg"
         imageAlt="Hintergrundbild Beziehung & Partnerschaft"
       />
 

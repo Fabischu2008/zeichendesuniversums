@@ -33,7 +33,6 @@ export function Hero({
               src={imageSrcMobile}
               alt={imageAlt}
               fill
-              priority
               sizes="100vw"
               className="object-cover object-center sm:hidden"
             />
@@ -41,7 +40,6 @@ export function Hero({
               src={imageSrc}
               alt={imageAlt}
               fill
-              priority
               sizes="(max-width: 1280px) 100vw, 1280px"
               className="hidden object-cover object-[15%_50%] sm:block sm:object-[25%_50%]"
             />

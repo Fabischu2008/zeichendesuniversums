@@ -52,7 +52,7 @@ export default function BlogPage() {
       <header className="relative isolate overflow-hidden rounded-3xl border border-black/10">
         <div className="relative min-h-[240px] sm:min-h-[290px]">
           <Image
-            src="/images/freebie_hintergrund.PNG"
+            src="/images/freebie_hintergrund.jpg"
             alt="Blog zu Astrologie und Beziehung"
             fill
             priority

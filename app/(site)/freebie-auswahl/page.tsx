@@ -38,16 +38,16 @@ const freebies = [
     body: "Dein kompakter Guide zu Persönlichkeit, Stärken und Mustern im Alltag.",
     href: "/sternzeichen",
     cta: "Sternzeichen-Landingpage öffnen",
-    imageDesktop: "/images/freebie_hintergrund.PNG",
-    imageMobile: "/images/freebie_handy.png",
+    imageDesktop: "/images/freebie_hintergrund.jpg",
+    imageMobile: "/images/freebie_handy.jpg",
   },
   {
     title: "Beziehungs-Freebie",
     body: "Impulse zu Nähe, Kommunikation und Dynamik für Dating und Partnerschaft.",
     href: "/beziehung",
     cta: "Beziehungs-Freebie öffnen",
-    imageDesktop: "/images/beziehung_hintergrund.PNG",
-    imageMobile: "/images/beziehung_handy.png",
+    imageDesktop: "/images/beziehung_hintergrund.jpg",
+    imageMobile: "/images/beziehung_handy.jpg",
   },
 ] as const;
 

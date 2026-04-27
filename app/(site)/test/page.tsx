@@ -81,16 +81,16 @@ const freebieTeasers = [
     body: "Kurz, klar und sofort als PDF: dein Einstieg in Muster, Stärken und Alltag.",
     href: "/sternzeichen",
     cta: "Zur Sternzeichen-Landingpage",
-    imageDesktop: "/images/freebie_hintergrund.PNG",
-    imageMobile: "/images/freebie_handy.png",
+    imageDesktop: "/images/freebie_hintergrund.jpg",
+    imageMobile: "/images/freebie_handy.jpg",
   },
   {
     title: "Beziehungs-Freebie",
     body: "Impulse zu Nähe, Kommunikation und Dynamik mit direktem PDF-Download.",
     href: "/beziehung",
     cta: "Zur Beziehungsseite",
-    imageDesktop: "/images/beziehung_hintergrund.PNG",
-    imageMobile: "/images/beziehung_handy.png",
+    imageDesktop: "/images/beziehung_hintergrund.jpg",
+    imageMobile: "/images/beziehung_handy.jpg",
   },
 ] as const;
 
