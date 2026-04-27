@@ -277,6 +277,8 @@ export async function createCheckoutSessionForProduct(
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
+      // Keep checkout behavior consistent across all products.
+      payment_method_types: ["card"],
       line_items: [
         {
           quantity: 1,
