@@ -1,6 +1,12 @@
 import type { Metadata } from "next";
 import { LegalPageShell } from "@/components/LegalPageShell";
 import { CANONICAL_SITE_ORIGIN, SITE_NAME } from "@/lib/brand";
+import {
+  LEGAL_PHONE,
+  LEGAL_PROVIDER,
+  LEGAL_STAND,
+  LEGAL_UST_ID,
+} from "@/lib/legal";
 
 export const metadata: Metadata = {
   title: "Impressum",
@@ -10,38 +16,54 @@ export const metadata: Metadata = {
 export default function ImpressumPage() {
   return (
     <LegalPageShell title="Impressum">
-      <p className="rounded-2xl border border-amber-500/25 bg-amber-500/10 px-4 py-3 text-xs text-amber-950 dark:border-amber-400/30 dark:bg-amber-400/10 dark:text-amber-100">
-        Hinweis: Die folgenden Angaben sind Platzhalter. Bitte durch deine
-        vollständigen Impressumsdaten ersetzen und bei Bedarf rechtlich prüfen
-        lassen.
-      </p>
-
       <h2>Angaben gemäß § 5 DDG</h2>
       <p>
-        <strong>[Vor- und Nachname oder Firmenname]</strong>
+        <strong>{LEGAL_PROVIDER.name}</strong>
         <br />
-        [Straße und Hausnummer]
+        {LEGAL_PROVIDER.street}
         <br />
-        [PLZ und Ort]
+        {LEGAL_PROVIDER.zipCity}
         <br />
-        [Land, falls nicht Deutschland]
+        {LEGAL_PROVIDER.country}
       </p>
 
       <h2>Kontakt</h2>
       <p>
-        Telefon: [optional]
-        <br />
-        E-Mail: [E-Mail-Adresse]
+        E-Mail:{" "}
+        <a href={`mailto:${LEGAL_PROVIDER.email}`}>{LEGAL_PROVIDER.email}</a>
+        {LEGAL_PHONE ? (
+          <>
+            <br />
+            Telefon: {LEGAL_PHONE}
+          </>
+        ) : null}
       </p>
 
-      <h2>Umsatzsteuer-ID</h2>
+      <h2>Umsatzsteuer</h2>
       <p>
-        Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz: [falls
-        vorhanden, sonst Absatz entfernen]
+        Als Kleinunternehmer im Sinne von § 19 UStG wird keine Umsatzsteuer
+        ausgewiesen.
+      </p>
+      <p>
+        {LEGAL_UST_ID ? (
+          <>
+            Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:{" "}
+            <strong>{LEGAL_UST_ID}</strong>
+          </>
+        ) : (
+          <>
+            Die Umsatzsteuer-Identifikationsnummer gemäß § 27 a
+            Umsatzsteuergesetz wird nach Erhalt hier ergänzt.
+          </>
+        )}
       </p>
 
       <h2>Verantwortlich für den Inhalt nach § 18 Abs. 2 MStV</h2>
-      <p>[Name und Anschrift wie oben oder des verantwortlichen Redakteurs]</p>
+      <p>
+        {LEGAL_PROVIDER.name}
+        <br />
+        {LEGAL_PROVIDER.street}, {LEGAL_PROVIDER.zipCity}
+      </p>
 
       <h2>EU-Online-Streitbeilegung</h2>
       <p>
@@ -55,6 +77,10 @@ export default function ImpressumPage() {
           https://ec.europa.eu/consumers/odr/
         </a>
         . Unsere E-Mail-Adresse findest du oben im Impressum.
+      </p>
+      <p>
+        Wir sind weder verpflichtet noch bereit, an Streitbeilegungsverfahren
+        vor einer Verbraucherschlichtungsstelle teilzunehmen.
       </p>
 
       <h2>Haftung für Inhalte</h2>
@@ -77,7 +103,7 @@ export default function ImpressumPage() {
       </p>
 
       <p className="text-xs text-black/50 dark:text-white/50">
-        Stand: [Datum eintragen] · {SITE_NAME} · {CANONICAL_SITE_ORIGIN}
+        Stand: {LEGAL_STAND} · {SITE_NAME} · {CANONICAL_SITE_ORIGIN}
       </p>
     </LegalPageShell>
   );
