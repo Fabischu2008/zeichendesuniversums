@@ -76,27 +76,28 @@ export default function MondzeichenBeziehungPage() {
               Mondzeichen Bedeutung in Beziehungen
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Wenn dein Sternzeichen zeigt, wer du bist, zeigt dein Mondzeichen, was
-              du emotional brauchst. Genau dort entstehen in Beziehungen oft die
-              wichtigsten Aha-Momente.
+              Wenn Beziehungen sich wieder gleich anfühlen, liegt es selten am
+              falschen Partner - sondern an ungelösten emotionalen Mustern.
+              Dein Mondzeichen zeigt, was du für Sicherheit brauchst und wo du
+              unter Stress automatisch in alte Reaktionen gehst.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Darauf solltest du achten</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Was sich dadurch konkret verändert</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Wie schnell öffnest du dich emotional?</li>
-          <li>• Was beruhigt dich nach Konflikten?</li>
-          <li>• Welche Worte geben dir Nähe und Sicherheit?</li>
+          <li>• Du erkennst früh, wann Nähe in Druck kippt - bevor es eskaliert.</li>
+          <li>• Du kommunizierst Bedürfnisse klar statt Vorwürfe zu wiederholen.</li>
+          <li>• Du triffst bessere Beziehungsentscheidungen mit emotionaler Klarheit.</li>
         </ul>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/tools/birth-chart"
             className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600"
           >
-            Mondzeichen berechnen
+            Mondzeichen jetzt berechnen
           </Link>
           <Link
             href="/beziehung"

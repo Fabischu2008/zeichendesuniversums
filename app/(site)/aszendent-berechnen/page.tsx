@@ -84,27 +84,28 @@ export default function AszendentBerechnenPage() {
               Aszendent berechnen: Bedeutung und kostenloses Tool
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Der Aszendent zeigt, wie du auf Menschen wirkst, wie du in neue Situationen
-              startest und welchen ersten Eindruck du hinterlässt. Mit exakten Geburtsdaten
-              kannst du ihn in wenigen Minuten korrekt berechnen.
+              Wenn du immer wieder in denselben Situationen festhängst, fehlt oft
+              nicht Wille, sondern Klarheit über dein Auftreten. Der Aszendent zeigt,
+              wie du wirkst, startest und Entscheidungen einleitest - und genau dort
+              entsteht der Unterschied zwischen Stillstand und nächstem Schritt.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">So berechnest du deinen Aszendenten</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Warum es sich jetzt lohnt</h2>
         <ol className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>1. Gib Geburtsdatum, Geburtszeit und Geburtsort ein.</li>
-          <li>2. Berechne deine Big 3: Sonne, Mond und Aszendent.</li>
-          <li>3. Lies anschließend die Kombination im Kontext deines Gesamtprofils.</li>
+          <li>1. Du erkennst, wie du unbewusst auf Chancen und Konflikte reagierst.</li>
+          <li>2. Du verstehst, warum manche Gespräche sofort kippen und andere tragen.</li>
+          <li>3. Du kannst dein Verhalten bewusst steuern statt nur zu reagieren.</li>
         </ol>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/tools/birth-chart"
             className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600"
           >
-            Aszendent jetzt berechnen
+            Jetzt Aszendent berechnen
           </Link>
           <Link
             href="/tools"

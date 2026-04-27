@@ -61,19 +61,20 @@ export default function SternzeichenKompatibilitaetPage() {
               Sternzeichen Kompatibilität: Was sie wirklich zeigt
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Ein Sternzeichen-Vergleich ist ein guter Einstieg. Für echte Beziehungsdynamik
-              brauchst du aber den Blick auf beide vollständigen Horoskope.
+              Wenn du Entscheidungen in der Liebe nur nach Gefühl triffst, übersiehst
+              oft die wichtigsten Muster. Kompatibilität richtig gelesen zeigt dir,
+              ob ihr auf Dauer tragfähig zusammenpasst - und woran ihr arbeiten müsst.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Schnellcheck vs. Tiefenanalyse</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Warum ein schneller Check allein nicht reicht</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Schnellcheck: gute erste Tendenz, schnell verständlich</li>
-          <li>• Tiefenanalyse: Aspekte, Häuser und konkrete Beziehungsmuster</li>
-          <li>• Beste Kombination: erst Überblick, dann Synastrie</li>
+          <li>• Ein Sternzeichen-Check zeigt Tendenzen, aber keine belastbare Dynamik.</li>
+          <li>• Erst mit Synastrie siehst du echte Trigger, Stärken und Langzeitpotenzial.</li>
+          <li>• So triffst du Entscheidungen mit Klarheit statt Hoffnung allein.</li>
         </ul>
         <div className="mt-6">
           <Link href="/tools/compatibility" className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600">

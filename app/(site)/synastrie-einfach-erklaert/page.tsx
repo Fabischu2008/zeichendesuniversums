@@ -75,27 +75,27 @@ export default function SynastrieEinfachErklaertPage() {
               Synastrie einfach erklärt: So funktioniert Paaranalyse
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Synastrie ist keine Ja/Nein-Antwort, sondern eine Landkarte eurer
-              Dynamik. Sie zeigt, wo es leicht fließt, wo Reibung entsteht und wie
-              ihr bewusster miteinander umgehen könnt.
+              Ohne klare Analyse bleibt Beziehung oft ein Rätsel aus Wiederholung,
+              Hoffnung und Frust. Synastrie zeigt dir schwarz auf weiß, wo ihr euch
+              stärkt, wo ihr euch triggert und was ihr konkret ändern müsst.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Die drei Kernbausteine</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Warum das für eure Zukunft entscheidend ist</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Planetenaspekte (z. B. Venus-Mars, Mond-Mond, Sonne-Saturn)</li>
-          <li>• Big 3 beider Personen (Sonne, Mond, Aszendent)</li>
-          <li>• Hausfokus und Beziehungsthemen im Alltag</li>
+          <li>• Ihr erkennt früh, welche Konflikte immer wieder dieselbe Ursache haben.</li>
+          <li>• Ihr versteht, wie Nähe, Kommunikation und Tempo wirklich zusammenpassen.</li>
+          <li>• Ihr bekommt eine klare Grundlage für bessere Entscheidungen als Paar.</li>
         </ul>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link
             href="/tools/compatibility"
             className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600"
           >
-            Synastrie jetzt starten
+            Jetzt Synastrie starten
           </Link>
           <Link
             href="/reading/beziehung"

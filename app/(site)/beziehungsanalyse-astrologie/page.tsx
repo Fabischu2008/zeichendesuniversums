@@ -75,20 +75,20 @@ export default function BeziehungsanalyseAstrologiePage() {
               Beziehungsanalyse mit Astrologie: worauf es ankommt
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Gute Beziehungsanalyse bedeutet nicht Schubladendenken, sondern Klarheit.
-              Du siehst, wo ihr euch stärkt, wo Trigger liegen und welche Hebel eure
-              Verbindung stabiler machen.
+              Wenn du deine Beziehung nur „irgendwie“ steuerst, kostet dich das Zeit,
+              Energie und Vertrauen. Eine gute Analyse macht sichtbar, wo ihr euch
+              gerade selbst im Weg steht - und welche Hebel wirklich Veränderung bringen.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Worauf es wirklich ankommt</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Der Unterschied zwischen Drehen im Kreis und Fortschritt</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Vollständige Daten statt nur Sternzeichen</li>
-          <li>• Aspektanalyse mit klarer Sprache</li>
-          <li>• Konkrete Umsetzung im Alltag (nicht nur Theorie)</li>
+          <li>• Du erkennst Muster, bevor sie wieder zum gleichen Streit führen.</li>
+          <li>• Du bekommst Klartext statt allgemeiner „passt schon“-Aussagen.</li>
+          <li>• Du weißt genau, was du als Nächstes praktisch ändern kannst.</li>
         </ul>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link

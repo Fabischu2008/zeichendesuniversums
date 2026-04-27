@@ -61,23 +61,24 @@ export default function Big3BedeutungPage() {
               Big 3 Bedeutung: Sonne, Mond, Aszendent verstehen
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Die Big 3 sind der schnellste Weg zu echter astrologischer Klarheit: Identität,
-              Emotionen und Auftreten auf einen Blick.
+              Wenn du deine Muster nicht kennst, wiederholst du sie. Die Big 3 geben dir
+              in wenigen Minuten Klarheit über Identität, Gefühle und Wirkung - die Basis
+              für bessere Entscheidungen im Alltag und in Beziehungen.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Kurz erklärt</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Warum du das jetzt kennen solltest</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Sonne: dein Kern, Richtung und Selbstbild</li>
-          <li>• Mond: Gefühle, Bedürfnisse und innere Sicherheit</li>
-          <li>• Aszendent: Wirkung nach außen und spontanes Verhalten</li>
+          <li>• Du verstehst, warum du in Drucksituationen immer ähnlich reagierst.</li>
+          <li>• Du erkennst schneller, was dir wirklich Stabilität und Fokus gibt.</li>
+          <li>• Du kannst Kommunikation und Auftreten gezielter steuern.</li>
         </ul>
         <div className="mt-6">
           <Link href="/tools/birth-chart" className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600">
-            Big 3 kostenlos berechnen
+            Big 3 jetzt kostenlos berechnen
           </Link>
         </div>
       </section>

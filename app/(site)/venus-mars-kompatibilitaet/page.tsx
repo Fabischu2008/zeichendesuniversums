@@ -61,19 +61,20 @@ export default function VenusMarsKompatibilitaetPage() {
               Venus und Mars in der Beziehung: Kompatibilität erklärt
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Venus zeigt, wie du Liebe gibst und empfängst. Mars zeigt, wie du willst,
-              handelst und Begehren ausdrückst. Zusammen ergibt das eure Beziehungsdynamik.
+              Viele Beziehungen scheitern nicht an Gefühlen, sondern an unklarer
+              Dynamik zwischen Nähe und Begehren. Venus und Mars zeigen dir genau,
+              warum Anziehung kippt - und wie ihr sie bewusst stabilisiert.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Praxisorientierte Deutung</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Warum diese Achse so entscheidend ist</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Venus: Sicherheit, Werte, Beziehungsstil</li>
-          <li>• Mars: Initiative, Konfliktstil, Sexualdynamik</li>
-          <li>• Kombination: Wo ihr euch ergänzt und wo klare Absprachen helfen</li>
+          <li>• Du erkennst, was euch emotional verbindet und was euch auseinanderzieht.</li>
+          <li>• Du verstehst eure Konflikt- und Sexualdynamik klarer und schneller.</li>
+          <li>• Du bekommst konkrete Hebel für mehr Nähe, Klarheit und Stabilität.</li>
         </ul>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/tools/compatibility" className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600">

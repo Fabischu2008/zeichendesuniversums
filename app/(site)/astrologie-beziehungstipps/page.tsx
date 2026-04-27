@@ -61,23 +61,24 @@ export default function AstrologieBeziehungstippsPage() {
               Astrologie Beziehungstipps: 7 alltagstaugliche Impulse
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-white/90 sm:text-base">
-              Astrologie hilft besonders dann, wenn sie in den Alltag übersetzt wird.
-              Diese sieben Tipps sind sofort anwendbar.
+              Beziehung verbessert sich nicht durch Wissen allein, sondern durch
+              Umsetzung. Diese 7 Impulse helfen dir, aus Mustern auszusteigen und
+              direkt anders zu handeln - heute, nicht irgendwann.
             </p>
           </div>
         </div>
       </section>
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">Die 7 Impulse</h2>
+        <h2 className="text-xl font-semibold tracking-tight">Was diese 7 Impulse für dich verändern</h2>
         <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>• Vor Konflikten Ziel und Gefühl getrennt benennen</li>
-          <li>• Trigger-Muster schriftlich festhalten statt sofort reagieren</li>
-          <li>• Wöchentlicher 15-Minuten-Beziehungs-Check-in</li>
-          <li>• Nähe und Freiraum bewusst austarieren</li>
-          <li>• Kritik als Bitte formulieren</li>
-          <li>• Wiederkehrende Muster monatlich reflektieren</li>
-          <li>• Bei festgefahrenen Themen externe Perspektive holen</li>
+          <li>• Du unterbrichst Streitspiralen früher und bewusster.</li>
+          <li>• Du kommunizierst klarer, ohne dich selbst zu verlieren.</li>
+          <li>• Du schaffst mehr Sicherheit und Verbindung im Alltag.</li>
+          <li>• Du bringst Struktur in Nähe, Freiraum und Konflikte.</li>
+          <li>• Du kommst aus dem „Wir reden immer wieder über dasselbe“ heraus.</li>
+          <li>• Du erkennst, wann ihr allein weiterkommt und wann Hilfe sinnvoll ist.</li>
+          <li>• Du setzt konkrete Schritte um statt nur weiter zu grübeln.</li>
         </ul>
         <div className="mt-6 flex flex-wrap gap-3">
           <Link href="/beziehung" className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600">
