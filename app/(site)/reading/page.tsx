@@ -16,7 +16,7 @@ const offers = [
   {
     productId: PRODUCT_ID_READING_PROFILE_30,
     title: "Astro-Reading",
-    price: "33€",
+    price: "33,33€",
     bullets: [
       "30 Minuten Reading mit Analyse deines Geburtsbilds/Horoskops",
       "Klarheit für Alltag, Entscheidungen und Beziehungen",

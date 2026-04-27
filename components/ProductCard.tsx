@@ -1,6 +1,7 @@
 import Link from "next/link";
 import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_COMPAT_PAARANALYSE,
   PRODUCT_ID_COACHING_EINFLUSS,
   type Product,
 } from "@/lib/cms";
@@ -16,12 +17,13 @@ function formatEUR(amount: number) {
 
 export function ProductCard({ product }: { product: Product }) {
   const isCoaching = product.id === PRODUCT_ID_COACHING_EINFLUSS;
+  const isCompatFull = product.id === PRODUCT_ID_COMPAT_PAARANALYSE;
   const targetHref =
     product.id === PRODUCT_ID_ASTRO_VOLLPROFIL
       ? "/tools/birth-chart"
       : isCoaching
         ? "/coaching"
-      : product.category === "compatibility"
+      : isCompatFull
         ? "/tools/compatibility"
         : `/shop/${product.slug}`;
 
