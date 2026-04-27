@@ -232,6 +232,69 @@ export default function ToolsPage() {
           vorbei.
         </p>
       </section>
+
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5 sm:p-8">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+              SEO-Ratgeber
+            </p>
+            <h2 className="mt-2 text-2xl font-semibold tracking-tight">
+              Grundlagen, bevor du startest
+            </h2>
+          </div>
+        </div>
+        <div className="mt-6 grid gap-3 sm:grid-cols-2">
+          <Link
+            href="/aszendent-berechnen"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Aszendent berechnen: Bedeutung + kostenloses Tool
+          </Link>
+          <Link
+            href="/mondzeichen-beziehung"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Mondzeichen Bedeutung in Beziehungen
+          </Link>
+          <Link
+            href="/synastrie-einfach-erklaert"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Synastrie einfach erklärt: So funktioniert Paaranalyse
+          </Link>
+          <Link
+            href="/beziehungsanalyse-astrologie"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Beziehungsanalyse mit Astrologie: worauf es ankommt
+          </Link>
+          <Link
+            href="/big-3-bedeutung"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Big 3 Bedeutung: Sonne, Mond, Aszendent verstehen
+          </Link>
+          <Link
+            href="/sternzeichen-kompatibilitaet"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Sternzeichen Kompatibilität: Was sie wirklich zeigt
+          </Link>
+          <Link
+            href="/venus-mars-kompatibilitaet"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Venus und Mars in der Beziehung: Kompatibilität erklärt
+          </Link>
+          <Link
+            href="/astrologie-beziehungstipps"
+            className="rounded-2xl border border-black/10 bg-white p-4 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+          >
+            Astrologie Beziehungstipps: 7 alltagstaugliche Impulse
+          </Link>
+        </div>
+      </section>
     </div>
   );
 }

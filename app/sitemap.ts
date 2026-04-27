@@ -30,6 +30,46 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
     { url: absoluteUrl("/shop"), lastModified: now, changeFrequency: "weekly" },
     { url: absoluteUrl("/blog"), lastModified: now, changeFrequency: "weekly" },
+    {
+      url: absoluteUrl("/aszendent-berechnen"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/mondzeichen-beziehung"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/synastrie-einfach-erklaert"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/beziehungsanalyse-astrologie"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/big-3-bedeutung"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/sternzeichen-kompatibilitaet"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/venus-mars-kompatibilitaet"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
+    {
+      url: absoluteUrl("/astrologie-beziehungstipps"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
     { url: absoluteUrl("/tools"), lastModified: now, changeFrequency: "monthly" },
     {
       url: absoluteUrl("/tools/compatibility"),
