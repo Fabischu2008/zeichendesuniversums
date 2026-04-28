@@ -4,18 +4,11 @@ import {
   getPaidProfileCheckoutSessionInfo,
 } from "@/lib/stripe-checkout-session";
 
-/** Reines lokales `next dev`: kein Vercel, kein Production-Build. */
-function isLocalDevWithoutVercel(): boolean {
-  return (
-    process.env.NODE_ENV !== "production" && !process.env.VERCEL?.trim()
-  );
-}
-
 /**
  * Ein Stripe-Request: Zahlungsstatus, Produkt, ggf. E-Mail für automatischen Versand.
  *
  * Mit `STRIPE_SECRET_KEY`: Token nur nach verifizierter, bezahlter Checkout-Session.
- * Ohne Key nur noch auf lokalem Dev (MVP ohne Stripe); auf Vercel/Production nie.
+ * Ohne Key: nie ausstellen (kein Bypass ohne Zahlungsnachweis).
  */
 export async function resolveProfileAccessForSuccess(
   isProfileProduct: boolean,
@@ -42,15 +35,6 @@ export async function resolveProfileAccessForSuccess(
       stripeCustomerEmail: info.customerEmail,
       birthPayload: info.birthPayload,
     };
-  }
-
-  if (!isLocalDevWithoutVercel()) {
-    return { mayIssue: false, stripeCustomerEmail: null, birthPayload: null };
-  }
-
-  // Lokales Dev ohne Stripe: Redirect aus createCheckoutSession ohne session_id + ggf. ?ap=
-  if (!sid) {
-    return { mayIssue: true, stripeCustomerEmail: null, birthPayload: null };
   }
 
   return { mayIssue: false, stripeCustomerEmail: null, birthPayload: null };
@@ -95,24 +79,6 @@ export async function resolveCompatibilityAccessForSuccess(
       stripeCustomerEmail: info.customerEmail,
       birthA: info.birthA,
       birthB: info.birthB,
-    };
-  }
-
-  if (!isLocalDevWithoutVercel()) {
-    return {
-      mayIssue: false,
-      stripeCustomerEmail: null,
-      birthA: null,
-      birthB: null,
-    };
-  }
-
-  if (!sid) {
-    return {
-      mayIssue: true,
-      stripeCustomerEmail: null,
-      birthA: null,
-      birthB: null,
     };
   }
 
