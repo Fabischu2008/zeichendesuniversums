@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { AstroRadixChart } from "@/components/AstroRadixChart";
-import { Big3PlacementCard } from "@/components/Big3PlacementCard";
+import { GeburtshoroskopLandingFunnel } from "@/components/GeburtshoroskopLandingFunnel";
 import { JsonLd } from "@/components/JsonLd";
 import {
   checkoutHrefForProduct,
   PRICE_ASTRO_VOLLPROFIL,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
 } from "@/lib/cms";
-import { computeProfileFromBirth } from "@/lib/astro/birth-to-profile";
-import type { ZodiacSign } from "@/lib/astro/signs";
 import { SITE_NAME } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
@@ -81,24 +78,6 @@ const productJsonLd = {
 };
 
 export default function GeburtshoroskopLandingPage() {
-  const demo = computeProfileFromBirth({
-    date: "1993-08-17",
-    time: "14:20",
-    location: {
-      name: "Kaiserslautern",
-      lat: 49.443,
-      lon: 7.768,
-      countryCode: "DE",
-    },
-  });
-
-  const demoBlurbs: Record<"sun" | "moon" | "ascendant", string> = {
-    sun: "Zeigt deinen bewussten Kern: Identität, Richtung und Lebensenergie.",
-    moon: "Zeigt deine emotionale Innenwelt: Bedürfnisse, Sicherheit und Bindung.",
-    ascendant:
-      "Zeigt, wie du auftrittst, startest und wie dich andere zuerst wahrnehmen.",
-  };
-
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <JsonLd id="jsonld-geburtshoroskop-faq" data={faqJsonLd} />
@@ -126,22 +105,21 @@ export default function GeburtshoroskopLandingPage() {
           <p className="mt-1 text-sm text-black/65 dark:text-white/65">
             Kein Abo. Sofort verfügbar.
           </p>
+          <p className="mt-1 text-xs text-black/55 dark:text-white/55">
+            In ca. 2 Minuten gestartet - persönlicher Link nach dem Kauf.
+          </p>
           <div className="mt-4 flex flex-wrap gap-3">
             <Link
-              href="/tools/birth-chart"
+              href="#daten-eingeben"
               className="inline-flex h-12 items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white transition hover:bg-violet-600"
             >
-              Jetzt Geburtsdaten eingeben
-            </Link>
-            <Link
-              href="/tools/birth-chart"
-              className="inline-flex h-12 items-center justify-center rounded-full border border-black/10 px-6 text-sm font-medium transition hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
-            >
-              Erst kostenlos Big 3 berechnen
+              Jetzt kostenlos Big 3 berechnen
             </Link>
           </div>
         </div>
       </section>
+
+      <GeburtshoroskopLandingFunnel />
 
       <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
         <h2 className="text-xl font-semibold tracking-tight">
@@ -157,6 +135,12 @@ export default function GeburtshoroskopLandingPage() {
           Genau hier setzt dein Geburtshoroskop an: Es macht deine inneren
           Muster sichtbar und übersetzt sie in verständliche Erkenntnisse.
         </p>
+        <Link
+          href="#daten-eingeben"
+          className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-5 text-sm font-medium transition hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
+        >
+          Zu Schritt 1: Daten eingeben
+        </Link>
       </section>
 
       <section className="grid gap-4 sm:grid-cols-2">
@@ -178,76 +162,6 @@ export default function GeburtshoroskopLandingPage() {
             <li>• Einmalzahlung statt Abo</li>
           </ul>
         </div>
-      </section>
-
-      <section className="rounded-3xl border border-black/5 bg-white/70 p-6 dark:border-white/10 dark:bg-white/5">
-        <h2 className="text-xl font-semibold tracking-tight">
-          Kleine Demo deines Vollreports
-        </h2>
-        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Beispielansicht mit Radix und Big 3-Teaser. Deine echte Auswertung wird
-          mit deinen persönlichen Geburtsdaten berechnet.
-        </p>
-
-        <div className="mt-5 rounded-2xl border border-black/10 bg-black/[0.02] p-4 dark:border-white/10 dark:bg-white/[0.03]">
-          <p className="text-xs uppercase tracking-[0.18em] text-black/55 dark:text-white/55">
-            Beispiel-Radix
-          </p>
-          <div className="mt-3 flex justify-center">
-            <AstroRadixChart chart={demo.profile.chart} />
-          </div>
-        </div>
-
-        <div className="mt-5 grid gap-3 sm:grid-cols-3">
-          <Big3PlacementCard
-            label="Sonne (Demo)"
-            sign={demo.big3.sun}
-            description={demoBlurbs.sun}
-          />
-          <Big3PlacementCard
-            label="Mond (Demo)"
-            sign={demo.big3.moon}
-            description={demoBlurbs.moon}
-          />
-          <Big3PlacementCard
-            label="Aszendent (Demo)"
-            sign={demo.big3.ascendant}
-            description={demoBlurbs.ascendant}
-          />
-        </div>
-
-        <p className="mt-4 text-xs text-black/55 dark:text-white/55">
-          Demo-Zeichen: {(demo.big3.sun as ZodiacSign)} · {(demo.big3.moon as ZodiacSign)} ·{" "}
-          {(demo.big3.ascendant as ZodiacSign)}
-        </p>
-      </section>
-
-      <section className="rounded-3xl border border-black/5 bg-black/[0.02] p-6 dark:border-white/10 dark:bg-white/[0.03]">
-        <h2 className="text-xl font-semibold tracking-tight">So funktioniert es</h2>
-        <ol className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-          <li>1. Du gibst Geburtsdatum, Uhrzeit und Ort ein.</li>
-          <li>2. Dein persönliches Horoskop wird berechnet.</li>
-          <li>3. Du erhältst eine klare, verständliche Auswertung.</li>
-        </ol>
-        <p className="mt-4 text-sm text-black/70 dark:text-white/70">
-          Keine komplizierte Fachsprache - nur echte Erkenntnisse über dich.
-        </p>
-      </section>
-
-      <section className="rounded-3xl border border-violet-500/25 bg-violet-500/10 p-6 text-center dark:border-violet-400/25 dark:bg-violet-500/15">
-        <h2 className="text-2xl font-semibold tracking-tight">
-          Starte jetzt mit deinem persönlichen Geburtshoroskop
-        </h2>
-        <p className="mt-3 text-sm text-black/75 dark:text-white/75">
-          Weniger als ein Abendessen - aber Erkenntnisse, die dein Leben
-          langfristig verändern können.
-        </p>
-        <Link
-          href="/tools/birth-chart"
-          className="mt-5 inline-flex h-12 items-center justify-center rounded-full bg-violet-700 px-8 text-sm font-semibold text-white transition hover:bg-violet-600"
-        >
-          Jetzt starten und Daten eingeben
-        </Link>
       </section>
     </div>
   );

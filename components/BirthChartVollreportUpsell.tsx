@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
 import { PRICE_ASTRO_VOLLPROFIL, PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
@@ -186,12 +185,6 @@ export function BirthChartVollreportUpsell({
           >
             {checkoutLoading ? "Weiter zu Stripe…" : "Jetzt zahlen – Profil & Link erhalten"}
           </button>
-          <Link
-            href="/freebie"
-            className="inline-flex h-12 items-center justify-center rounded-full border border-black/12 bg-white/80 px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Kostenlosen Guide holen
-          </Link>
         </div>
         {checkoutError ? (
           <p className="mt-2 text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
