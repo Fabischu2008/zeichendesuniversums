@@ -7,7 +7,8 @@ export const metadata: Metadata = {
     "Unverbindliches Erstgespräch: direkt Termin buchen oder Anfrage per Mail senden.",
 };
 
-const COACHING_CALENDLY_URL = "https://calendly.com/zeichendesuniversums-info/30min";
+const COACHING_CALENDLY_URL =
+  "https://calendly.com/zeichendesuniversums-info/60min-astroreading-tarot";
 const COACHING_MAILTO_URL = `mailto:zeichendesuniversums.info@gmail.com?subject=${encodeURIComponent("Anfrage Coaching Erstgespräch")}&body=${encodeURIComponent(
   [
     "Hi,",

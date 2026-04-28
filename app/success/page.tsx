@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { AccessBrandHeader } from "@/components/AccessBrandHeader";
 import { AsyncCheckoutPaymentPoller } from "@/components/AsyncCheckoutPaymentPoller";
 import { CompatibilityAccessLinksCard } from "@/components/CompatibilityAccessLinksCard";
@@ -45,6 +46,31 @@ export const metadata: Metadata = {
   },
 };
 
+function AdsPurchaseConversionScript({
+  sendTo,
+  value,
+  transactionId,
+}: {
+  sendTo: string;
+  value: number;
+  transactionId: string;
+}) {
+  return (
+    <Script id={`zd-ads-purchase-${transactionId}`} strategy="afterInteractive">
+      {`
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('event', 'conversion', {
+  send_to: '${sendTo}',
+  value: ${value.toFixed(2)},
+  currency: 'EUR',
+  transaction_id: '${transactionId}'
+});
+`}
+    </Script>
+  );
+}
+
 function sanitizeStripeCustomerEmail(email?: string | null): string | null {
   if (!email) return null;
   const normalized = email.trim().toLowerCase();
@@ -89,20 +115,21 @@ export default async function SuccessPage({
     productId === PRODUCT_ID_READING_TAROT_60 ||
     productId === PRODUCT_ID_READING_RELATIONSHIP;
   const isCoachingProduct = productId === PRODUCT_ID_COACHING_EINFLUSS;
-  const coachingCalendlyUrl =
-    process.env.NEXT_PUBLIC_CALENDLY_COACHING_URL?.trim() ||
-    "https://calendly.com/zeichendesuniversums-info/30min";
-  const readingCalendlyUrl =
-    productId === PRODUCT_ID_READING_TAROT_60
-      ? process.env.NEXT_PUBLIC_CALENDLY_READING_60_URL?.trim() ||
-        "https://calendly.com/zeichendesuniversums-info/60min-astroreading-tarot"
-      : productId === PRODUCT_ID_READING_RELATIONSHIP
-        ? process.env.NEXT_PUBLIC_CALENDLY_READING_RELATIONSHIP_URL?.trim() ||
-          process.env.NEXT_PUBLIC_CALENDLY_READING_URL?.trim() ||
-          "https://calendly.com/zeichendesuniversums-info/30min-astroreading"
-        : process.env.NEXT_PUBLIC_CALENDLY_READING_URL?.trim() ||
-          "https://calendly.com/zeichendesuniversums-info/30min-astroreading";
+  const unifiedCalendlyUrl =
+    "https://calendly.com/zeichendesuniversums-info/60min-astroreading-tarot";
+  const coachingCalendlyUrl = unifiedCalendlyUrl;
+  const readingCalendlyUrl = unifiedCalendlyUrl;
   const product = getProducts().find((p) => p.id === productId);
+  const adsSendToRaw =
+    process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO?.trim() ||
+    "AW-18124642236/BB9ICIqX7aMcELyvwMJD";
+  const adsSendTo = /^AW-\d+\/[A-Za-z0-9_-]+$/i.test(adsSendToRaw)
+    ? adsSendToRaw
+    : null;
+  const conversionValue = typeof product?.price === "number" ? product.price : null;
+  const canTrackAdsPurchase = Boolean(
+    adsSendTo && conversionValue !== null && sessionId,
+  );
 
   const { mayIssue, stripeCustomerEmail, birthPayload } =
     await resolveProfileAccessForSuccess(isProfileProduct, sessionId);
@@ -186,6 +213,13 @@ export default async function SuccessPage({
               defaultEmail={safeStripeCustomerEmail}
               queryEmailNotice={queryEmailNotice}
             />
+            {canTrackAdsPurchase ? (
+              <AdsPurchaseConversionScript
+                sendTo={adsSendTo!}
+                value={conversionValue!}
+                transactionId={sessionId!}
+              />
+            ) : null}
           </div>
         </main>
       </>
@@ -227,6 +261,13 @@ export default async function SuccessPage({
                   : "E-Mail konnte nicht gesendet werden – bitte Links manuell kopieren."}
               </p>
             ) : null}
+            {canTrackAdsPurchase ? (
+              <AdsPurchaseConversionScript
+                sendTo={adsSendTo!}
+                value={conversionValue!}
+                transactionId={sessionId!}
+              />
+            ) : null}
           </div>
         </main>
       </>
@@ -260,6 +301,13 @@ export default async function SuccessPage({
               >
                 Termin in Calendly buchen
               </a>
+              {canTrackAdsPurchase ? (
+                <AdsPurchaseConversionScript
+                  sendTo={adsSendTo!}
+                  value={conversionValue!}
+                  transactionId={sessionId!}
+                />
+              ) : null}
             </section>
           </div>
         </main>
@@ -304,6 +352,13 @@ export default async function SuccessPage({
                   Optional per E-Mail senden
                 </a>
               </div>
+              {canTrackAdsPurchase ? (
+                <AdsPurchaseConversionScript
+                  sendTo={adsSendTo!}
+                  value={conversionValue!}
+                  transactionId={sessionId!}
+                />
+              ) : null}
             </section>
           </div>
         </main>
@@ -418,6 +473,13 @@ export default async function SuccessPage({
           >
             Download
           </a>
+          {canTrackAdsPurchase ? (
+            <AdsPurchaseConversionScript
+              sendTo={adsSendTo!}
+              value={conversionValue!}
+              transactionId={sessionId!}
+            />
+          ) : null}
         </div>
       </main>
     </>
