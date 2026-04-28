@@ -347,7 +347,7 @@ export default function TestHomePage() {
               Zu allen Profilen
             </Link>
             <Link
-              href="https://calendly.com/zeichendesuniversums-info/60min-astroreading-tarot"
+              href="https://calendly.com/zeichendesuniversums-info/meeting"
               target="_blank"
               rel="noreferrer"
               className="inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"

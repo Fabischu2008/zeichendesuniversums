@@ -116,7 +116,7 @@ export default async function SuccessPage({
     productId === PRODUCT_ID_READING_RELATIONSHIP;
   const isCoachingProduct = productId === PRODUCT_ID_COACHING_EINFLUSS;
   const unifiedCalendlyUrl =
-    "https://calendly.com/zeichendesuniversums-info/60min-astroreading-tarot";
+    "https://calendly.com/zeichendesuniversums-info/meeting";
   const coachingCalendlyUrl = unifiedCalendlyUrl;
   const readingCalendlyUrl = unifiedCalendlyUrl;
   const product = getProducts().find((p) => p.id === productId);
