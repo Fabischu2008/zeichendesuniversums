@@ -12,6 +12,20 @@ npm run dev
 ## Wichtige ENV
 
 - `NEXT_PUBLIC_SITE_URL` (für SEO: Canonicals/Sitemap)
+- `NEXT_PUBLIC_GA_MEASUREMENT_ID` (optional, GA4 `G-...`)
+- `NEXT_PUBLIC_GOOGLE_ADS_ID` (optional, Google Ads `AW-...`)
+- `NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO` (für Kauf-Conversion auf `/success`)
+
+## Google Ads Tag/Conversion
+
+- Globales Google Tag wird in `components/SiteAnalytics.tsx` geladen.
+- Kauf-Conversion wird serverseitig auf `app/success/page.tsx` ausgelöst, wenn
+  `session_id` vorhanden ist und `NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO` gesetzt ist.
+- Gesendete Parameter:
+  - `send_to`: aus `NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO`
+  - `value`: Produktpreis
+  - `currency`: `EUR`
+  - `transaction_id`: Stripe `session_id`
 
 ## Routen (Auszug)
 

@@ -121,8 +121,7 @@ export default async function SuccessPage({
   const readingCalendlyUrl = unifiedCalendlyUrl;
   const product = getProducts().find((p) => p.id === productId);
   const adsSendToRaw =
-    process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO?.trim() ||
-    "AW-18124642236/BB9ICIqX7aMcELyvwMJD";
+    process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO?.trim() || "";
   const adsSendTo = /^AW-\d+\/[A-Za-z0-9_-]+$/i.test(adsSendToRaw)
     ? adsSendToRaw
     : null;
