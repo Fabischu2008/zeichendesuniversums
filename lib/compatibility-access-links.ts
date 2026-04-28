@@ -18,8 +18,8 @@ export function buildCompatibilityAccessLinks(
   profileLinkA: string;
   profileLinkB: string;
 } | null {
-  const tokenA = createProfileAccessToken(365, birthA);
-  const tokenB = createProfileAccessToken(365, birthB);
+  const tokenA = createProfileAccessToken(null, birthA);
+  const tokenB = createProfileAccessToken(null, birthB);
   const pairToken = createCompatibilityAccessToken(birthA, birthB);
   if (!tokenA || !tokenB || !pairToken) return null;
 

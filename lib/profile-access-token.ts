@@ -108,13 +108,20 @@ export function decodeProfileAccessToken(token: string): DecodedProfileAccessTok
       b?: unknown;
     };
     if (parsed.scope !== SCOPE) return { ok: false };
-    if (typeof parsed.exp !== "number") return { ok: false };
-    if (parsed.exp * 1000 < Date.now()) return { ok: false };
 
     if (parsed.v === 1) {
+      if (typeof parsed.exp === "number" && parsed.exp * 1000 < Date.now()) {
+        return { ok: false };
+      }
       return { ok: true, birth: null };
     }
     if (parsed.v === 2) {
+      if (typeof parsed.exp !== "number") return { ok: false };
+      if (parsed.exp * 1000 < Date.now()) return { ok: false };
+      if (!isValidBirthPayload(parsed.b)) return { ok: false };
+      return { ok: true, birth: parsed.b };
+    }
+    if (parsed.v === 3) {
       if (!isValidBirthPayload(parsed.b)) return { ok: false };
       return { ok: true, birth: parsed.b };
     }
@@ -129,17 +136,25 @@ export function decodeProfileAccessToken(token: string): DecodedProfileAccessTok
  * Optional v2 mit Geburtsdaten (für Link auf neuem Gerät).
  */
 export function createProfileAccessToken(
-  expiresInDays = 365,
+  expiresInDays?: number | null,
   birth?: ProfileTokenBirthPayload | null,
 ): string | null {
   const secret = getSecret();
   if (!secret) {
     return null;
   }
-  const exp = Math.floor(Date.now() / 1000) + expiresInDays * 86400;
+  const hasExpiry =
+    typeof expiresInDays === "number" && Number.isFinite(expiresInDays) && expiresInDays > 0;
+  const exp = hasExpiry
+    ? Math.floor(Date.now() / 1000) + expiresInDays * 86400
+    : null;
   const payloadObj = birth
-    ? ({ v: 2 as const, scope: SCOPE, exp, b: birth } as const)
-    : ({ v: 1 as const, scope: SCOPE, exp } as const);
+    ? hasExpiry
+      ? ({ v: 2 as const, scope: SCOPE, exp, b: birth } as const)
+      : ({ v: 3 as const, scope: SCOPE, b: birth } as const)
+    : hasExpiry
+      ? ({ v: 1 as const, scope: SCOPE, exp } as const)
+      : ({ v: 1 as const, scope: SCOPE } as const);
   const payload = JSON.stringify(payloadObj);
   const sig = createHmac("sha256", secret).update(payload).digest("base64url");
   const payloadB64 = Buffer.from(payload, "utf8").toString("base64url");

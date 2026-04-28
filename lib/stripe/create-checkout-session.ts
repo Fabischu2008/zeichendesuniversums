@@ -279,6 +279,7 @@ export async function createCheckoutSessionForProduct(
       mode: "payment",
       // Keep checkout behavior consistent across all products.
       payment_method_types: ["card", "klarna"],
+      allow_promotion_codes: true,
       line_items: [
         {
           quantity: 1,

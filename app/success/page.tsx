@@ -113,7 +113,7 @@ export default async function SuccessPage({
   const birthForToken = birthPayload ?? birthFromNoStripe ?? undefined;
 
   const token = mayIssue
-    ? createProfileAccessToken(365, birthForToken)
+    ? createProfileAccessToken(null, birthForToken)
     : null;
   const profileAccessUrl =
     token !== null ? buildProfileAccessWithUnlockUrl(getSiteUrl(), token) : null;

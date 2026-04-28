@@ -54,12 +54,20 @@ function isBirthPayload(x: unknown): x is ProfileTokenBirthPayload {
 export function createCompatibilityAccessToken(
   a: ProfileTokenBirthPayload,
   b: ProfileTokenBirthPayload,
-  expiresInDays = 365,
+  expiresInDays?: number | null,
 ): string | null {
   const secret = getSecret();
   if (!secret) return null;
-  const exp = Math.floor(Date.now() / 1000) + expiresInDays * 86400;
-  const payload = JSON.stringify({ v: 1 as const, scope: SCOPE, exp, a, b });
+  const hasExpiry =
+    typeof expiresInDays === "number" && Number.isFinite(expiresInDays) && expiresInDays > 0;
+  const exp = hasExpiry
+    ? Math.floor(Date.now() / 1000) + expiresInDays * 86400
+    : null;
+  const payload = JSON.stringify(
+    hasExpiry
+      ? ({ v: 1 as const, scope: SCOPE, exp, a, b } as const)
+      : ({ v: 2 as const, scope: SCOPE, a, b } as const),
+  );
   const sig = createHmac("sha256", secret).update(payload).digest("base64url");
   const payloadB64 = Buffer.from(payload, "utf8").toString("base64url");
   return `${payloadB64}.${sig}`;
@@ -98,10 +106,11 @@ export function decodeCompatibilityAccessToken(token: string): {
       a?: unknown;
       b?: unknown;
     };
-    if (parsed.v !== 1 || parsed.scope !== SCOPE) return { ok: false };
-    if (typeof parsed.exp !== "number" || parsed.exp * 1000 < Date.now()) {
+    if (parsed.scope !== SCOPE) return { ok: false };
+    if (parsed.v === 1 && (typeof parsed.exp !== "number" || parsed.exp * 1000 < Date.now())) {
       return { ok: false };
     }
+    if (parsed.v !== 1 && parsed.v !== 2) return { ok: false };
     if (!isBirthPayload(parsed.a) || !isBirthPayload(parsed.b)) {
       return { ok: false };
     }

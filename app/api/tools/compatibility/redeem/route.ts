@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   const decoded = decodeCompatibilityAccessToken(token);
   if (!decoded.ok || !decoded.a || !decoded.b) {
     return NextResponse.json(
-      { message: "Ungültiger oder abgelaufener Paaranalyse-Link." },
+      { message: "Ungültiger Paaranalyse-Link." },
       { status: 400 },
     );
   }
@@ -63,8 +63,8 @@ export async function POST(req: Request) {
     synastry,
   });
 
-  const tokenA = createProfileAccessToken(365, a);
-  const tokenB = createProfileAccessToken(365, b);
+  const tokenA = createProfileAccessToken(null, a);
+  const tokenB = createProfileAccessToken(null, b);
   const site = getSiteUrl();
 
   return NextResponse.json({

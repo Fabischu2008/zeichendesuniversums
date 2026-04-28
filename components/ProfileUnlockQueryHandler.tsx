@@ -51,7 +51,7 @@ export function ProfileUnlockQueryHandler() {
           birth?: ProfileTokenBirthPayload | null;
         };
         if (!res.ok || !data.ok) {
-          setError(data.message || "Link ungültig oder abgelaufen.");
+          setError(data.message || "Link ungültig.");
           try {
             window.dispatchEvent(
               new CustomEvent(VOLLREPORT_UNLOCK_STORAGE_EVENT, {

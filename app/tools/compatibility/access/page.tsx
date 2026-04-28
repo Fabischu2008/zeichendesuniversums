@@ -36,8 +36,8 @@ export default async function CompatibilityAccessPage({
               Zugangsseite nicht verfügbar
             </p>
             <p className="mt-2">
-              Der Paaranalyse-Link ist ungültig oder abgelaufen. Bitte erstelle einen
-              neuen Link aus deiner exakten Paaranalyse.
+              Der Paaranalyse-Link ist ungültig. Bitte erstelle einen neuen Link
+              aus deiner exakten Paaranalyse.
             </p>
           </div>
         </main>
@@ -45,8 +45,8 @@ export default async function CompatibilityAccessPage({
     );
   }
 
-  const tokenA = createProfileAccessToken(365, decoded.a);
-  const tokenB = createProfileAccessToken(365, decoded.b);
+  const tokenA = createProfileAccessToken(null, decoded.a);
+  const tokenB = createProfileAccessToken(null, decoded.b);
   const site = getSiteUrl();
   if (!tokenA || !tokenB) {
     return (

@@ -10,7 +10,7 @@ export async function POST(req: Request) {
   const decoded = decodeProfileAccessToken(token);
   if (!token || !decoded.ok) {
     return NextResponse.json(
-      { ok: false, message: "Ungültiger oder abgelaufener Link." },
+      { ok: false, message: "Ungültiger Link." },
       { status: 400 },
     );
   }
