@@ -162,7 +162,7 @@ export function GeburtshoroskopLandingFunnel() {
     <>
       <section
         id="daten-eingeben"
-        className="overflow-hidden rounded-3xl border border-black/5 bg-white/70 p-6 dark:border-white/10 dark:bg-white/5"
+        className="overflow-hidden scroll-mt-24 rounded-3xl border border-black/5 bg-white/70 p-6 ring-1 ring-violet-500/0 transition focus-within:ring-violet-500/40 dark:border-white/10 dark:bg-white/5"
       >
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
           Schritt 01
@@ -179,6 +179,7 @@ export function GeburtshoroskopLandingFunnel() {
           <label className="min-w-0 space-y-2">
             <span className="text-sm font-medium">Geburtsdatum</span>
             <input
+              id="landing-birthdate-input"
               value={birthdate}
               onChange={(e) => setBirthdate(e.target.value)}
               type="date"
@@ -295,17 +296,14 @@ export function GeburtshoroskopLandingFunnel() {
               </div>
             </div>
 
-            <BirthChartVollreportUpsell
-              birthdate={birthdate}
-              birthtime={birthtime}
-              place={place}
-              big3={big3}
-            />
-
-            <details className="rounded-2xl border border-black/8 bg-black/[0.02] p-4 dark:border-white/12 dark:bg-white/[0.03]">
-              <summary className="cursor-pointer text-sm font-medium">
-                Vorschau deines Vollreports ansehen (optional)
-              </summary>
+            <div className="rounded-2xl border border-black/8 bg-black/[0.02] p-4 dark:border-white/12 dark:bg-white/[0.03]">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+                So sieht dein Vollprofil aus
+              </p>
+              <p className="mt-1 text-sm text-black/65 dark:text-white/65">
+                Das hier ist der echte Aufbau deines Reports — nur die
+                Deutungstexte sind in der Vorschau noch verkürzt.
+              </p>
               <div className="mt-3 rounded-xl border border-black/8 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
                 <BirthChartReportDemo
                   sun={big3.sun as ZodiacSign}
@@ -324,7 +322,14 @@ export function GeburtshoroskopLandingFunnel() {
                   Vollreport jetzt freischalten
                 </a>
               </div>
-            </details>
+            </div>
+
+            <BirthChartVollreportUpsell
+              birthdate={birthdate}
+              birthtime={birthtime}
+              place={place}
+              big3={big3}
+            />
           </div>
         ) : (
           <p className="mt-3 text-sm text-black/65 dark:text-white/65">

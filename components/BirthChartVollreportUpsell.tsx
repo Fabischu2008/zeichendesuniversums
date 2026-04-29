@@ -111,6 +111,13 @@ export function BirthChartVollreportUpsell({
     "Passt zu deinen Big 3 – vertieft mit echtem Chart",
   ];
 
+  const trustBullets = [
+    { icon: "🔒", label: "SSL-verschlüsselt", sub: "Stripe-Checkout" },
+    { icon: "↺", label: "14 Tage Widerruf", sub: "Geld zurück" },
+    { icon: "⚡", label: "Sofort verfügbar", sub: "Direkt nach Zahlung" },
+    { icon: "✓", label: "Kein Abo", sub: "Einmalige Zahlung" },
+  ];
+
   return (
     <section
       id="vollreport-freischalten"
@@ -185,17 +192,32 @@ export function BirthChartVollreportUpsell({
             disabled={checkoutLoading}
             className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-emerald-600 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-60 dark:bg-emerald-500 dark:hover:bg-emerald-400"
           >
-            {checkoutLoading ? "Weiter zu Stripe…" : "Jetzt zahlen – Profil & Link erhalten"}
+            {checkoutLoading ? "Weiter zu Stripe…" : "Jetzt sicher mit Stripe zahlen"}
           </button>
         </div>
         {checkoutError ? (
           <p className="mt-2 text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
         ) : null}
-        <p className="mt-4 text-xs text-black/50 dark:text-white/50">
-          Deine Geburtsdaten werden für die Berechnung mit der Zahlung sicher an
-          Stripe übergeben und stecken im persönlichen Profil-Link – damit die
-          Auswertung auch auf dem Handy oder im Privatmodus ohne erneute Eingabe
-          funktioniert. Zusätzlich bleiben Daten in diesem Browser gespeichert.
+
+        <div className="mt-4 grid gap-2 rounded-2xl border border-black/8 bg-white/70 p-3 text-xs sm:grid-cols-4 dark:border-white/10 dark:bg-black/20">
+          {trustBullets.map((item) => (
+            <div key={item.label} className="flex items-center gap-2">
+              <span aria-hidden className="text-base">{item.icon}</span>
+              <div>
+                <p className="font-semibold leading-tight">{item.label}</p>
+                <p className="text-black/55 leading-tight dark:text-white/55">{item.sub}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <p className="mt-4 text-xs leading-relaxed text-black/55 dark:text-white/55">
+          <strong className="font-medium">Sicher zahlen:</strong> Wir nutzen
+          Stripe für die Zahlungs­abwicklung — deine Karten- oder
+          Kontodaten sehen wir nie. Deine Geburtsdaten werden ausschließlich
+          für die Berechnung deines Profils verwendet und stecken
+          verschlüsselt in deinem persönlichen Zugangslink, damit du dein
+          Profil auch auf jedem anderen Gerät wieder öffnen kannst.
         </p>
       </div>
     </section>
