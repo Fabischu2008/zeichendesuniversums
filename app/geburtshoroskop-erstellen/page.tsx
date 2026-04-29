@@ -164,8 +164,8 @@ export default function GeburtshoroskopLandingPage() {
         <div className="flex items-center gap-2">
           <span aria-hidden className="text-base">↺</span>
           <div>
-            <p className="font-semibold">14 Tage Widerruf</p>
-            <p className="text-black/55 dark:text-white/55">Geld zurück, ohne Wenn</p>
+            <p className="font-semibold">Rechtlich abgesichert</p>
+            <p className="text-black/55 dark:text-white/55">Details in Widerruf/AGB</p>
           </div>
         </div>
         <div className="flex items-center gap-2">
@@ -329,23 +329,18 @@ export default function GeburtshoroskopLandingPage() {
           </div>
           <div>
             <h2 className="text-xl font-semibold tracking-tight">
-              14 Tage Geld-zurück-Garantie
+              Klar & transparent
             </h2>
             <p className="mt-2 text-sm leading-relaxed text-black/75 dark:text-white/75">
-              Wenn dein Vollprofil dir nichts bringt, schreibst du uns innerhalb
-              von 14 Tagen eine kurze E-Mail an{" "}
-              <a
-                href={`mailto:${LEGAL_PROVIDER.email}`}
-                className="font-medium underline-offset-2 hover:underline"
-              >
-                {LEGAL_PROVIDER.email}
-              </a>
-              {" "}— wir erstatten dir die {priceLabel} € vollständig zurück. Ohne
-              Diskussion, ohne Begründung.
+              Kein Abo, keine versteckten Kosten. Du zahlst einmalig {priceLabel} € und
+              erhältst direkt danach deinen persönlichen Zugangslink.
             </p>
             <p className="mt-2 text-xs text-black/55 dark:text-white/55">
-              Gilt zusätzlich zu deinem gesetzlichen Widerrufsrecht. Details in
-              der{" "}
+              Rechtliche Details findest du in{" "}
+              <Link href="/agb" className="underline-offset-2 hover:underline">
+                AGB
+              </Link>{" "}
+              und{" "}
               <Link href="/widerruf" className="underline-offset-2 hover:underline">
                 Widerrufsbelehrung
               </Link>
@@ -379,7 +374,7 @@ export default function GeburtshoroskopLandingPage() {
             },
             {
               q: "Kann ich den Kauf stornieren, wenn ich unzufrieden bin?",
-              a: "Ja. Du hast 14 Tage gesetzliches Widerrufsrecht — ohne Angabe von Gründen. Eine kurze E-Mail genügt und wir erstatten den Betrag.",
+              a: "Für Verbraucher gelten die gesetzlichen Rechte. Details und Voraussetzungen findest du in der Widerrufsbelehrung.",
             },
             {
               q: "Was, wenn ich meine Geburtszeit nicht kenne?",
