@@ -23,7 +23,7 @@ const priceLabel = new Intl.NumberFormat("de-DE", {
 export const metadata: Metadata = {
   title: "Aszendent & Big 3 kostenlos berechnen – persönliches Geburtshoroskop",
   description:
-    "Sonne, Mond und Aszendent in 2 Minuten kostenlos berechnen. Optional: persönliches Geburtshoroskop für 11,11 € – sofort verfügbar, 14 Tage Widerrufsrecht.",
+    "Sonne, Mond und Aszendent in 2 Minuten kostenlos berechnen. Optional: persönliches Geburtshoroskop für 11,11 € – sofort verfügbar.",
   alternates: { canonical: path },
   openGraph: {
     title: `Aszendent & Big 3 kostenlos berechnen · ${SITE_NAME}`,
@@ -74,7 +74,7 @@ const faqJsonLd = {
       name: "Kann ich den Kauf stornieren, wenn ich unzufrieden bin?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Ja. Du hast 14 Tage gesetzliches Widerrufsrecht – ohne Angabe von Gründen. Eine kurze E-Mail genügt und wir erstatten den Betrag.",
+        text: "Für Verbraucher gelten die gesetzlichen Rechte. Details und Voraussetzungen findest du in der Widerrufsbelehrung.",
       },
     },
     {
@@ -148,7 +148,7 @@ export default function GeburtshoroskopLandingPage() {
           </li>
           <li className="flex items-start gap-2">
             <span aria-hidden className="mt-[2px] text-emerald-600 dark:text-emerald-400">✓</span>
-            14 Tage Widerrufsrecht
+            Transparente rechtliche Hinweise
           </li>
         </ul>
       </section>

@@ -1,6 +1,5 @@
 import type { ReactNode } from "react";
 import { AccessBrandHeader } from "@/components/AccessBrandHeader";
-import { LandingNoExitFooter } from "@/components/LandingNoExitFooter";
 
 export default function GeburtshoroskopErstellenLayout({
   children,
@@ -13,7 +12,6 @@ export default function GeburtshoroskopErstellenLayout({
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6 sm:py-10 lg:px-8 lg:py-12">
         {children}
       </main>
-      <LandingNoExitFooter />
     </div>
   );
 }
