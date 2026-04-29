@@ -83,12 +83,20 @@ export default function GeburtshoroskopLandingPage() {
       <JsonLd id="jsonld-geburtshoroskop-faq" data={faqJsonLd} />
       <JsonLd id="jsonld-geburtshoroskop-product" data={productJsonLd} />
 
-      <section className="rounded-3xl border border-black/10 bg-gradient-to-b from-violet-500/10 via-white to-white p-6 sm:p-8 dark:from-violet-400/15 dark:via-black dark:to-black">
+      <section className="relative isolate overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-violet-500/10 via-white to-white p-6 sm:p-8 dark:from-violet-400/15 dark:via-black dark:to-black">
+        <div
+          aria-hidden
+          className="pointer-events-none absolute left-1/2 top-[-55px] h-[360px] w-[360px] -translate-x-1/2 rounded-full border border-violet-200/15 dark:border-violet-300/10 animate-[spin_90s_linear_infinite]"
+        />
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
           Persönliches Geburtshoroskop
         </p>
         <h1 className="mt-3 text-3xl font-semibold tracking-tight sm:text-4xl">
-          Warum dein Leben genau so verläuft, wie es verläuft
+          Warum dein Leben{" "}
+          <em className="italic text-violet-700 dark:text-violet-300">
+            genau so
+          </em>{" "}
+          verläuft, wie es verläuft
         </h1>
         <p className="mt-4 text-base leading-relaxed text-black/75 dark:text-white/75">
           Finde heraus, was wirklich in dir steckt. Dein persönliches
@@ -139,30 +147,49 @@ export default function GeburtshoroskopLandingPage() {
           href="#daten-eingeben"
           className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-5 text-sm font-medium transition hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
         >
-          Zu Schritt 1: Daten eingeben
+          Jetzt kostenlos Big 3 berechnen
         </Link>
       </section>
 
-      <section className="grid gap-4 sm:grid-cols-2">
-        <div className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5">
-          <h2 className="text-lg font-semibold tracking-tight">Was du erfährst</h2>
-          <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-            <li>• Warum du so bist, wie du bist</li>
-            <li>• Was dich wirklich antreibt</li>
-            <li>• Wo deine größten Potenziale liegen</li>
-            <li>• Welche Muster dich unbewusst steuern</li>
-          </ul>
-        </div>
-        <div className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5">
-          <h2 className="text-lg font-semibold tracking-tight">Was du bekommst</h2>
-          <ul className="mt-4 space-y-2 text-sm text-black/75 dark:text-white/75">
-            <li>• Persönliche astrologische Analyse</li>
-            <li>• Verständlich und auf dich zugeschnitten</li>
-            <li>• Sofortiger Zugang nach dem Kauf</li>
-            <li>• Einmalzahlung statt Abo</li>
-          </ul>
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">Was du bekommst</h2>
+        <p className="mt-2 text-sm text-black/70 dark:text-white/70">
+          Klar erklärt, direkt auf dich zugeschnitten — damit du Erkenntnisse nicht nur
+          liest, sondern sofort verstehst.
+        </p>
+
+        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+          <div className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+            <p className="text-2xl">✦</p>
+            <p className="mt-2 font-semibold">Sonne, Mond &amp; Aszendent</p>
+            <p className="mt-1 text-sm text-black/65 dark:text-white/65">
+              Der Kern deiner Persönlichkeit — basierend auf deinem exakten Geburtsmoment.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+            <p className="text-2xl">◎</p>
+            <p className="mt-2 font-semibold">Lebensmuster &amp; Potenziale</p>
+            <p className="mt-1 text-sm text-black/65 dark:text-white/65">
+              Was sich wiederholt — und wie du es bewusst für dich nutzt.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+            <p className="text-2xl">☉</p>
+            <p className="mt-2 font-semibold">Konkrete Erkenntnisse</p>
+            <p className="mt-1 text-sm text-black/65 dark:text-white/65">
+              Verständlich geschrieben — damit du sofort einen Bezug zu deinem Leben hast.
+            </p>
+          </div>
+          <div className="rounded-2xl border border-black/5 bg-white p-5 dark:border-white/10 dark:bg-white/5">
+            <p className="text-2xl">→</p>
+            <p className="mt-2 font-semibold">Dein persönlicher Zugangslink</p>
+            <p className="mt-1 text-sm text-black/65 dark:text-white/65">
+              Nach dem Kauf jederzeit wieder öffnen und speichern — dauerhaft.
+            </p>
+          </div>
         </div>
       </section>
     </div>
   );
 }
+

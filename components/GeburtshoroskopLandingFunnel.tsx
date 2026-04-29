@@ -161,12 +161,15 @@ export function GeburtshoroskopLandingFunnel() {
   return (
     <>
       <section id="daten-eingeben" className="rounded-3xl border border-black/5 bg-white/70 p-6 dark:border-white/10 dark:bg-white/5">
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
+          Schritt 01
+        </p>
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Schritt 1 - Gib deine Geburtsdaten ein
+          Gib deine Geburtsdaten ein
         </h2>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Direkt hier im Funnel: Daten eingeben, Big 3 sehen und danach den
-          Vollreport freischalten.
+          Datum, Uhrzeit &amp; Ort eingeben — dann siehst du sofort deine Big 3
+          und kannst den Vollreport freischalten.
         </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -251,8 +254,11 @@ export function GeburtshoroskopLandingFunnel() {
         ref={resultRef}
         className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5"
       >
+        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
+          Schritt 02
+        </p>
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Schritt 2 - Ergebnis und Vorschau
+          Ergebnis &amp; Vorschau
         </h2>
         {calcError ? (
           <p className="mt-2 text-sm text-red-600 dark:text-red-400">{calcError}</p>
