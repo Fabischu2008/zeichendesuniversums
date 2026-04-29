@@ -125,14 +125,15 @@ export function BirthChartVollreportUpsell({
           id="vollreport-funnel-heading"
           className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl"
         >
-          Demo gesehen – bereit für dein echtes Profil?
+          Bereit für dein persönliches Vollprofil?
         </h2>
         <p className="mt-3 max-w-2xl text-sm leading-relaxed text-black/75 dark:text-white/75">
-          Nach der Zahlung erstellen wir dein{" "}
+          Nach der Zahlung berechnen wir dein{" "}
           <strong className="font-medium">astrologisches Vollprofil</strong> zu
-          deinen Geburtsdaten und geben dir einen{" "}
-          <strong className="font-medium">persönlichen Link</strong> – damit du
-          die Auswertung speichern und später wieder öffnen kannst.
+          deinen Geburtsdaten und schalten einen{" "}
+          <strong className="font-medium">persönlichen Zugangslink</strong> frei.
+          So kannst du deine Auswertung jederzeit wieder öffnen und sicher
+          speichern.
         </p>
 
         <div className="mt-8 grid gap-6 lg:grid-cols-2 lg:gap-10">
@@ -181,7 +182,7 @@ export function BirthChartVollreportUpsell({
             type="button"
             onClick={() => void goToCheckout()}
             disabled={checkoutLoading}
-            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white transition hover:bg-black/90 disabled:opacity-60 dark:bg-white dark:text-black dark:hover:bg-white/90"
+            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-emerald-600 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-60 dark:bg-emerald-500 dark:hover:bg-emerald-400"
           >
             {checkoutLoading ? "Weiter zu Stripe…" : "Jetzt zahlen – Profil & Link erhalten"}
           </button>

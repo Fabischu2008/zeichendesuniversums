@@ -1,9 +1,9 @@
 "use client";
 
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Big3PlacementCard } from "@/components/Big3PlacementCard";
 import { BirthChartReportDemo } from "@/components/BirthChartReportDemo";
 import { BirthChartVollreportUpsell } from "@/components/BirthChartVollreportUpsell";
+import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
 import type { ZodiacSign } from "@/lib/astro/signs";
 import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
 
@@ -24,24 +24,6 @@ function safeJsonParse(raw: string): unknown {
   } catch {
     return { _nonJson: true, raw };
   }
-}
-
-function blurb(sign: string) {
-  const map: Record<string, string> = {
-    Widder: "Direkt, mutig, startet Dinge - braucht Herausforderung.",
-    Stier: "Stabil, loyal, sinnlich - liebt Sicherheit und Qualitaet.",
-    Zwillinge: "Neugierig, schnell, kommunikativ - braucht Abwechslung.",
-    Krebs: "Intuitiv, emotional, beschuetzend - braucht Vertrauen.",
-    Löwe: "Herzlich, stolz, kreativ - braucht Anerkennung.",
-    Jungfrau: "Analytisch, hilfreich, praezise - braucht Klarheit.",
-    Waage: "Ausgleichend, aesthetisch, verbindend - braucht Harmonie.",
-    Skorpion: "Intensiv, loyal, tief - braucht Ehrlichkeit.",
-    Schütze: "Frei, optimistisch, ehrlich - braucht Raum.",
-    Steinbock: "Zielstrebig, verantwortungsvoll - braucht Struktur.",
-    Wassermann: "Unkonventionell, klug, unabhaengig - braucht Freiheit.",
-    Fische: "Empathisch, kreativ, fein - braucht Rueckzug.",
-  };
-  return map[sign] || "Kurzbeschreibung folgt.";
 }
 
 export function GeburtshoroskopLandingFunnel() {
@@ -282,29 +264,27 @@ export function GeburtshoroskopLandingFunnel() {
               Deine Big 3 sind berechnet. Jetzt siehst du die Vorschau und kannst
               den Vollreport freischalten.
             </p>
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Big3PlacementCard
-                label="Sonne"
-                sign={big3.sun}
-                description={blurb(big3.sun)}
-              />
-              <Big3PlacementCard
-                label="Mond"
-                sign={big3.moon}
-                description={blurb(big3.moon)}
-              />
-              <Big3PlacementCard
-                label="Aszendent"
-                sign={big3.ascendant}
-                description={blurb(big3.ascendant)}
-              />
+            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] p-4 text-sm text-emerald-950 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-100">
+              <p className="font-medium">Deine Big 3:</p>
+              <p className="mt-1">
+                Sonne <strong>{big3.sun}</strong> · Mond <strong>{big3.moon}</strong> ·
+                Aszendent <strong>{big3.ascendant}</strong>
+              </p>
+              <div className="mt-3 flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-2 rounded-full border border-emerald-500/25 bg-white/70 px-3 py-1 dark:bg-black/20">
+                  <ZodiacSignIcon sign={big3.sun} sizeClassName="h-6 w-6" />
+                  <span className="text-xs font-medium">Sonne</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full border border-emerald-500/25 bg-white/70 px-3 py-1 dark:bg-black/20">
+                  <ZodiacSignIcon sign={big3.moon} sizeClassName="h-6 w-6" />
+                  <span className="text-xs font-medium">Mond</span>
+                </div>
+                <div className="flex items-center gap-2 rounded-full border border-emerald-500/25 bg-white/70 px-3 py-1 dark:bg-black/20">
+                  <ZodiacSignIcon sign={big3.ascendant} sizeClassName="h-6 w-6" />
+                  <span className="text-xs font-medium">Aszendent</span>
+                </div>
+              </div>
             </div>
-
-            <BirthChartReportDemo
-              sun={big3.sun as ZodiacSign}
-              moon={big3.moon as ZodiacSign}
-              ascendant={big3.ascendant as ZodiacSign}
-            />
 
             <BirthChartVollreportUpsell
               birthdate={birthdate}
@@ -312,6 +292,19 @@ export function GeburtshoroskopLandingFunnel() {
               place={place}
               big3={big3}
             />
+
+            <details className="rounded-2xl border border-black/8 bg-black/[0.02] p-4 dark:border-white/12 dark:bg-white/[0.03]">
+              <summary className="cursor-pointer text-sm font-medium">
+                Vorschau deines Vollreports ansehen (optional)
+              </summary>
+              <div className="mt-3 rounded-xl border border-black/8 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
+                <BirthChartReportDemo
+                  sun={big3.sun as ZodiacSign}
+                  moon={big3.moon as ZodiacSign}
+                  ascendant={big3.ascendant as ZodiacSign}
+                />
+              </div>
+            </details>
           </div>
         ) : (
           <p className="mt-3 text-sm text-black/65 dark:text-white/65">
