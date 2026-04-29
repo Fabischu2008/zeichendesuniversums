@@ -23,12 +23,12 @@ const priceLabel = new Intl.NumberFormat("de-DE", {
 export const metadata: Metadata = {
   title: "Aszendent & Big 3 kostenlos berechnen – persönliches Geburtshoroskop",
   description:
-    "Sonne, Mond und Aszendent in 2 Minuten kostenlos berechnen. Optional: persönliches Geburtshoroskop für 11,11 € – sofort verfügbar.",
+    `Sonne, Mond und Aszendent in 2 Minuten kostenlos berechnen. Optional: persönliches Geburtshoroskop für ${priceLabel} € – sofort verfügbar.`,
   alternates: { canonical: path },
   openGraph: {
     title: `Aszendent & Big 3 kostenlos berechnen · ${SITE_NAME}`,
     description:
-      "Sonne, Mond und Aszendent kostenlos berechnen. Optional persönliches Vollprofil für 11,11 €.",
+      `Sonne, Mond und Aszendent kostenlos berechnen. Optional persönliches Vollprofil für ${priceLabel} €.`,
     url: absoluteUrl(path),
   },
 };
@@ -47,7 +47,7 @@ const faqJsonLd = {
     },
     {
       "@type": "Question",
-      name: "Was bekomme ich beim persönlichen Geburtshoroskop für 11,11 €?",
+      name: `Was bekomme ich beim persönlichen Geburtshoroskop für ${priceLabel} €?`,
       acceptedAnswer: {
         "@type": "Answer",
         text: "Dein vollständig berechnetes Profil mit allen Planeten, Häusern und Aspekten, ausformulierten Texten zu Stärken, Mustern und Entwicklung – plus persönlichem Zugangslink, den du jederzeit wieder öffnen kannst.",
@@ -66,7 +66,7 @@ const faqJsonLd = {
       name: "Ist das ein Abo?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Nein. Es ist eine einmalige Zahlung von 11,11 €. Keine Verlängerung, keine versteckten Kosten.",
+        text: `Nein. Es ist eine einmalige Zahlung von ${priceLabel} €. Keine Verlängerung, keine versteckten Kosten.`,
       },
     },
     {

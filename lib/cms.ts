@@ -41,11 +41,11 @@ export type Post = {
 
 /** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). Nicht im Shop-Katalog. */
 export const PRODUCT_ID_ASTRO_VOLLPROFIL = "p_birth_profile" as const;
-export const PRICE_ASTRO_VOLLPROFIL = 11.11;
+export const PRICE_ASTRO_VOLLPROFIL = 4.44;
 
 /** Exakte Paaranalyse (Synastry) – Shop-Eintrag + später Checkout / Success wie Vollprofil. */
 export const PRODUCT_ID_COMPAT_PAARANALYSE = "p_compat_full" as const;
-export const PRICE_COMPAT_PAARANALYSE = 22.22;
+export const PRICE_COMPAT_PAARANALYSE = 7.77;
 export const PRODUCT_ID_READING_PROFILE_30 = "p_reading_profile_30" as const;
 export const PRICE_READING_PROFILE_30 = 33.33;
 export const PRODUCT_ID_READING_TAROT_60 = "p_reading_tarot_60" as const;
