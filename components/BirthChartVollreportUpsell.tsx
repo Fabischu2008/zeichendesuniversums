@@ -113,6 +113,7 @@ export function BirthChartVollreportUpsell({
 
   return (
     <section
+      id="vollreport-freischalten"
       className="relative overflow-hidden rounded-[1.75rem] border border-violet-500/25 bg-gradient-to-br from-violet-500/[0.14] via-white to-amber-500/10 p-6 shadow-sm dark:from-violet-500/20 dark:via-white/[0.06] dark:to-amber-500/10 sm:p-8"
       aria-labelledby="vollreport-funnel-heading"
     >

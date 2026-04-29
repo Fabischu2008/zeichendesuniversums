@@ -84,6 +84,104 @@ export function BirthChartReportDemo({
           </div>
         </div>
 
+        <section className="mt-4 rounded-2xl border border-black/8 bg-white/80 p-4 dark:border-white/10 dark:bg-white/5">
+          <h3 className="text-sm font-semibold tracking-tight">Radix (Beispielansicht)</h3>
+          <p className="mt-1 text-xs text-black/50 dark:text-white/50">
+            Im Vollreport siehst du dein persönliches Radix mit Häusern und Planetenpositionen.
+          </p>
+          <div className="mt-3 flex items-center justify-center rounded-xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.08] via-sky-500/[0.06] to-amber-500/[0.08] p-3 dark:border-violet-300/20 dark:from-violet-500/10 dark:via-sky-500/10 dark:to-amber-500/10">
+            <svg
+              viewBox="0 0 240 240"
+              className="h-auto w-full max-w-[280px] text-black/75 dark:text-white/75"
+              role="img"
+              aria-label="Beispiel-Radix"
+            >
+              <defs>
+                <radialGradient id="radixGlow" cx="50%" cy="50%" r="60%">
+                  <stop offset="0%" stopColor="currentColor" stopOpacity="0.08" />
+                  <stop offset="100%" stopColor="currentColor" stopOpacity="0" />
+                </radialGradient>
+              </defs>
+              <circle cx="120" cy="120" r="108" fill="url(#radixGlow)" />
+              <circle cx="120" cy="120" r="102" fill="none" stroke="currentColor" opacity="0.45" />
+              <circle cx="120" cy="120" r="92" fill="none" stroke="currentColor" opacity="0.18" />
+              <circle cx="120" cy="120" r="80" fill="none" stroke="currentColor" opacity="0.24" />
+              <circle cx="120" cy="120" r="56" fill="none" stroke="currentColor" opacity="0.2" />
+              {Array.from({ length: 12 }).map((_, i) => {
+                const a = (i * 30 - 90) * (Math.PI / 180);
+                const x1 = 120 + Math.cos(a) * 102;
+                const y1 = 120 + Math.sin(a) * 102;
+                const x2 = 120 + Math.cos(a) * 56;
+                const y2 = 120 + Math.sin(a) * 56;
+                return (
+                  <line
+                    key={`radix-line-${i}`}
+                    x1={x1}
+                    y1={y1}
+                    x2={x2}
+                    y2={y2}
+                    stroke="currentColor"
+                    opacity="0.26"
+                  />
+                );
+              })}
+              {Array.from({ length: 12 }).map((_, i) => {
+                const a = ((i * 30 + 15) - 90) * (Math.PI / 180);
+                const x = 120 + Math.cos(a) * 91;
+                const y = 120 + Math.sin(a) * 91;
+                return (
+                  <circle
+                    key={`radix-dot-${i}`}
+                    cx={x}
+                    cy={y}
+                    r="1.6"
+                    fill="currentColor"
+                    opacity="0.38"
+                  />
+                );
+              })}
+              {["☉", "☽", "☿", "♀", "♂", "♃", "♄"].map((g, i) => {
+                const a = ((i * 43 + 8) - 90) * (Math.PI / 180);
+                const x = 120 + Math.cos(a) * 70;
+                const y = 120 + Math.sin(a) * 70;
+                return (
+                  <g key={`radix-glyph-${g}-${i}`}>
+                    <circle
+                      cx={x}
+                      cy={y}
+                      r="10.5"
+                      fill="currentColor"
+                      opacity="0.1"
+                    />
+                    <text
+                      x={x}
+                      y={y}
+                      textAnchor="middle"
+                      dominantBaseline="middle"
+                      fontSize="13.5"
+                      fill="currentColor"
+                      opacity="0.82"
+                    >
+                      {g}
+                    </text>
+                  </g>
+                );
+              })}
+              <text
+                x="120"
+                y="120"
+                textAnchor="middle"
+                dominantBaseline="middle"
+                fontSize="10"
+                fill="currentColor"
+                opacity="0.45"
+              >
+                RADIX
+              </text>
+            </svg>
+          </div>
+        </section>
+
         <section className="mt-6 rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 via-sky-500/10 to-amber-500/10 p-4 dark:border-white/10">
           <p className="text-xs font-medium uppercase tracking-wide text-black/50 dark:text-white/50">
             Archetyp (Auszug im Vollreport)

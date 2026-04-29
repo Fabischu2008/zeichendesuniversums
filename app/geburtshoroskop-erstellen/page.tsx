@@ -121,7 +121,7 @@ export default function GeburtshoroskopLandingPage() {
               href="#daten-eingeben"
               className="inline-flex h-12 items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white transition hover:bg-violet-600"
             >
-              Jetzt kostenlos Big 3 berechnen
+              Jetzt Daten eingeben
             </Link>
           </div>
         </div>
@@ -147,7 +147,7 @@ export default function GeburtshoroskopLandingPage() {
           href="#daten-eingeben"
           className="mt-5 inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-5 text-sm font-medium transition hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
         >
-          Jetzt kostenlos Big 3 berechnen
+          Zu den Geburtsdaten
         </Link>
       </section>
 

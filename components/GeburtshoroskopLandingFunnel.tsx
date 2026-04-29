@@ -160,7 +160,10 @@ export function GeburtshoroskopLandingFunnel() {
 
   return (
     <>
-      <section id="daten-eingeben" className="rounded-3xl border border-black/5 bg-white/70 p-6 dark:border-white/10 dark:bg-white/5">
+      <section
+        id="daten-eingeben"
+        className="overflow-hidden rounded-3xl border border-black/5 bg-white/70 p-6 dark:border-white/10 dark:bg-white/5"
+      >
         <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
           Schritt 01
         </p>
@@ -179,7 +182,7 @@ export function GeburtshoroskopLandingFunnel() {
               value={birthdate}
               onChange={(e) => setBirthdate(e.target.value)}
               type="date"
-              className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm box-border dark:border-white/15 dark:bg-black/20"
+              className="box-border h-12 w-full min-w-0 max-w-full rounded-2xl border border-black/10 bg-white px-4 text-sm [appearance:textfield] dark:border-white/15 dark:bg-black/20"
             />
           </label>
 
@@ -189,7 +192,7 @@ export function GeburtshoroskopLandingFunnel() {
               value={birthtime}
               onChange={(e) => setBirthtime(e.target.value)}
               type="time"
-              className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm box-border dark:border-white/15 dark:bg-black/20"
+              className="box-border h-12 w-full min-w-0 max-w-full rounded-2xl border border-black/10 bg-white px-4 text-sm [appearance:textfield] dark:border-white/15 dark:bg-black/20"
             />
           </label>
         </div>
@@ -204,7 +207,7 @@ export function GeburtshoroskopLandingFunnel() {
                 setPlace(null);
               }}
               placeholder="z. B. Tokyo, Nairobi oder Kaiserslautern"
-              className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm box-border outline-none focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:focus:border-white/30"
+              className="box-border h-12 w-full min-w-0 max-w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:focus:border-white/30"
             />
           </label>
 
@@ -231,7 +234,7 @@ export function GeburtshoroskopLandingFunnel() {
                     setQuery(p.label);
                     setPlaces([]);
                   }}
-                  className="rounded-2xl border border-black/10 bg-white px-4 py-3 text-left text-sm hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
+                  className="break-words rounded-2xl border border-black/10 bg-white px-4 py-3 text-left text-sm hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:hover:bg-white/10"
                 >
                   {p.label}
                 </button>
@@ -309,6 +312,17 @@ export function GeburtshoroskopLandingFunnel() {
                   moon={big3.moon as ZodiacSign}
                   ascendant={big3.ascendant as ZodiacSign}
                 />
+              </div>
+              <div className="mt-4 border-t border-black/10 pt-4 dark:border-white/10">
+                <p className="text-xs text-black/55 dark:text-white/55">
+                  Gefällt dir die Vorschau? Schalte jetzt deinen vollständigen Report frei.
+                </p>
+                <a
+                  href="#vollreport-freischalten"
+                  className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white transition hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+                >
+                  Vollreport jetzt freischalten
+                </a>
               </div>
             </details>
           </div>
