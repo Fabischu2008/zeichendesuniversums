@@ -40,7 +40,7 @@ export function BirthChartReportDemo({
 
   return (
     <div className="relative mt-8 space-y-6">
-      <div className="pointer-events-none absolute inset-0 z-10 flex items-start justify-end p-3">
+      <div className="mb-2 flex justify-start sm:mb-0 sm:pointer-events-none sm:absolute sm:inset-0 sm:z-10 sm:items-start sm:justify-end sm:p-3">
         <span className="rounded-full border border-black/15 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black/60 shadow-sm backdrop-blur-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
           Demo · keine echten Profiltexte
         </span>
