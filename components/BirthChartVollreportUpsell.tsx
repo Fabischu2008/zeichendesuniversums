@@ -190,7 +190,7 @@ export function BirthChartVollreportUpsell({
             type="button"
             onClick={() => void goToCheckout()}
             disabled={checkoutLoading}
-            className="inline-flex h-12 min-w-[200px] flex-1 items-center justify-center rounded-full bg-emerald-600 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500 disabled:opacity-60 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+            className="inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-500 disabled:opacity-60 dark:bg-emerald-500 dark:hover:bg-emerald-400"
           >
             {checkoutLoading ? "Weiter zu Stripe…" : "Jetzt sicher mit Stripe zahlen"}
           </button>
