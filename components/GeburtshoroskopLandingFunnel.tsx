@@ -43,7 +43,6 @@ export function GeburtshoroskopLandingFunnel() {
     meta?: { tz?: string; utc?: string };
   }>(null);
 
-  const resultRef = useRef<HTMLDivElement | null>(null);
   const abortRef = useRef<AbortController | null>(null);
 
   useEffect(() => {
@@ -87,12 +86,6 @@ export function GeburtshoroskopLandingFunnel() {
 
     return () => clearTimeout(t);
   }, [query]);
-
-  useEffect(() => {
-    if (big3 && resultRef.current) {
-      resultRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
-    }
-  }, [big3]);
 
   const canCalculate = useMemo(() => {
     return Boolean(
@@ -254,26 +247,13 @@ export function GeburtshoroskopLandingFunnel() {
         </button>
       </section>
 
-      <section
-        ref={resultRef}
-        className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5"
-      >
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
-          Schritt 02
-        </p>
-        <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Ergebnis &amp; Vorschau
-        </h2>
+      <section className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5">
         {calcError ? (
-          <p className="mt-2 text-sm text-red-600 dark:text-red-400">{calcError}</p>
+          <p className="text-sm text-red-600 dark:text-red-400">{calcError}</p>
         ) : null}
 
         {big3 ? (
-          <div className="mt-4 space-y-5">
-            <p className="text-sm text-black/70 dark:text-white/70">
-              Deine Big 3 sind berechnet. Jetzt siehst du die Vorschau und kannst
-              den Vollreport freischalten.
-            </p>
+          <div className="space-y-4">
             <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] p-4 text-sm text-emerald-950 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-100">
               <p className="font-medium">Deine Big 3:</p>
               <p className="mt-1">
@@ -295,35 +275,6 @@ export function GeburtshoroskopLandingFunnel() {
                 </div>
               </div>
             </div>
-
-            <div className="rounded-2xl border border-black/8 bg-black/[0.02] p-4 dark:border-white/12 dark:bg-white/[0.03]">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-                So sieht dein Vollprofil aus
-              </p>
-              <p className="mt-1 text-sm text-black/65 dark:text-white/65">
-                Das hier ist der echte Aufbau deines Reports — nur die
-                Deutungstexte sind in der Vorschau noch verkürzt.
-              </p>
-              <div className="mt-3 rounded-xl border border-black/8 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
-                <BirthChartReportDemo
-                  sun={big3.sun as ZodiacSign}
-                  moon={big3.moon as ZodiacSign}
-                  ascendant={big3.ascendant as ZodiacSign}
-                />
-              </div>
-              <div className="mt-4 border-t border-black/10 pt-4 dark:border-white/10">
-                <p className="text-xs text-black/55 dark:text-white/55">
-                  Gefällt dir die Vorschau? Schalte jetzt deinen vollständigen Report frei.
-                </p>
-                <a
-                  href="#vollreport-freischalten"
-                  className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white transition hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
-                >
-                  Vollreport jetzt freischalten
-                </a>
-              </div>
-            </div>
-
             <BirthChartVollreportUpsell
               birthdate={birthdate}
               birthtime={birthtime}
@@ -332,11 +283,29 @@ export function GeburtshoroskopLandingFunnel() {
             />
           </div>
         ) : (
-          <p className="mt-3 text-sm text-black/65 dark:text-white/65">
-            Nach der Big-3-Berechnung erscheint hier deine Vorschau mit direkter
-            Vollreport-Freischaltung.
+          <p className="text-sm text-black/65 dark:text-white/65">
+            Berechne zuerst deine Big 3.
           </p>
         )}
+
+        <details className="mt-6 rounded-2xl border border-black/8 bg-black/[0.02] p-4 dark:border-white/12 dark:bg-white/[0.03]">
+          <summary className="cursor-pointer text-sm font-medium">
+            Vollreport optional ansehen & freischalten
+          </summary>
+          {!big3 ? (
+            <p className="mt-3 text-sm text-black/65 dark:text-white/65">
+              Die Vollreport-Option erscheint nach der Big-3-Berechnung.
+            </p>
+          ) : (
+            <div className="mt-3 rounded-xl border border-black/8 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
+              <BirthChartReportDemo
+                sun={big3.sun as ZodiacSign}
+                moon={big3.moon as ZodiacSign}
+                ascendant={big3.ascendant as ZodiacSign}
+              />
+            </div>
+          )}
+        </details>
       </section>
     </>
   );

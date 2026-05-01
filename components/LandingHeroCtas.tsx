@@ -33,28 +33,15 @@ export function LandingHeroCtas({ priceLabel }: { priceLabel: string }) {
     history.replaceState(null, "", "#daten-eingeben");
   }
 
-  function onSecondary(e: MouseEvent<HTMLAnchorElement>) {
-    e.preventDefault();
-    scrollToTarget("vorschau");
-    history.replaceState(null, "", "#vorschau");
-  }
-
   return (
     <>
-      <div className="mt-6 flex flex-col gap-3 sm:flex-row sm:flex-wrap">
+      <div className="mt-6 flex flex-col gap-3 sm:flex-row">
         <a
           href="#daten-eingeben"
           onClick={onPrimary}
           className="inline-flex h-12 items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white transition hover:bg-violet-600"
         >
           Big 3 jetzt kostenlos berechnen
-        </a>
-        <a
-          href="#vorschau"
-          onClick={onSecondary}
-          className="inline-flex h-12 items-center justify-center rounded-full border border-black/10 px-6 text-sm font-medium transition hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
-        >
-          Erst Beispielreport ansehen
         </a>
       </div>
       <p className="mt-3 text-xs text-black/55 dark:text-white/55">
