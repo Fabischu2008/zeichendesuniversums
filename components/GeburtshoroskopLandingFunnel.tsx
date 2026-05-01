@@ -254,24 +254,42 @@ export function GeburtshoroskopLandingFunnel() {
 
         {big3 ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.08] p-4 text-sm text-emerald-950 dark:border-emerald-500/25 dark:bg-emerald-500/10 dark:text-emerald-100">
-              <p className="font-medium">Deine Big 3:</p>
-              <p className="mt-1">
-                Sonne <strong>{big3.sun}</strong> · Mond <strong>{big3.moon}</strong> ·
-                Aszendent <strong>{big3.ascendant}</strong>
+            <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.10] via-sky-500/[0.07] to-emerald-500/[0.08] p-4 dark:border-violet-400/25 dark:from-violet-500/15 dark:via-sky-500/10 dark:to-emerald-500/10">
+              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
+                Deine Big 3
               </p>
-              <div className="mt-3 flex flex-wrap items-center gap-3">
-                <div className="flex items-center gap-2 rounded-full border border-emerald-500/25 bg-white/70 px-3 py-1 dark:bg-black/20">
-                  <ZodiacSignIcon sign={big3.sun} sizeClassName="h-6 w-6" />
-                  <span className="text-xs font-medium">Sonne</span>
+              <p className="mt-2 text-sm text-black/75 dark:text-white/75">
+                Sonne <strong>{big3.sun}</strong> · Mond <strong>{big3.moon}</strong> · Aszendent{" "}
+                <strong>{big3.ascendant}</strong>
+              </p>
+
+              <div className="mt-4 grid gap-3 sm:grid-cols-3">
+                <div className="rounded-xl border border-black/10 bg-white/80 p-3 dark:border-white/10 dark:bg-black/20">
+                  <p className="text-[11px] uppercase tracking-wide text-black/50 dark:text-white/50">
+                    Sonne
+                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <ZodiacSignIcon sign={big3.sun} sizeClassName="h-7 w-7" />
+                    <p className="font-semibold">{big3.sun}</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-full border border-emerald-500/25 bg-white/70 px-3 py-1 dark:bg-black/20">
-                  <ZodiacSignIcon sign={big3.moon} sizeClassName="h-6 w-6" />
-                  <span className="text-xs font-medium">Mond</span>
+                <div className="rounded-xl border border-black/10 bg-white/80 p-3 dark:border-white/10 dark:bg-black/20">
+                  <p className="text-[11px] uppercase tracking-wide text-black/50 dark:text-white/50">
+                    Mond
+                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <ZodiacSignIcon sign={big3.moon} sizeClassName="h-7 w-7" />
+                    <p className="font-semibold">{big3.moon}</p>
+                  </div>
                 </div>
-                <div className="flex items-center gap-2 rounded-full border border-emerald-500/25 bg-white/70 px-3 py-1 dark:bg-black/20">
-                  <ZodiacSignIcon sign={big3.ascendant} sizeClassName="h-6 w-6" />
-                  <span className="text-xs font-medium">Aszendent</span>
+                <div className="rounded-xl border border-black/10 bg-white/80 p-3 dark:border-white/10 dark:bg-black/20">
+                  <p className="text-[11px] uppercase tracking-wide text-black/50 dark:text-white/50">
+                    Aszendent
+                  </p>
+                  <div className="mt-2 flex items-center gap-2">
+                    <ZodiacSignIcon sign={big3.ascendant} sizeClassName="h-7 w-7" />
+                    <p className="font-semibold">{big3.ascendant}</p>
+                  </div>
                 </div>
               </div>
             </div>
