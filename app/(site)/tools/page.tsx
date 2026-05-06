@@ -51,10 +51,10 @@ const pathDu = {
 const pathPaar = {
   href: "/tools/compatibility",
   title: "Mehr über Beziehungen",
-  subtitle: "Paar-Analyse (Synastry)",
+  subtitle: "Vollständige Paaranalyse (Synastrie)",
   points: [
     "Zwei Geburtsprofile mit Datum, Uhrzeit & Ort",
-    "Echte Aspekte zwischen euren Planeten",
+    "Direkt vollständige Synastrie ohne Vorschau",
     "Ideal für Partnerschaft, Dating oder Freundschaft",
   ],
   cta: "Zur Kompatibilität",

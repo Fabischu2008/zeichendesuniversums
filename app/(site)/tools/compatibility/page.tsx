@@ -4,7 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo, useState } from "react";
 import { ELEMENT_BY_SIGN, type AstroProfileResult, type Element } from "@/lib/astro/profile";
 import {
   ZODIAC_SIGNS,
@@ -15,12 +15,6 @@ import type {
   SynastryReport,
 } from "@/lib/astro/synastry";
 import { useGeoPlaces, type GeoPlace } from "@/hooks/useGeoPlaces";
-import {
-  PRICE_COMPAT_PAARANALYSE,
-  PRODUCT_ID_COMPAT_PAARANALYSE,
-} from "@/lib/cms";
-import { readUnlockTokenFromBrowser } from "@/lib/profile-unlock-url";
-import type { CheckoutAstroPayload } from "@/lib/stripe/create-checkout-session";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
 
 function formatPaarPriceEur(amount: number) {
@@ -854,7 +848,7 @@ function dimensionAnalysisText(
 }
 
 export default function CompatibilityToolPage() {
-  const [stage, setStage] = useState<FunnelStage>("preview");
+  const [stage, setStage] = useState<FunnelStage>("exact");
   const [previewA, setPreviewA] = useState<ZodiacSign>("Widder");
   const [previewB, setPreviewB] = useState<ZodiacSign>("Waage");
   const [miniPreviewReady, setMiniPreviewReady] = useState(false);
@@ -865,8 +859,6 @@ export default function CompatibilityToolPage() {
   const geoB = useGeoPlaces(b.query);
 
   const [loading, setLoading] = useState(false);
-  const [checkoutLoading, setCheckoutLoading] = useState(false);
-  const [checkoutError, setCheckoutError] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [report, setReport] = useState<null | {
     synastry: SynastryReport;
@@ -881,7 +873,6 @@ export default function CompatibilityToolPage() {
     };
   }>(null);
   const router = useRouter();
-  const redeemRef = useRef(false);
 
   const canSubmit = useMemo(() => {
     return (
@@ -894,108 +885,82 @@ export default function CompatibilityToolPage() {
     );
   }, [a, b]);
 
-  async function goToCompatCheckout() {
+  async function calculateCompatibility() {
     if (!canSubmit) return;
-    setCheckoutError(null);
-    setCheckoutLoading(true);
+    setError(null);
+    setLoading(true);
     try {
-      const pa = personFormToCheckoutPayload(a);
-      const pb = personFormToCheckoutPayload(b);
-      if (!pa || !pb) {
-        throw new Error(
-          "Bitte für beide Personen Datum, Uhrzeit und Ort vollständig ausfüllen.",
-        );
-      }
-      const res = await fetch("/api/create-checkout-session", {
+      const res = await fetch("/api/tools/synastry", {
         method: "POST",
         headers: { "content-type": "application/json" },
         body: JSON.stringify({
-          productId: PRODUCT_ID_COMPAT_PAARANALYSE,
-          compat: { a: pa, b: pb },
+          a: {
+            date: a.birthdate,
+            time: a.birthtime,
+            location: {
+              name: a.place?.city || a.place?.label,
+              lat: a.place?.lat,
+              lon: a.place?.lon,
+              countryCode: a.place?.countryCode,
+            },
+          },
+          b: {
+            date: b.birthdate,
+            time: b.birthtime,
+            location: {
+              name: b.place?.city || b.place?.label,
+              lat: b.place?.lat,
+              lon: b.place?.lon,
+              countryCode: b.place?.countryCode,
+            },
+          },
         }),
       });
       const raw = await res.text();
       const parsed = safeJsonParse(raw);
       const data = (parsed && typeof parsed === "object" ? parsed : {}) as {
-        url?: string;
+        synastry?: SynastryReport;
+        deepComparison?: DeepCompatibilityReport;
+        a?: {
+          profile?: AstroProfileResult;
+          big3?: { sun: string; moon: string; ascendant: string };
+        };
+        b?: {
+          profile?: AstroProfileResult;
+          big3?: { sun: string; moon: string; ascendant: string };
+        };
         message?: string;
       };
-      if (!res.ok || !data.url) {
+      if (
+        !res.ok ||
+        !data.synastry ||
+        !data.deepComparison ||
+        !data.a?.profile ||
+        !data.a?.big3 ||
+        !data.b?.profile ||
+        !data.b?.big3
+      ) {
         throw new Error(
           data.message ||
-            `Checkout konnte nicht gestartet werden (HTTP ${res.status}).`,
+            `Paaranalyse konnte nicht berechnet werden (HTTP ${res.status}).`,
         );
       }
-      window.location.href = data.url;
+      setReport({
+        synastry: data.synastry,
+        deepComparison: data.deepComparison,
+        a: { profile: data.a.profile, big3: data.a.big3 },
+        b: { profile: data.b.profile, big3: data.b.big3 },
+      });
+      setStage("result");
+      router.replace("/tools/compatibility#paaranalyse");
     } catch (e) {
-      setCheckoutError(
-        e instanceof Error ? e.message : "Checkout konnte nicht gestartet werden.",
+      setError(
+        e instanceof Error ? e.message : "Paaranalyse konnte nicht berechnet werden.",
       );
     } finally {
-      setCheckoutLoading(false);
+      setLoading(false);
     }
   }
-
-  useEffect(() => {
-    async function redeem() {
-      const token = readUnlockTokenFromBrowser();
-      if (!token || redeemRef.current) return;
-      redeemRef.current = true;
-      setStage("exact");
-      setLoading(true);
-      setError(null);
-      try {
-        const res = await fetch("/api/tools/compatibility/redeem", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({ token }),
-        });
-        const data = (await res.json().catch(() => ({}))) as {
-          message?: string;
-          synastry?: SynastryReport;
-          deepComparison?: DeepCompatibilityReport;
-          a?: {
-            profile?: AstroProfileResult;
-            big3?: { sun: string; moon: string; ascendant: string };
-          };
-          b?: {
-            profile?: AstroProfileResult;
-            big3?: { sun: string; moon: string; ascendant: string };
-          };
-        };
-        if (
-          !res.ok ||
-          !data.synastry ||
-          !data.deepComparison ||
-          !data.a?.profile ||
-          !data.a?.big3 ||
-          !data.b?.profile ||
-          !data.b?.big3
-        ) {
-          throw new Error(
-            data.message || "Paaranalyse-Link ist ungültig oder abgelaufen.",
-          );
-        }
-        setReport({
-          synastry: data.synastry,
-          deepComparison: data.deepComparison,
-          a: { profile: data.a.profile, big3: data.a.big3 },
-          b: { profile: data.b.profile, big3: data.b.big3 },
-        });
-        setStage("result");
-        router.replace("/tools/compatibility#paaranalyse");
-      } catch (e) {
-        setError(
-          e instanceof Error
-            ? e.message
-            : "Paaranalyse-Link konnte nicht geladen werden.",
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-    void redeem();
-  }, [router]);
 
   const previewHarmony = useMemo(
     () => signBasedHarmony(previewA, previewB),
@@ -1012,18 +977,16 @@ export default function CompatibilityToolPage() {
       </Link>
       <header className="space-y-3">
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Paaranalyse &amp; Kompatibilität (Synastry)
+          Beziehungstool · Direkte Paaranalyse
         </h1>
         <p className="text-black/70 dark:text-white/70">
-          Für Partnerschaft, Dating oder enge Freundschaft: astrologische
-          Kompatibilität als echte Synastry – also wie sich zwei Horoskope
-          begegnen, nicht nur zwei Sternzeichen. Zwei Geburtsprofile mit
-          echten Planetenlagen und Aspekt-Analyse (Sonne bis Saturn). Kein
-          Zufalls-Score mehr.
+          Für Partnerschaft, Dating oder enge Freundschaft: gib direkt beide
+          Geburtsprofile ein und berechne eure vollständige Synastrie kostenlos
+          - ohne Vorschau- oder Bezahl-Schritt.
         </p>
       </header>
 
-      {stage === "preview" ? (
+      {false ? (
         <>
         <section className="rounded-2xl border border-black/5 bg-white/70 p-4 sm:rounded-3xl sm:p-6 lg:p-8 dark:border-white/10 dark:bg-white/5">
           <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
@@ -1306,25 +1269,13 @@ export default function CompatibilityToolPage() {
           <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
             <button
               type="button"
-              disabled={!canSubmit || checkoutLoading}
-              onClick={() => void goToCompatCheckout()}
+              disabled={!canSubmit || loading}
+              onClick={() => void calculateCompatibility()}
               className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
             >
-              {checkoutLoading
-                ? "Weiter zu Stripe…"
-                : `Bezahlen & Links erhalten · ${formatPaarPriceEur(PRICE_COMPAT_PAARANALYSE)}`}
-            </button>
-            <button
-              type="button"
-              onClick={() => setStage("preview")}
-              className="inline-flex h-12 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 sm:w-auto dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-            >
-              Zurück zum Vorgeschmack
+              {loading ? "Berechne Paaranalyse..." : "Kostenlose Paaranalyse berechnen"}
             </button>
           </div>
-          {checkoutError ? (
-            <p className="text-sm text-red-600 dark:text-red-400">{checkoutError}</p>
-          ) : null}
         </>
       ) : null}
 

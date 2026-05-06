@@ -9,7 +9,7 @@ const url = absoluteUrl(path);
 export const metadata: Metadata = {
   title: "Paaranalyse & Beziehungs-Kompatibilität",
   description:
-    "Paaranalyse und Beziehungstool: Astrologische Kompatibilität für Partnerschaft, Liebe und Freundschaft – echte Synastrie (Partnerhoroskop) mit Aspekten zwischen Sonne, Mond, Venus, Mars und mehr. Kostenlose Vorschau, tiefe Auswertung optional. Horoskop & Astro bei Zeichen des Universums.",
+    "Paaranalyse und Beziehungstool: Astrologische Kompatibilität für Partnerschaft, Liebe und Freundschaft – echte Synastrie (Partnerhoroskop) mit Aspekten zwischen Sonne, Mond, Venus, Mars und mehr. Direkt vollständig und kostenlos berechenbar bei Zeichen des Universums.",
   keywords: [
     "Paaranalyse",
     "Beziehungstool",
