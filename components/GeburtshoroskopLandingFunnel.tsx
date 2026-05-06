@@ -1,10 +1,7 @@
 "use client";
 
+import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { BirthChartReportDemo } from "@/components/BirthChartReportDemo";
-import { BirthChartVollreportUpsell } from "@/components/BirthChartVollreportUpsell";
-import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
-import type { ZodiacSign } from "@/lib/astro/signs";
 import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
 
 type Place = {
@@ -164,8 +161,8 @@ export function GeburtshoroskopLandingFunnel() {
           Gib deine Geburtsdaten ein
         </h2>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-          Datum, Uhrzeit &amp; Ort eingeben — dann siehst du sofort deine Big 3
-          und kannst den Vollreport freischalten.
+          Datum, Uhrzeit &amp; Ort eingeben - danach geht es direkt in dein
+          vollständiges Profil.
         </p>
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
@@ -243,7 +240,7 @@ export function GeburtshoroskopLandingFunnel() {
           onClick={() => void calculate()}
           className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
-          {calcLoading ? "Berechne…" : "Big 3 jetzt berechnen"}
+          {calcLoading ? "Berechne..." : "Profil jetzt öffnen"}
         </button>
       </section>
 
@@ -254,76 +251,22 @@ export function GeburtshoroskopLandingFunnel() {
 
         {big3 ? (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.10] via-sky-500/[0.07] to-emerald-500/[0.08] p-4 dark:border-violet-400/25 dark:from-violet-500/15 dark:via-sky-500/10 dark:to-emerald-500/10">
-              <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-                Deine Big 3
-              </p>
-              <p className="mt-2 text-sm text-black/75 dark:text-white/75">
-                Sonne <strong>{big3.sun}</strong> · Mond <strong>{big3.moon}</strong> · Aszendent{" "}
-                <strong>{big3.ascendant}</strong>
-              </p>
-
-              <div className="mt-4 grid gap-3 sm:grid-cols-3">
-                <div className="rounded-xl border border-black/10 bg-white/80 p-3 dark:border-white/10 dark:bg-black/20">
-                  <p className="text-[11px] uppercase tracking-wide text-black/50 dark:text-white/50">
-                    Sonne
-                  </p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <ZodiacSignIcon sign={big3.sun} sizeClassName="h-7 w-7" />
-                    <p className="font-semibold">{big3.sun}</p>
-                  </div>
-                </div>
-                <div className="rounded-xl border border-black/10 bg-white/80 p-3 dark:border-white/10 dark:bg-black/20">
-                  <p className="text-[11px] uppercase tracking-wide text-black/50 dark:text-white/50">
-                    Mond
-                  </p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <ZodiacSignIcon sign={big3.moon} sizeClassName="h-7 w-7" />
-                    <p className="font-semibold">{big3.moon}</p>
-                  </div>
-                </div>
-                <div className="rounded-xl border border-black/10 bg-white/80 p-3 dark:border-white/10 dark:bg-black/20">
-                  <p className="text-[11px] uppercase tracking-wide text-black/50 dark:text-white/50">
-                    Aszendent
-                  </p>
-                  <div className="mt-2 flex items-center gap-2">
-                    <ZodiacSignIcon sign={big3.ascendant} sizeClassName="h-7 w-7" />
-                    <p className="font-semibold">{big3.ascendant}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <BirthChartVollreportUpsell
-              birthdate={birthdate}
-              birthtime={birthtime}
-              place={place}
-              big3={big3}
-            />
+            <p className="text-sm text-black/75 dark:text-white/75">
+              Deine Daten sind gespeichert. Oeffne jetzt direkt dein vollstaendiges
+              astrologisches Profil mit allen Planeten, Haeusern und Aspekten.
+            </p>
+            <Link
+              href="/tools/birth-chart/profile#vollreport"
+              className="inline-flex h-12 items-center justify-center rounded-full bg-emerald-600 px-6 text-sm font-semibold text-white transition hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+            >
+              Vollstaendiges Profil kostenlos oeffnen
+            </Link>
           </div>
         ) : (
           <p className="text-sm text-black/65 dark:text-white/65">
-            Berechne zuerst deine Big 3.
+            Berechne zuerst mit deinen Geburtsdaten dein kostenloses Profil.
           </p>
         )}
-
-        <details className="mt-6 rounded-2xl border border-black/8 bg-black/[0.02] p-4 dark:border-white/12 dark:bg-white/[0.03]">
-          <summary className="cursor-pointer text-sm font-medium">
-            Vollreport optional ansehen & freischalten
-          </summary>
-          {!big3 ? (
-            <p className="mt-3 text-sm text-black/65 dark:text-white/65">
-              Die Vollreport-Option erscheint nach der Big-3-Berechnung.
-            </p>
-          ) : (
-            <div className="mt-3 rounded-xl border border-black/8 bg-white/70 p-3 dark:border-white/10 dark:bg-black/20">
-              <BirthChartReportDemo
-                sun={big3.sun as ZodiacSign}
-                moon={big3.moon as ZodiacSign}
-                ascendant={big3.ascendant as ZodiacSign}
-              />
-            </div>
-          )}
-        </details>
       </section>
     </>
   );

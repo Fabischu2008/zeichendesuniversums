@@ -1,19 +1,13 @@
 "use client";
 
-import Link from "next/link";
-import { Suspense, useEffect, useMemo, useRef, useState } from "react";
-import { ProfileUnlockQueryHandler } from "@/components/ProfileUnlockQueryHandler";
-import { AstroProfileTeaser } from "@/components/AstroProfileTeaser";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { AstroProfileDisplay } from "@/components/AstroProfileDisplay";
 import {
-  hasVollreportUnlocked,
   mergeAstroSession,
   readAstroSession,
-  VOLLREPORT_UNLOCK_STORAGE_EVENT,
   type StoredAstroSessionV1,
 } from "@/lib/astro/profile-client-storage";
 import type { AstroProfileResult } from "@/lib/astro/profile";
-import { checkoutHrefForProduct, PRODUCT_ID_ASTRO_VOLLPROFIL } from "@/lib/cms";
 
 type Place = {
   id: string;
@@ -94,8 +88,7 @@ export default function BirthChartProfilePage() {
   const [profileError, setProfileError] = useState<string | null>(null);
   const [profile, setProfile] = useState<AstroProfileResult | null>(null);
 
-  /** null = Hydration */
-  const [vollreportAccess, setVollreportAccess] = useState<boolean | null>(null);
+  const [vollreportAccess] = useState<boolean>(true);
   const restoredRef = useRef(false);
   const autoFetchDone = useRef(false);
 
@@ -147,15 +140,6 @@ export default function BirthChartProfilePage() {
   useEffect(() => {
     if (restoredRef.current) return;
     restoredRef.current = true;
-    const hasUnlockParam =
-      typeof window !== "undefined" &&
-      Boolean(new URLSearchParams(window.location.search).get("unlock"));
-    const unlocked = hasVollreportUnlocked();
-    if (hasUnlockParam) {
-      setVollreportAccess(null);
-    } else {
-      setVollreportAccess(unlocked);
-    }
     const s = readAstroSession();
     if (s) {
       setBirthdate(s.birthdate);
@@ -163,8 +147,6 @@ export default function BirthChartProfilePage() {
       setQuery(s.place.label);
       setPlace(s.place as Place);
       if (
-        !hasUnlockParam &&
-        unlocked &&
         s.profile &&
         sessionHasChart(s) &&
         !sessionHasLegacyChartModel(s) &&
@@ -173,33 +155,6 @@ export default function BirthChartProfilePage() {
         setProfile(s.profile);
       }
     }
-  }, []);
-
-  useEffect(() => {
-    function onUnlockEvent(ev: Event) {
-      const d = (ev as CustomEvent<{ unlocked?: boolean }>).detail;
-      const next =
-        d && typeof d.unlocked === "boolean"
-          ? d.unlocked
-          : hasVollreportUnlocked();
-      setVollreportAccess(next);
-      if (next) {
-        const s = readAstroSession();
-        if (
-          s &&
-          sessionCanCalculate(s) &&
-          sessionProfileMissingChiron(s)
-        ) {
-          void fetchProfileFromSession(s);
-        } else if (s?.profile) {
-          setProfile(s.profile);
-        }
-      }
-    }
-    window.addEventListener(VOLLREPORT_UNLOCK_STORAGE_EVENT, onUnlockEvent);
-    return () => {
-      window.removeEventListener(VOLLREPORT_UNLOCK_STORAGE_EVENT, onUnlockEvent);
-    };
   }, []);
 
   useEffect(() => {
@@ -334,15 +289,11 @@ export default function BirthChartProfilePage() {
     }
   }
 
-  const checkoutHref = checkoutHrefForProduct(PRODUCT_ID_ASTRO_VOLLPROFIL);
-
   /** Button nur, wenn man das Profil noch anstoßen muss (nicht schon da / nicht ladend). */
   const showRecalculateButton =
-    vollreportAccess !== true ||
     (!profile && !profileLoading) ||
     Boolean(
-      vollreportAccess === true &&
-        profile &&
+      profile &&
         !profileLoading &&
         !profile.specialPoints?.some((p) => p.key === "chiron"),
     );
@@ -353,17 +304,13 @@ export default function BirthChartProfilePage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-8">
-      <Suspense fallback={null}>
-        <ProfileUnlockQueryHandler />
-      </Suspense>
-
       {showReportOnly ? null : showVollLoading ? (
         <section className="rounded-3xl border border-black/5 bg-white/60 p-8 text-center dark:border-white/10 dark:bg-white/5">
           <h1 className="text-2xl font-semibold tracking-tight sm:text-3xl">
             Dein astrologisches Profil
           </h1>
           <p className="mt-4 text-sm text-black/70 dark:text-white/70">
-            Vollreport wird geladen…
+            Profil wird geladen...
           </p>
         </section>
       ) : (
@@ -373,40 +320,9 @@ export default function BirthChartProfilePage() {
         </h1>
         <p className="mt-2 text-sm text-black/70 dark:text-white/70">
           Vollständige Auswertung: Archetyp, Elemente, Häuser, Planeten, Knoten,
-          Lilith und Glückspunkt. Der{" "}
-          <strong className="font-medium">Link aus Bestätigung oder E-Mail</strong>{" "}
-          schaltet den Vollreport frei und scrollt direkt zur vollständigen Auswertung.
-          Daten bleiben in diesem Browser gespeichert.
-          {vollreportAccess === false ? (
-            <>
-              {" "}
-              Noch keine Daten? Zuerst im{" "}
-              <Link
-                href="/tools/birth-chart"
-                className="font-medium text-violet-700 underline-offset-2 hover:underline dark:text-violet-300"
-              >
-                Geburtshoroskop-Tool
-              </Link>{" "}
-              eingeben und kaufen.
-            </>
-          ) : null}
+          Lilith und Glückspunkt. Komplett kostenlos - Daten bleiben in diesem
+          Browser gespeichert.
         </p>
-
-        {vollreportAccess === false ? (
-          <div className="mt-6 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-950 dark:border-amber-500/25 dark:bg-amber-500/10 dark:text-amber-100">
-            <p className="font-medium">Noch kein Vollzugriff</p>
-            <p className="mt-1 text-black/75 dark:text-white/75">
-              Mit einmaliger Zahlung schaltest du die vollständige Auswertung frei.
-              Gespeicherte Daten aus dem Tool bleiben in diesem Browser erhalten.
-            </p>
-            <Link
-              href={checkoutHref}
-              className="mt-4 inline-flex h-11 items-center justify-center rounded-full bg-black px-5 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black"
-            >
-              Vollreport kaufen
-            </Link>
-          </div>
-        ) : null}
 
         <div className="mt-6 grid gap-4 md:grid-cols-2">
           <label className="space-y-2">
@@ -491,18 +407,8 @@ export default function BirthChartProfilePage() {
         </section>
       ) : null}
 
-      {profile && vollreportAccess === null ? (
-        <p className="text-sm text-black/50 dark:text-white/50">
-          Zugriff wird geladen…
-        </p>
-      ) : null}
-
       {profile && vollreportAccess === true ? (
         <AstroProfileDisplay profile={profile} variant="page" />
-      ) : null}
-
-      {profile && vollreportAccess === false ? (
-        <AstroProfileTeaser profile={profile} variant="page" />
       ) : null}
     </div>
   );

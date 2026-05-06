@@ -39,10 +39,10 @@ export const metadata: Metadata = {
 const pathDu = {
   href: "/tools/birth-chart",
   title: "Mehr über dich",
-  subtitle: "Persönlichkeit, Big 3 & Horoskop",
+  subtitle: "Persönlichkeit & vollständiges Horoskop",
   points: [
-    "Sonne, Mond & Aszendent – exakt berechnet",
-    "Vollprofil mit Planeten, Häusern & Archetyp",
+    "Exakte Berechnung auf Basis deiner Geburtsdaten",
+    "Vollprofil mit Big 3, Planeten, Häusern & Archetyp",
     "Ideal, wenn du Klarheit über dich selbst suchst",
   ],
   cta: "Zum Geburtshoroskop",

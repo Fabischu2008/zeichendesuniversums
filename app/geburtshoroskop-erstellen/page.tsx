@@ -2,30 +2,20 @@ import type { Metadata } from "next";
 import { GeburtshoroskopLandingFunnel } from "@/components/GeburtshoroskopLandingFunnel";
 import { JsonLd } from "@/components/JsonLd";
 import { LandingHeroCtas } from "@/components/LandingHeroCtas";
-import {
-  checkoutHrefForProduct,
-  PRICE_ASTRO_VOLLPROFIL,
-  PRODUCT_ID_ASTRO_VOLLPROFIL,
-} from "@/lib/cms";
 import { SITE_NAME } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/geburtshoroskop-erstellen";
-const checkoutHref = checkoutHrefForProduct(PRODUCT_ID_ASTRO_VOLLPROFIL);
-const priceLabel = new Intl.NumberFormat("de-DE", {
-  minimumFractionDigits: 2,
-  maximumFractionDigits: 2,
-}).format(PRICE_ASTRO_VOLLPROFIL);
 
 export const metadata: Metadata = {
-  title: "Aszendent & Big 3 kostenlos berechnen – persönliches Geburtshoroskop",
+  title: "Kostenloses Geburtshoroskop berechnen – vollständiges Profil",
   description:
-    `Sonne, Mond und Aszendent in 2 Minuten kostenlos berechnen. Optional: persönliches Geburtshoroskop für ${priceLabel} € – sofort verfügbar.`,
+    "Gib Geburtsdatum, Uhrzeit und Ort ein und öffne dein vollständiges astrologisches Profil kostenlos.",
   alternates: { canonical: path },
   openGraph: {
-    title: `Aszendent & Big 3 kostenlos berechnen · ${SITE_NAME}`,
+    title: `Kostenloses Geburtshoroskop · ${SITE_NAME}`,
     description:
-      `Sonne, Mond und Aszendent kostenlos berechnen. Optional persönliches Vollprofil für ${priceLabel} €.`,
+      "Kostenlos berechnen und direkt das vollständige Profil mit Planeten, Häusern und Aspekten öffnen.",
     url: absoluteUrl(path),
   },
 };
@@ -44,34 +34,18 @@ const faqJsonLd = {
     },
     {
       "@type": "Question",
-      name: `Was bekomme ich beim persönlichen Geburtshoroskop für ${priceLabel} €?`,
+      name: "Was bekomme ich nach der Berechnung?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Dein vollständig berechnetes Profil mit allen Planeten, Häusern und Aspekten, ausformulierten Texten zu Stärken, Mustern und Entwicklung – plus persönlichem Zugangslink, den du jederzeit wieder öffnen kannst.",
+        text: "Du wirst direkt zum vollständigen astrologischen Profil geführt: mit Big 3, Planeten, Häusern, Aspekten und ausformulierten Deutungen.",
       },
     },
     {
       "@type": "Question",
-      name: "Wie schnell erhalte ich mein Vollprofil nach dem Kauf?",
+      name: "Muss ich zahlen oder mich anmelden?",
       acceptedAnswer: {
         "@type": "Answer",
-        text: "Direkt nach der Stripe-Zahlung. Dein persönlicher Zugangslink wird innerhalb weniger Sekunden bereitgestellt – kein Warten, kein Postversand.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Ist das ein Abo?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: `Nein. Es ist eine einmalige Zahlung von ${priceLabel} €. Keine Verlängerung, keine versteckten Kosten.`,
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Kann ich den Kauf stornieren, wenn ich unzufrieden bin?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Für Verbraucher gelten die gesetzlichen Rechte. Details und Voraussetzungen findest du in der Widerrufsbelehrung.",
+        text: "Nein. Die Berechnung und das vollständige Profil sind kostenlos und ohne Anmeldung nutzbar.",
       },
     },
     {
@@ -85,27 +59,10 @@ const faqJsonLd = {
   ],
 };
 
-const productJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Product",
-  name: "Persönliches Geburtshoroskop – Vollprofil",
-  description:
-    "Persönliche astrologische Analyse auf Basis von Geburtsdatum, Geburtszeit und Geburtsort. Mit Big 3, allen Planeten, Häusern, Aspekten und ausformulierten Deutungstexten.",
-  brand: SITE_NAME,
-  offers: {
-    "@type": "Offer",
-    priceCurrency: "EUR",
-    price: PRICE_ASTRO_VOLLPROFIL.toFixed(2),
-    availability: "https://schema.org/InStock",
-    url: absoluteUrl(checkoutHref),
-  },
-};
-
 export default function GeburtshoroskopLandingPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
       <JsonLd id="jsonld-geburtshoroskop-faq" data={faqJsonLd} />
-      <JsonLd id="jsonld-geburtshoroskop-product" data={productJsonLd} />
 
       <section className="relative isolate overflow-hidden rounded-3xl border border-black/10 bg-gradient-to-b from-violet-500/10 via-white to-white p-6 sm:p-8 dark:from-violet-400/15 dark:via-black dark:to-black">
         <div
@@ -123,12 +80,12 @@ export default function GeburtshoroskopLandingPage() {
           kostenlos berechnen
         </h1>
         <p className="mt-4 text-base leading-relaxed text-black/75 dark:text-white/75">
-          Gib Datum, Uhrzeit und Geburtsort ein und sieh deine Big 3 sofort —
-          ohne E-Mail, ohne Anmeldung. Wenn du danach willst, kannst du dein
-          vollständiges Geburtshoroskop für einmalig {priceLabel} € freischalten.
+          Gib Datum, Uhrzeit und Geburtsort ein und starte direkt dein
+          vollständiges Geburtshoroskop - ohne E-Mail, ohne Anmeldung, ohne
+          Zahlung.
         </p>
 
-        <LandingHeroCtas priceLabel={priceLabel} />
+        <LandingHeroCtas />
       </section>
 
       <GeburtshoroskopLandingFunnel />

@@ -2,10 +2,6 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { Big3PlacementCard } from "@/components/Big3PlacementCard";
-import { BirthChartReportDemo } from "@/components/BirthChartReportDemo";
-import { BirthChartVollreportUpsell } from "@/components/BirthChartVollreportUpsell";
-import type { ZodiacSign } from "@/lib/astro/signs";
 import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
 
 function safeJsonParse(raw: string): unknown {
@@ -15,24 +11,6 @@ function safeJsonParse(raw: string): unknown {
   } catch {
     return { _nonJson: true, raw };
   }
-}
-
-function blurb(sign: string) {
-  const map: Record<string, string> = {
-    Widder: "Direkt, mutig, startet Dinge – braucht Herausforderung.",
-    Stier: "Stabil, loyal, sinnlich – liebt Sicherheit und Qualität.",
-    Zwillinge: "Neugierig, schnell, kommunikativ – braucht Abwechslung.",
-    Krebs: "Intuitiv, emotional, beschützend – braucht Vertrauen.",
-    Löwe: "Herzlich, stolz, kreativ – braucht Anerkennung.",
-    Jungfrau: "Analytisch, hilfreich, präzise – braucht Klarheit.",
-    Waage: "Ausgleichend, ästhetisch, verbindend – braucht Harmonie.",
-    Skorpion: "Intensiv, loyal, tief – braucht Ehrlichkeit.",
-    Schütze: "Frei, optimistisch, ehrlich – braucht Raum.",
-    Steinbock: "Zielstrebig, verantwortungsvoll – braucht Struktur.",
-    Wassermann: "Unkonventionell, klug, unabhängig – braucht Freiheit.",
-    Fische: "Empathisch, kreativ, fein – braucht Rückzug.",
-  };
-  return map[sign] || "Kurzbeschreibung folgt.";
 }
 
 type Place = {
@@ -194,17 +172,11 @@ export default function BirthChartToolPage() {
           Mehr über dich · Geburtshoroskop
         </p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Dein Geburtshoroskop – Big 3 &amp; Vorschau
+          Dein Geburtshoroskop - direkt zum vollen Profil
         </h1>
         <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
-          Kostenlos:{" "}
-          <strong className="font-medium text-black dark:text-white">Big 3</strong>{" "}
-          berechnen. Darunter siehst du eine{" "}
-          <strong className="font-medium text-black dark:text-white">
-            Demo-Ansicht
-          </strong>{" "}
-          deines Berichts. Die echte, vollständige Auswertung inkl. persönlichem
-          Zugangslink erhältst du nach einmaliger Zahlung.
+          Gib deine Geburtsdaten ein und berechne direkt dein kostenloses
+          Gesamtprofil - ohne Vorschau-Schritt.
         </p>
       </header>
 
@@ -296,10 +268,10 @@ export default function BirthChartToolPage() {
             onClick={() => void calculate()}
             className="inline-flex h-12 w-full items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 px-6 text-sm font-semibold text-violet-900 hover:bg-violet-500/15 disabled:cursor-not-allowed disabled:border-violet-500/20 disabled:bg-violet-500/5 disabled:text-violet-900/60 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-100 dark:hover:bg-violet-500/20 dark:disabled:border-violet-400/20 dark:disabled:bg-violet-500/10 dark:disabled:text-violet-100/60"
           >
-            {calcLoading ? "Berechne…" : "Big 3 jetzt berechnen"}
+            {calcLoading ? "Berechne..." : "Profil jetzt berechnen"}
           </button>
           <p className="mt-3 text-center text-xs text-black/45 dark:text-white/45">
-            Nur dieser Schritt ist kostenlos – kein vollständiges Profil im Browser.
+            Nach diesem Schritt kannst du dein vollständiges Profil kostenlos laden.
           </p>
         </div>
       </section>
@@ -309,7 +281,7 @@ export default function BirthChartToolPage() {
         className="scroll-mt-24 space-y-6 rounded-2xl border border-black/5 bg-white p-4 sm:space-y-8 sm:rounded-3xl sm:p-8 dark:border-white/10 dark:bg-white/5"
       >
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
-          Schritt 3 · Ergebnis &amp; Demo
+          Schritt 3 · Profil öffnen
         </h2>
         {calcError ? (
           <p className="text-sm text-red-600 dark:text-red-400">{calcError}</p>
@@ -318,51 +290,31 @@ export default function BirthChartToolPage() {
         {big3 ? (
           <div className="space-y-2">
             <p className="text-sm text-black/70 dark:text-white/70">
-              Deine <strong className="font-medium">Big 3</strong> – Sonne, Mond
-              und Aszendent – exakt zu deinem Geburtszeitpunkt und Ort.
+              Deine Daten sind berechnet und gespeichert. Jetzt kannst du direkt
+              dein vollständiges Profil öffnen.
             </p>
-
-            <div className="grid gap-3 sm:grid-cols-3">
-              <Big3PlacementCard
-                label="Sonne"
-                sign={big3.sun}
-                description={blurb(big3.sun)}
-              />
-              <Big3PlacementCard
-                label="Mond"
-                sign={big3.moon}
-                description={blurb(big3.moon)}
-              />
-              <Big3PlacementCard
-                label="Aszendent"
-                sign={big3.ascendant}
-                description={blurb(big3.ascendant)}
-              />
-            </div>
 
             {big3.meta?.tz ? (
               <p className="text-xs text-black/50 dark:text-white/50">
                 Zeitzone: {big3.meta.tz}
               </p>
             ) : null}
-
-            <BirthChartReportDemo
-              sun={big3.sun as ZodiacSign}
-              moon={big3.moon as ZodiacSign}
-              ascendant={big3.ascendant as ZodiacSign}
-            />
-
-            <BirthChartVollreportUpsell
-              birthdate={birthdate}
-              birthtime={birthtime}
-              place={place}
-              big3={big3}
-            />
+            <div className="mt-5 rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.08] p-4 dark:border-emerald-500/30 dark:bg-emerald-500/10">
+              <p className="text-sm text-black/75 dark:text-white/75">
+                Oeffne jetzt dein vollständiges Profil kostenlos.
+              </p>
+              <Link
+                href="/tools/birth-chart/profile#vollreport"
+                className="mt-3 inline-flex h-11 items-center justify-center rounded-full bg-emerald-600 px-5 text-sm font-semibold text-white hover:bg-emerald-500 dark:bg-emerald-500 dark:hover:bg-emerald-400"
+              >
+                Vollprofil jetzt kostenlos öffnen
+              </Link>
+            </div>
           </div>
         ) : (
           <p className="text-sm text-black/65 dark:text-white/65">
-            Sobald du die Big 3 berechnet hast, erscheinen hier deine Zeichen, eine
-            Demo-Ansicht des Berichts und der Weg zur vollen Auswertung.
+            Sobald die Berechnung abgeschlossen ist, kannst du hier direkt ins
+            vollständige Profil wechseln.
           </p>
         )}
       </section>

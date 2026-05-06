@@ -26,7 +26,7 @@ function scrollToTarget(targetId: string, focusInputId?: string) {
   }
 }
 
-export function LandingHeroCtas({ priceLabel }: { priceLabel: string }) {
+export function LandingHeroCtas() {
   function onPrimary(e: MouseEvent<HTMLAnchorElement>) {
     e.preventDefault();
     scrollToTarget("daten-eingeben", "landing-birthdate-input");
@@ -41,11 +41,11 @@ export function LandingHeroCtas({ priceLabel }: { priceLabel: string }) {
           onClick={onPrimary}
           className="inline-flex h-12 items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white transition hover:bg-violet-600"
         >
-          Big 3 jetzt kostenlos berechnen
+          Jetzt kostenloses Profil starten
         </a>
       </div>
       <p className="mt-3 text-xs text-black/55 dark:text-white/55">
-        Kostenlos & ohne E-Mail · Vollprofil danach optional für {priceLabel} €
+        Kostenlos & ohne E-Mail · Direkt zum vollständigen Profil
       </p>
     </>
   );
