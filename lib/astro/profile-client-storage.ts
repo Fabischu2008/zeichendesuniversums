@@ -67,15 +67,31 @@ export function mergeAstroSession(
     Pick<StoredAstroSessionV1, "birthdate" | "birthtime" | "place">,
 ): void {
   const prev = readAstroSession();
+  const birthContextChanged = Boolean(
+    prev &&
+      (prev.birthdate !== partial.birthdate ||
+        prev.birthtime !== partial.birthtime ||
+        prev.place.id !== partial.place.id ||
+        prev.place.lat !== partial.place.lat ||
+        prev.place.lon !== partial.place.lon),
+  );
   const next: StoredAstroSessionV1 = {
     version: 1,
     birthdate: partial.birthdate,
     birthtime: partial.birthtime,
     place: partial.place,
     big3:
-      partial.big3 !== undefined ? partial.big3 : (prev?.big3 ?? null),
+      partial.big3 !== undefined
+        ? partial.big3
+        : birthContextChanged
+          ? null
+          : (prev?.big3 ?? null),
     profile:
-      partial.profile !== undefined ? partial.profile : (prev?.profile ?? null),
+      partial.profile !== undefined
+        ? partial.profile
+        : birthContextChanged
+          ? null
+          : (prev?.profile ?? null),
     savedAt: new Date().toISOString(),
   };
   writeAstroSession(next);

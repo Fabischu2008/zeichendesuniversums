@@ -70,6 +70,11 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "weekly",
     },
+    {
+      url: absoluteUrl("/geburtshoroskop-erstellen"),
+      lastModified: now,
+      changeFrequency: "weekly",
+    },
     { url: absoluteUrl("/tools"), lastModified: now, changeFrequency: "monthly" },
     {
       url: absoluteUrl("/tools/compatibility"),
