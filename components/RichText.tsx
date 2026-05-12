@@ -1,3 +1,5 @@
+import Link from "next/link";
+import { Fragment, type ReactNode } from "react";
 import type { PostAccent } from "@/lib/cms";
 
 const ACCENT_H2: Record<PostAccent, string> = {
@@ -28,6 +30,56 @@ type RichTextProps = {
   variant?: "default" | "article";
   accent?: PostAccent;
 };
+
+const INLINE_LINK_CLASS =
+  "font-medium text-violet-800 underline decoration-violet-400/50 underline-offset-[3px] transition hover:decoration-violet-700 dark:text-violet-200 dark:decoration-violet-400/40 dark:hover:decoration-violet-200";
+
+/** Inline-Markdown `[Label](/pfad)` oder `[Label](https://…)` in Fließtext und Listen. */
+function renderInlineMarkdown(text: string, keyPrefix: string) {
+  const out: ReactNode[] = [];
+  let last = 0;
+  let i = 0;
+  for (const m of text.matchAll(/\[([^\]]+)\]\(([^)]+)\)/g)) {
+    const idx = m.index ?? 0;
+    if (idx > last) {
+      out.push(
+        <Fragment key={`${keyPrefix}-s-${i++}`}>{text.slice(last, idx)}</Fragment>,
+      );
+    }
+    const label = m[1];
+    const href = m[2].trim();
+    if (href.startsWith("/")) {
+      out.push(
+        <Link
+          key={`${keyPrefix}-l-${i++}`}
+          href={href}
+          className={INLINE_LINK_CLASS}
+        >
+          {label}
+        </Link>,
+      );
+    } else if (/^https?:\/\//i.test(href)) {
+      out.push(
+        <a
+          key={`${keyPrefix}-a-${i++}`}
+          href={href}
+          target="_blank"
+          rel="noopener noreferrer"
+          className={INLINE_LINK_CLASS}
+        >
+          {label}
+        </a>,
+      );
+    } else {
+      out.push(<Fragment key={`${keyPrefix}-x-${i++}`}>{label}</Fragment>);
+    }
+    last = idx + m[0].length;
+  }
+  if (last < text.length) {
+    out.push(<Fragment key={`${keyPrefix}-e-${i++}`}>{text.slice(last)}</Fragment>);
+  }
+  return out.length === 0 ? text : out;
+}
 
 export function RichText({
   content,
@@ -93,7 +145,7 @@ export function RichText({
                       : ""
                   }
                 >
-                  {it}
+                  {renderInlineMarkdown(it, `li-${idx}-${li}`)}
                 </li>
               ))}
             </ul>
@@ -126,7 +178,7 @@ export function RichText({
                 : "text-sm leading-7 text-black/70 dark:text-white/70"
             }
           >
-            {b}
+            {renderInlineMarkdown(b, `p-${idx}`)}
           </p>
         );
       })}

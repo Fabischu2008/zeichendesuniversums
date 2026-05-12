@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { mergeAstroSession } from "@/lib/astro/profile-client-storage";
+import {
+  clearAstroSession,
+  mergeAstroSession,
+} from "@/lib/astro/profile-client-storage";
 
 type Place = {
   id: string;
@@ -41,6 +44,28 @@ export function GeburtshoroskopLandingFunnel() {
   }>(null);
 
   const abortRef = useRef<AbortController | null>(null);
+
+  function resetInputs() {
+    setBirthdate("");
+    setBirthtime("");
+    setQuery("");
+    setPlaces([]);
+    setPlace(null);
+    setPlacesError(null);
+    setCalcError(null);
+    setBig3(null);
+    clearAstroSession();
+  }
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const url = new URL(window.location.href);
+    const fresh = url.searchParams.get("fresh");
+    if (fresh !== "1") return;
+    resetInputs();
+    url.searchParams.delete("fresh");
+    window.history.replaceState({}, "", url.toString());
+  }, []);
 
   useEffect(() => {
     const q = query.trim();
@@ -241,6 +266,13 @@ export function GeburtshoroskopLandingFunnel() {
           className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-violet-700 px-6 text-sm font-semibold text-white transition hover:bg-violet-600 disabled:cursor-not-allowed disabled:opacity-60"
         >
           {calcLoading ? "Berechne..." : "Profil jetzt öffnen"}
+        </button>
+        <button
+          type="button"
+          onClick={resetInputs}
+          className="mt-3 inline-flex h-11 w-full items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+        >
+          Eingaben zurücksetzen
         </button>
       </section>
 

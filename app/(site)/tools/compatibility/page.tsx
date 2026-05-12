@@ -16,6 +16,11 @@ import type {
 } from "@/lib/astro/synastry";
 import { useGeoPlaces, type GeoPlace } from "@/hooks/useGeoPlaces";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
+import type { CheckoutAstroPayload } from "@/lib/stripe/create-checkout-session";
+import {
+  PRICE_COMPAT_PAARANALYSE,
+  PRODUCT_ID_COMPAT_PAARANALYSE,
+} from "@/lib/cms";
 
 function formatPaarPriceEur(amount: number) {
   return new Intl.NumberFormat("de-DE", {

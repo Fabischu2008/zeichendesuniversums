@@ -9,6 +9,16 @@ const legal = [
   { href: "/widerruf", label: "Widerruf" },
 ] as const;
 
+const discover = [
+  { href: "/geburtshoroskop-erstellen", label: "Geburtshoroskop erstellen" },
+  { href: "/beziehung", label: "Beziehung & Paaranalyse" },
+  { href: "/tools/birth-chart", label: "Geburtshoroskop-Tool" },
+  { href: "/tools/compatibility", label: "Kompatibilitäts-Tool" },
+  { href: "/blog", label: "Astrologie-Blog" },
+  { href: "/sternzeichen", label: "Sternzeichen" },
+  { href: "/tools", label: "Alle Tools" },
+] as const;
+
 const socials = [
   {
     key: "instagram",
@@ -44,7 +54,7 @@ export function SiteFooter() {
   return (
     <footer className="relative mt-auto border-t border-black/5 bg-gradient-to-b from-violet-500/[0.06] via-transparent to-transparent dark:border-white/10 dark:from-violet-500/10">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8 lg:py-14">
-        <div className="flex flex-col gap-10 md:flex-row md:items-start md:justify-between md:gap-12">
+        <div className="flex flex-col gap-10 lg:flex-row lg:items-start lg:justify-between lg:gap-12">
           <div className="max-w-md">
             <Link
               href="/"
@@ -73,17 +83,31 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <div className="shrink-0 md:text-right">
-            <p className={headingClass}>Rechtliches</p>
-            <ul className="mt-4 flex flex-col gap-2.5 md:items-end">
-              {legal.map((item) => (
-                <li key={item.href}>
-                  <Link href={item.href} className={linkClass}>
-                    {item.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
+          <div className="grid shrink-0 gap-10 sm:grid-cols-2 lg:flex lg:gap-16">
+            <div>
+              <p className={headingClass}>Angebot</p>
+              <ul className="mt-4 flex flex-col gap-2.5">
+                {discover.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className={linkClass}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+            <div className="sm:text-right lg:text-right">
+              <p className={headingClass}>Rechtliches</p>
+              <ul className="mt-4 flex flex-col gap-2.5 sm:items-end">
+                {legal.map((item) => (
+                  <li key={item.href}>
+                    <Link href={item.href} className={linkClass}>
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
         </div>
 

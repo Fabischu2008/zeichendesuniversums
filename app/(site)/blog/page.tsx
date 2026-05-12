@@ -69,7 +69,21 @@ export default function BlogPage() {
             </h1>
             <p className="mt-2 max-w-2xl text-sm text-white/90 sm:text-base">
               Astrologie &amp; Beziehung verständlich erklärt – mit klaren nächsten
-              Schritten zu Guide und Tools.
+              Schritten zu{" "}
+              <Link
+                href="/geburtshoroskop-erstellen"
+                className="font-medium text-white underline decoration-white/40 underline-offset-4 hover:decoration-white"
+              >
+                Geburtshoroskop
+              </Link>
+              ,{" "}
+              <Link
+                href="/beziehung"
+                className="font-medium text-white underline decoration-white/40 underline-offset-4 hover:decoration-white"
+              >
+                Beziehung &amp; Synastrie
+              </Link>{" "}
+              und den Tools.
             </p>
           </div>
         </div>

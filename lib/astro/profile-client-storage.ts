@@ -61,6 +61,18 @@ export function writeAstroSession(session: StoredAstroSessionV1): void {
   }
 }
 
+export function clearAstroSession(options?: { clearUnlock?: boolean }): void {
+  if (!isBrowser()) return;
+  try {
+    localStorage.removeItem(SESSION_KEY);
+    if (options?.clearUnlock) {
+      localStorage.removeItem(UNLOCK_KEY);
+    }
+  } catch {
+    /* */
+  }
+}
+
 /** Legt Geburtsdaten, optional Big 3 und Profil im Browser ab (ohne Server). */
 export function mergeAstroSession(
   partial: Partial<StoredAstroSessionV1> &

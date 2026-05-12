@@ -144,14 +144,29 @@ export default function ToolsPage() {
           <strong className="font-medium text-black dark:text-white">
             Bewusstsein
           </strong>{" "}
-          einordnen – kostenlos zum Ausprobieren.
+          einordnen – kostenlos zum Ausprobieren. Kontext zuerst:{" "}
+          <Link
+            href="/geburtshoroskop-erstellen"
+            className="font-medium text-violet-800 underline-offset-4 hover:underline dark:text-violet-200"
+          >
+            Geburtshoroskop erstellen
+          </Link>
+          {" · "}
+          <Link
+            href="/beziehung"
+            className="font-medium text-rose-800 underline-offset-4 hover:underline dark:text-rose-200"
+          >
+            Beziehung &amp; Paaranalyse
+          </Link>
+          .
         </p>
       </header>
 
       <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3 lg:gap-8">
+        <div className="flex min-h-full flex-col gap-3">
         <Link
           href={pathDu.href}
-          className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.12] via-white/80 to-sky-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-violet-500/35 hover:shadow-md dark:from-violet-500/20 dark:via-white/5 dark:to-sky-500/10 dark:hover:border-violet-400/40 sm:p-10"
+          className="group relative flex flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.12] via-white/80 to-sky-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-violet-500/35 hover:shadow-md dark:from-violet-500/20 dark:via-white/5 dark:to-sky-500/10 dark:hover:border-violet-400/40 sm:p-10"
         >
           <span
             className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/90 text-lg shadow-sm dark:bg-white/10"
@@ -185,10 +200,21 @@ export default function ToolsPage() {
             </span>
           </span>
         </Link>
+        <p className="text-center text-xs leading-relaxed text-black/60 dark:text-white/55">
+          <Link href="/geburtshoroskop-erstellen" className="underline-offset-2 hover:underline">
+            Einstieg lesen
+          </Link>
+          {" · "}
+          <Link href="/big-3-bedeutung" className="underline-offset-2 hover:underline">
+            Big 3 erklärt
+          </Link>
+        </p>
+        </div>
 
+        <div className="flex min-h-full flex-col gap-3">
         <Link
           href={pathPaar.href}
-          className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-rose-500/20 bg-gradient-to-br from-rose-500/[0.1] via-white/80 to-amber-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-rose-500/35 hover:shadow-md dark:from-rose-500/[0.15] dark:via-white/5 dark:to-amber-500/10 dark:hover:border-rose-400/40 sm:p-10"
+          className="group relative flex flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-rose-500/20 bg-gradient-to-br from-rose-500/[0.1] via-white/80 to-amber-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-rose-500/35 hover:shadow-md dark:from-rose-500/[0.15] dark:via-white/5 dark:to-amber-500/10 dark:hover:border-rose-400/40 sm:p-10"
         >
           <span
             className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/90 text-lg shadow-sm dark:bg-white/10"
@@ -222,10 +248,21 @@ export default function ToolsPage() {
             </span>
           </span>
         </Link>
+        <p className="text-center text-xs leading-relaxed text-black/60 dark:text-white/55">
+          <Link href="/beziehung" className="underline-offset-2 hover:underline">
+            Beziehungs-Hub
+          </Link>
+          {" · "}
+          <Link href="/synastrie-einfach-erklaert" className="underline-offset-2 hover:underline">
+            Synastrie erklärt
+          </Link>
+        </p>
+        </div>
 
+        <div className="flex min-h-full flex-col gap-3 md:col-span-2 lg:col-span-1">
         <Link
           href={pathBewusstsein.href}
-          className="group relative flex flex-col overflow-hidden rounded-[1.75rem] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.1] via-white/80 to-violet-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-emerald-500/35 hover:shadow-md dark:from-emerald-500/[0.12] dark:via-white/5 dark:to-violet-500/10 dark:hover:border-emerald-400/40 sm:p-10 md:col-span-2 lg:col-span-1"
+          className="group relative flex flex-1 flex-col overflow-hidden rounded-[1.75rem] border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.1] via-white/80 to-violet-500/10 p-8 shadow-sm transition hover:-translate-y-1 hover:border-emerald-500/35 hover:shadow-md dark:from-emerald-500/[0.12] dark:via-white/5 dark:to-violet-500/10 dark:hover:border-emerald-400/40 sm:p-10"
         >
           <span
             className="absolute right-6 top-6 flex h-11 w-11 items-center justify-center rounded-2xl bg-white/90 text-lg shadow-sm dark:bg-white/10"
@@ -259,6 +296,16 @@ export default function ToolsPage() {
             </span>
           </span>
         </Link>
+        <p className="text-center text-xs leading-relaxed text-black/60 dark:text-white/55">
+          <Link href="/blog" className="underline-offset-2 hover:underline">
+            Passende Artikel im Blog
+          </Link>
+          {" · "}
+          <Link href="/tools" className="underline-offset-2 hover:underline">
+            Tool-Übersicht
+          </Link>
+        </p>
+        </div>
 
       </div>
 
