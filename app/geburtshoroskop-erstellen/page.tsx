@@ -3,6 +3,10 @@ import { GeburtshoroskopLandingFunnel } from "@/components/GeburtshoroskopLandin
 import { JsonLd } from "@/components/JsonLd";
 import { LandingHeroCtas } from "@/components/LandingHeroCtas";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/geburtshoroskop-erstellen";
@@ -17,6 +21,14 @@ export const metadata: Metadata = {
     description:
       "Kostenlos berechnen und direkt das vollständige Profil mit Planeten, Häusern und Aspekten öffnen.",
     url: absoluteUrl(path),
+    images: socialOpenGraphImages(),
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `Kostenloses Geburtshoroskop · ${SITE_NAME}`,
+    description:
+      "Geburtsdatum, Uhrzeit, Ort – vollständiges Profil kostenlos öffnen.",
+    images: socialTwitterImages(),
   },
 };
 

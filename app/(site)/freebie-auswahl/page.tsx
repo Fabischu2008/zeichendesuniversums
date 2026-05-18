@@ -2,6 +2,10 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/freebie-auswahl";
@@ -23,12 +27,14 @@ export const metadata: Metadata = {
       "Starte kostenlos mit dem Sternzeichen-Guide oder dem Beziehungs-PDF - danach direkt in die passenden Tools.",
     url: absoluteUrl(path),
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `Kostenlose Guides auswählen · ${SITE_NAME}`,
     description:
       "Sternzeichen-Guide oder Beziehungs-PDF: kostenlos starten und direkt vertiefen.",
+    images: socialTwitterImages(),
   },
 };
 

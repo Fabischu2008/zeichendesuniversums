@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/tools/astro-map";
@@ -26,12 +30,14 @@ export const metadata: Metadata = {
       "Astro-Karte mit Geburtsdaten: Linien, Qualitäten und Einfluss – praktisch erklärt.",
     url,
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `Astro-Karte · ${SITE_NAME}`,
     description:
       "Astrokartographie-Tool: Planetenlinien und Ortsbezug berechnen.",
+    images: socialTwitterImages(),
   },
 };
 

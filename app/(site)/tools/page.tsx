@@ -2,6 +2,10 @@ import Link from "next/link";
 import Image from "next/image";
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/tools";
@@ -27,12 +31,14 @@ export const metadata: Metadata = {
       "Geburtshoroskop, Paaranalyse, Astro-Karte, Human Design, Bewusstsein – alle Tools auf einen Blick.",
     url,
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `Astrologie-Tools · ${SITE_NAME}`,
     description:
       "Horoskop-Tools: Kompatibilität, Big Three, Human Design und mehr.",
+    images: socialTwitterImages(),
   },
 };
 

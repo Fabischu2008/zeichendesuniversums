@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/tools/human-design";
@@ -25,12 +29,14 @@ export const metadata: Metadata = {
       "Bodygraph & Human Design: Typ, Zentren und Profil aus deinen Geburtsdaten.",
     url,
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `Human Design Chart · ${SITE_NAME}`,
     description:
       "Human Design berechnen: Bodygraph, Typ und Autorität – kostenloses Tool.",
+    images: socialTwitterImages(),
   },
 };
 

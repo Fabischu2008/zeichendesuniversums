@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/brand";
+import { socialOpenGraphImages } from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 import { BewusstseinStufenInfo } from "./BewusstseinStufenInfo";
 
@@ -24,6 +25,7 @@ export const metadata: Metadata = {
       "Alle Stufen pro Sternzeichen – zum Nachlesen und Vertiefen.",
     url,
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
 };
 

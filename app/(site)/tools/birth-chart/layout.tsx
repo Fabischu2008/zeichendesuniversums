@@ -1,6 +1,10 @@
 import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/tools/birth-chart";
@@ -27,12 +31,14 @@ export const metadata: Metadata = {
       "Horoskop-Tool: Big Three exakt zu Datum, Uhrzeit und Ort – Astrologie ohne Fuzzis.",
     url,
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `Geburtshoroskop & Big Three · ${SITE_NAME}`,
     description:
       "Sonne, Mond, Aszendent berechnen – kostenloses Geburtshoroskop-Tool.",
+    images: socialTwitterImages(),
   },
 };
 

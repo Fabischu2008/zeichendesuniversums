@@ -4,6 +4,10 @@ import { notFound } from "next/navigation";
 import { BuyButton } from "@/components/BuyButton";
 import { JsonLd } from "@/components/JsonLd";
 import { getProductBySlug, PRODUCT_ID_COACHING_EINFLUSS } from "@/lib/cms";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 export async function generateMetadata({
@@ -24,11 +28,13 @@ export async function generateMetadata({
       title: product.name,
       description: product.description,
       url,
+      images: socialOpenGraphImages(product.name),
     },
     twitter: {
       card: "summary_large_image",
       title: product.name,
       description: product.description,
+      images: socialTwitterImages(),
     },
   };
 }

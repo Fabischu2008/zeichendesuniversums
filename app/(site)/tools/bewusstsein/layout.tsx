@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
 import { SITE_NAME } from "@/lib/brand";
+import {
+  socialOpenGraphImages,
+  socialTwitterImages,
+} from "@/lib/social-metadata";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/tools/bewusstsein";
@@ -24,12 +28,14 @@ export const metadata: Metadata = {
       "Sternzeichen und Bewusstseins-Stufen: wo stehst du – und was wäre der nächste Schritt?",
     url,
     locale: "de_DE",
+    images: socialOpenGraphImages(),
   },
   twitter: {
     card: "summary_large_image",
     title: `Bewusstsein & Stufen · ${SITE_NAME}`,
     description:
       "Tool zu Lebensbühnen und Bewusstseins-Stufen – ohne Geburtsort.",
+    images: socialTwitterImages(),
   },
 };
 
