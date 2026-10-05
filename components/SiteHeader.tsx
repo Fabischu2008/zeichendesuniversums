@@ -1,11 +1,21 @@
 import Image from "next/image";
 import Link from "next/link";
 import MobileNav from "@/components/SiteHeaderMobileNav";
+import { btnPrimary } from "@/lib/ui";
 
 const nav = [
-  { href: "/", label: "Startseite" },
-  { href: "/freebie-auswahl", label: "Kostenlose Guides" },
   { href: "/tools", label: "Tools" },
+  { href: "/beziehung", label: "Beziehung" },
+  { href: "/blog", label: "Blog" },
+  { href: "/reading", label: "Reading" },
+  { href: "/shop", label: "Shop" },
+];
+
+// Im Mobile-Menü fehlt der Header-CTA, deshalb kommen Startseite und Guides dort dazu.
+const mobileNav = [
+  { href: "/", label: "Startseite" },
+  ...nav,
+  { href: "/freebie-auswahl", label: "Kostenlose Guides" },
 ];
 
 export function SiteHeader() {
@@ -24,7 +34,10 @@ export function SiteHeader() {
           <span className="font-semibold tracking-tight">Zeichen des Universums</span>
         </Link>
 
-        <nav className="hidden items-center gap-5 text-sm md:flex">
+        <nav
+          aria-label="Hauptnavigation"
+          className="hidden items-center gap-5 text-sm md:flex"
+        >
           {nav.map((item) => (
             <Link
               key={item.href}
@@ -37,13 +50,14 @@ export function SiteHeader() {
         </nav>
 
         <div className="flex items-center gap-2">
-          <Link
-            href="/freebie-auswahl"
-            className="hidden rounded-full bg-black px-4 py-2 text-sm font-medium text-white hover:bg-black/90 md:inline-flex dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Guides wählen
-          </Link>
-          <MobileNav nav={nav} />
+          {/* Wrapper statt `hidden` am Button: btnPrimary bringt `inline-flex`
+              mit, beide Display-Utilities würden sich sonst überschreiben. */}
+          <div className="hidden md:block">
+            <Link href="/freebie-auswahl" className={btnPrimary}>
+              Kostenloser Guide
+            </Link>
+          </div>
+          <MobileNav nav={mobileNav} />
         </div>
       </div>
     </header>

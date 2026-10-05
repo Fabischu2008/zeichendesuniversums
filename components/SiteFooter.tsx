@@ -9,14 +9,42 @@ const legal = [
   { href: "/widerruf", label: "Widerruf" },
 ] as const;
 
-const discover = [
-  { href: "/geburtshoroskop-erstellen", label: "Geburtshoroskop erstellen" },
-  { href: "/beziehung", label: "Beziehung & Paaranalyse" },
-  { href: "/tools/birth-chart", label: "Geburtshoroskop-Tool" },
-  { href: "/tools/compatibility", label: "Kompatibilitäts-Tool" },
-  { href: "/blog", label: "Astrologie-Blog" },
-  { href: "/sternzeichen", label: "Sternzeichen" },
-  { href: "/tools", label: "Alle Tools" },
+const columns = [
+  {
+    heading: "Tools",
+    links: [
+      { href: "/tools/birth-chart", label: "Geburtshoroskop" },
+      { href: "/tools/compatibility", label: "Paaranalyse" },
+      { href: "/tools/stone-finder", label: "Stone Finder" },
+      { href: "/tools/human-design", label: "Human Design" },
+      { href: "/tools/astro-map", label: "Astro-Karte" },
+      { href: "/tools/bewusstsein", label: "Bewusstsein" },
+      { href: "/tools", label: "Alle Tools" },
+    ],
+  },
+  {
+    heading: "Lesen",
+    links: [
+      { href: "/blog", label: "Astrologie-Blog" },
+      { href: "/sternzeichen", label: "Sternzeichen" },
+      { href: "/geburtshoroskop-erstellen", label: "Geburtshoroskop erstellen" },
+      { href: "/big-3-bedeutung", label: "Big 3 verstehen" },
+      { href: "/aszendent-berechnen", label: "Aszendent berechnen" },
+      { href: "/synastrie-einfach-erklaert", label: "Synastrie erklärt" },
+      { href: "/astrologie-beziehungstipps", label: "Beziehungstipps" },
+    ],
+  },
+  {
+    heading: "Angebot",
+    links: [
+      { href: "/freebie-auswahl", label: "Kostenlose Guides" },
+      { href: "/beziehung", label: "Beziehung & Paaranalyse" },
+      { href: "/reading", label: "Persönliches Reading" },
+      { href: "/reading/beziehung", label: "Beziehungs-Reading" },
+      { href: "/coaching", label: "Coaching" },
+      { href: "/shop", label: "Shop" },
+    ],
+  },
 ] as const;
 
 const socials = [
@@ -83,22 +111,24 @@ export function SiteFooter() {
             </p>
           </div>
 
-          <div className="grid shrink-0 gap-10 sm:grid-cols-2 lg:flex lg:gap-16">
+          <div className="grid shrink-0 gap-10 sm:grid-cols-2 lg:grid-cols-4 lg:gap-14">
+            {columns.map((column) => (
+              <div key={column.heading}>
+                <p className={headingClass}>{column.heading}</p>
+                <ul className="mt-4 flex flex-col gap-2.5">
+                  {column.links.map((item) => (
+                    <li key={item.href}>
+                      <Link href={item.href} className={linkClass}>
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
             <div>
-              <p className={headingClass}>Angebot</p>
-              <ul className="mt-4 flex flex-col gap-2.5">
-                {discover.map((item) => (
-                  <li key={item.href}>
-                    <Link href={item.href} className={linkClass}>
-                      {item.label}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div className="sm:text-right lg:text-right">
               <p className={headingClass}>Rechtliches</p>
-              <ul className="mt-4 flex flex-col gap-2.5 sm:items-end">
+              <ul className="mt-4 flex flex-col gap-2.5">
                 {legal.map((item) => (
                   <li key={item.href}>
                     <Link href={item.href} className={linkClass}>

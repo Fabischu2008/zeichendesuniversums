@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { ToolFooterCta } from "@/components/ToolFooterCta";
+import { backLink, eyebrow } from "@/lib/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { geoNaturalEarth1, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
@@ -487,17 +489,12 @@ export default function AstroMapToolPage() {
 
   return (
     <div className="mx-auto max-w-5xl space-y-12">
-      <Link
-        href="/tools"
-        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
-      >
+      <Link href="/tools" className={backLink}>
         ← Zur Themenwahl
       </Link>
 
       <header className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-sky-700 dark:text-sky-300">
-          Tool 4 · Astro-Landkarte
-        </p>
+        <p className={eyebrow}>Tool · Astro-Landkarte</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Deine planetaren Linien auf der Weltkarte
         </h1>
@@ -549,7 +546,7 @@ export default function AstroMapToolPage() {
           </label>
 
           {placesError ? (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-400">{placesError}</p>
+            <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">{placesError}</p>
           ) : null}
           {placesLoading ? (
             <p className="mt-2 text-sm text-black/60 dark:text-white/60">Suche Orte…</p>
@@ -599,7 +596,7 @@ export default function AstroMapToolPage() {
           Schritt 3 · Deine Kartenlinien
         </h2>
 
-        {error ? <p className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
+        {error ? <p role="alert" className="text-sm text-red-600 dark:text-red-400">{error}</p> : null}
 
         {result?.lines?.length ? (
           <>
@@ -690,7 +687,7 @@ export default function AstroMapToolPage() {
                 className="h-11 w-full rounded-xl border border-black/10 bg-white px-3 text-sm outline-none focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:focus:border-white/30"
               />
               {analysisPlacesError ? (
-                <p className="text-sm text-red-600 dark:text-red-400">{analysisPlacesError}</p>
+                <p role="alert" className="text-sm text-red-600 dark:text-red-400">{analysisPlacesError}</p>
               ) : null}
               {analysisPlacesLoading ? (
                 <p className="text-sm text-black/60 dark:text-white/60">Suche Orte…</p>
@@ -824,34 +821,7 @@ export default function AstroMapToolPage() {
         )}
       </section>
 
-      <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">
-        <p className="text-sm font-medium text-black/80 dark:text-white/80">
-          Nächster Schritt
-        </p>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-          Wenn du dieses Tool gerade überspringst, geh einfach hier weiter.
-        </p>
-        <div className="mt-5 grid gap-2 sm:grid-cols-3">
-          <Link
-            href="/freebie"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Kostenloser Guide
-          </Link>
-          <Link
-            href="/shop"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Zum Shop
-          </Link>
-          <Link
-            href="/tools"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Nächstes Tool
-          </Link>
-        </div>
-      </section>
+      <ToolFooterCta />
     </div>
   );
 }

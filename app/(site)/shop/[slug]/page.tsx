@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { BuyButton } from "@/components/BuyButton";
 import { JsonLd } from "@/components/JsonLd";
 import { getProductBySlug, PRODUCT_ID_COACHING_EINFLUSS } from "@/lib/cms";
+import { btnPrimary } from "@/lib/ui";
 import {
   socialOpenGraphImages,
   socialTwitterImages,
@@ -17,7 +18,7 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) return { title: "Produkt" };
+  if (!product || product.unlisted) return { title: "Produkt" };
   const url = absoluteUrl(`/shop/${product.slug}`);
   return {
     title: product.name,
@@ -55,7 +56,7 @@ export default async function ProductPage({
 }) {
   const { slug } = await params;
   const product = getProductBySlug(slug);
-  if (!product) notFound();
+  if (!product || product.unlisted) notFound();
   const isCoaching = product.id === PRODUCT_ID_COACHING_EINFLUSS;
 
   const url = absoluteUrl(`/shop/${product.slug}`);
@@ -98,7 +99,11 @@ export default async function ProductPage({
             {product.content}
           </p>
           <ul className="mt-4 space-y-2 text-sm text-black/80 dark:text-white/80">
-            <li>• Sofortiger Zugriff nach Kauf</li>
+            <li>
+              {isCoaching
+                ? "• Start mit einem kostenlosen Erstgespräch"
+                : "• Zugang direkt nach dem Kauf"}
+            </li>
             <li>• Klar strukturierte Inhalte</li>
             <li>• Umsetzbare Schritte</li>
           </ul>
@@ -139,17 +144,14 @@ export default async function ProductPage({
             </div>
           ) : (
             <div className="rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
-              Sofort‑Download
+              Sofort‑Zugang
             </div>
           )}
         </div>
 
         <div className="mt-6">
           {isCoaching ? (
-            <Link
-              href="/coaching"
-              className="inline-flex h-12 w-full items-center justify-center rounded-2xl bg-black px-5 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
+            <Link href="/coaching" className={`${btnPrimary} w-full`}>
               Termin buchen
             </Link>
           ) : (
@@ -157,15 +159,27 @@ export default async function ProductPage({
           )}
         </div>
 
-        <div className="mt-6 rounded-2xl border border-black/5 bg-black/[0.03] p-4 text-sm text-black/70 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
-          <p className="font-medium text-black dark:text-white">
-            Trust & Bewertungen
-          </p>
-          <p className="mt-1">
-            „Kurz, klar, treffsicher.“ – echte Rezensionen kommen im nächsten
-            Schritt dazu.
-          </p>
-        </div>
+        <ul className="mt-6 space-y-2 rounded-2xl border border-black/5 bg-black/[0.03] p-4 text-sm text-black/70 dark:border-white/10 dark:bg-white/5 dark:text-white/70">
+          {(isCoaching
+            ? [
+                "Unverbindliches Erstgespräch, keine Vorauszahlung",
+                "Terminbestätigung per E-Mail",
+                "Jederzeit absagbar",
+              ]
+            : [
+                "Bezahlung verschlüsselt über Stripe",
+                "Zugang sofort nach Zahlung per E-Mail",
+                "Kein Abo, keine Folgekosten",
+              ]
+          ).map((item) => (
+            <li key={item} className="flex gap-2">
+              <span aria-hidden="true" className="text-violet-700 dark:text-violet-300">
+                ✓
+              </span>
+              <span>{item}</span>
+            </li>
+          ))}
+        </ul>
 
         <p className="mt-6 text-xs text-black/50 dark:text-white/50">
           {isCoaching

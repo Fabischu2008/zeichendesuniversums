@@ -157,7 +157,7 @@ export default function SternzeichenLandingPage() {
       >
         <div className="mx-auto max-w-2xl text-center">
           <h2 className="text-2xl font-semibold tracking-tight sm:text-3xl">
-            So funktioniert's
+            So funktioniert&rsquo;s
           </h2>
           <p className="mt-2 text-sm text-black/70 dark:text-white/70">
             Drei einfache Schritte bis zur Datei auf deinem Gerät.

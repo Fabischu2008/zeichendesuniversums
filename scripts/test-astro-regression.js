@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 const Astronomy = require("astronomy-engine");
 const { DateTime } = require("luxon");
 const tzLookup = require("tz-lookup");

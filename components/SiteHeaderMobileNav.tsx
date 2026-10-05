@@ -26,7 +26,7 @@ export default function MobileNav({ nav }: { nav: NavItem[] }) {
         aria-expanded={open}
         aria-controls="mobile-nav"
         onClick={() => setOpen(true)}
-        className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-white px-3 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+        className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
       >
         Menü
       </button>

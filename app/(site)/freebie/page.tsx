@@ -97,9 +97,11 @@ export default function FreebiePage() {
           </div>
 
           <div className="rounded-3xl border border-black/5 bg-white p-5 text-sm sm:p-6 dark:border-white/10 dark:bg-white/5">
-            <p className="text-sm font-semibold tracking-tight">Quick Preview</p>
+            <p className="text-sm font-semibold tracking-tight">
+              So liest sich der Guide
+            </p>
             <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-              Beispiel‑Ausschnitt (Mock):
+              Ein Ausschnitt aus dem Kapitel zu Beziehungsmustern:
             </p>
             <div className="mt-4 space-y-3 rounded-2xl bg-black/5 p-4 text-sm text-black/80 dark:bg-white/10 dark:text-white/80">
               <p className="font-medium">Wenn du dich oft „zu viel“ fühlst…</p>

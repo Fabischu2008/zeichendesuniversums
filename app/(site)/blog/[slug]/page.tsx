@@ -11,9 +11,11 @@ import {
   type PostFooterCta,
 } from "@/lib/cms";
 import {
+  SITE_NAME,
   SOCIAL_PREVIEW_IMAGE,
   SOCIAL_PREVIEW_IMAGE_SIZE,
 } from "@/lib/brand";
+import { formatPostDate } from "@/lib/format-date";
 import { absoluteUrl } from "@/lib/site";
 
 const DEFAULT_POST_FOOTER_CTA: PostFooterCta = {
@@ -99,9 +101,24 @@ export default async function BlogPostPage({
     inLanguage: "de-DE",
     keywords: post.keywords.join(", "),
     image: post.coverImage ? absoluteUrl(post.coverImage) : undefined,
+    author: { "@type": "Organization", name: SITE_NAME, url: absoluteUrl("/") },
+    publisher: {
+      "@type": "Organization",
+      name: SITE_NAME,
+      url: absoluteUrl("/"),
+      logo: {
+        "@type": "ImageObject",
+        url: absoluteUrl("/images/logo-eye-inline.png"),
+      },
+    },
+    ...(post.publishedAt ? { datePublished: post.publishedAt } : {}),
+    ...(post.updatedAt ?? post.publishedAt
+      ? { dateModified: post.updatedAt ?? post.publishedAt }
+      : {}),
+    mainEntityOfPage: { "@type": "WebPage", "@id": url },
     isPartOf: {
       "@type": "Blog",
-      name: "Zeichen des Universums",
+      name: SITE_NAME,
       url: absoluteUrl("/blog"),
     },
   };
@@ -179,6 +196,23 @@ export default async function BlogPostPage({
           </div>
         )}
       </header>
+
+      {post.publishedAt ? (
+        <p className="text-sm text-black/55 dark:text-white/55">
+          Veröffentlicht am{" "}
+          <time dateTime={post.publishedAt}>
+            {formatPostDate(post.publishedAt)}
+          </time>
+          {post.updatedAt && post.updatedAt !== post.publishedAt ? (
+            <>
+              {" · aktualisiert am "}
+              <time dateTime={post.updatedAt}>
+                {formatPostDate(post.updatedAt)}
+              </time>
+            </>
+          ) : null}
+        </p>
+      ) : null}
 
       <div className="rounded-[1.75rem] border border-black/10 bg-white/70 px-5 py-8 shadow-sm dark:border-white/10 dark:bg-white/[0.04] sm:px-9 sm:py-10">
         <RichText

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { JsonLd } from "@/components/JsonLd";
+import { FaqSection, type FaqItem } from "@/components/FaqSection";
 import { SITE_NAME, SOCIAL_PREVIEW_IMAGE, SOCIAL_PREVIEW_IMAGE_SIZE } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
@@ -33,7 +33,7 @@ export const metadata: Metadata = {
   },
 };
 
-const faqs = [
+const faqs: FaqItem[] = [
   {
     question: "Was brauche ich, um den Aszendenten zu berechnen?",
     answer:
@@ -49,22 +49,11 @@ const faqs = [
     answer:
       "Ja. Mit dem kostenlosen Geburtshoroskop-Tool kannst du deinen Aszendenten direkt berechnen.",
   },
-] as const;
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: { "@type": "Answer", text: faq.answer },
-  })),
-};
+];
 
 export default function AszendentBerechnenPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <JsonLd id="jsonld-aszendent-faq" data={faqJsonLd} />
 
       <section className="relative isolate overflow-hidden rounded-3xl border border-black/10">
         <div className="relative min-h-[300px] sm:min-h-[360px]">
@@ -116,18 +105,64 @@ export default function AszendentBerechnenPage() {
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">Häufige Fragen</h2>
-        {faqs.map((faq) => (
-          <details
-            key={faq.question}
-            className="rounded-2xl border border-black/5 bg-white p-4 dark:border-white/10 dark:bg-white/5"
-          >
-            <summary className="cursor-pointer list-none font-medium">{faq.question}</summary>
-            <p className="mt-2 text-sm text-black/70 dark:text-white/70">{faq.answer}</p>
-          </details>
-        ))}
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Warum die Geburtszeit beim Aszendenten so viel ausmacht
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Die Erde dreht sich in 24 Stunden einmal um sich selbst. Dadurch zieht der
+          komplette Tierkreis an jedem Tag einmal am östlichen Horizont vorbei –
+          im Schnitt wechselt der Aszendent also etwa alle zwei Stunden das Zeichen.
+          Das ist der Grund, warum dein Aszendent als einzige der Big 3 ohne
+          Uhrzeit nicht bestimmbar ist: Dasselbe Geburtsdatum liefert je nach
+          Uhrzeit zwölf verschiedene Ergebnisse.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          „Etwa alle zwei Stunden“ ist dabei nur ein Mittelwert. Je weiter du vom
+          Äquator entfernt geboren bist, desto ungleichmäßiger werden die
+          Zeitspannen: Manche Zeichen steigen in unter einer Stunde auf, andere
+          brauchen über drei. Deshalb braucht die Berechnung neben der Uhrzeit auch
+          den Geburtsort – die geografische Breite verändert das Ergebnis.
+        </p>
       </section>
+
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Wie genau muss deine Uhrzeit sein?
+        </h2>
+        <ul className="mt-4 space-y-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          <li>
+            <span className="font-medium text-black dark:text-white">
+              Abweichung bis etwa 15 Minuten:
+            </span>{" "}
+            Das Aszendenten-Zeichen bleibt meist gleich. Die Häuserspitzen
+            verschieben sich leicht, an der Gesamtaussage ändert das wenig.
+          </li>
+          <li>
+            <span className="font-medium text-black dark:text-white">
+              Abweichung von einer Stunde:
+            </span>{" "}
+            Das Zeichen kann schon kippen. Planeten wandern an Häusergrenzen in ein
+            anderes Haus – die Lebensbereiche verschieben sich damit sichtbar.
+          </li>
+          <li>
+            <span className="font-medium text-black dark:text-white">
+              Uhrzeit komplett unbekannt:
+            </span>{" "}
+            Sonne und in der Regel auch der Mond lassen sich trotzdem bestimmen.
+            Aszendent, Medium Coeli und die Häuser nicht – diese Angaben solltest
+            du dann gar nicht erst als Ergebnis behandeln.
+          </li>
+        </ul>
+        <p className="mt-4 text-sm leading-6 text-black/75 dark:text-white/75">
+          Die zuverlässigste Quelle ist deine Geburtsurkunde oder die Geburtsklinik.
+          Erinnerungen von Familienmitgliedern sind erfahrungsgemäß auf eine halbe
+          Stunde genau – für das Zeichen reicht das meist, für die Häuser nicht
+          immer.
+        </p>
+      </section>
+
+      <FaqSection id="aszendent" items={faqs} />
     </div>
   );
 }

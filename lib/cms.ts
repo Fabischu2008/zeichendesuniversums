@@ -11,7 +11,12 @@ export type Product = {
   image: string;
   category: ProductCategory;
   content: string;
-  fileUrl?: string;
+  /**
+   * Produkte ohne fertigen Kauf-Funnel. Sie bleiben über `getProductById`
+   * auflösbar (Checkout, Success-Seite, bereits verkaufte Zugänge), erscheinen
+   * aber nicht im Shop, in der Sitemap oder als eigene Produktseite.
+   */
+  unlisted?: boolean;
 };
 
 /** Unteres CTA auf der Artikel-Seite; fehlt es, gilt der Standard (Freebie). */
@@ -37,6 +42,10 @@ export type Post = {
   /** Optionales Cover unter /public (z. B. /images/hero-cosmic-eye.png) */
   coverImage?: string;
   coverAlt?: string;
+  /** ISO-Datum (YYYY-MM-DD). Ohne Wert bleiben Datumsangabe und Schema-Feld leer. */
+  publishedAt?: string;
+  /** ISO-Datum der letzten inhaltlichen Überarbeitung. */
+  updatedAt?: string;
 };
 
 /** Checkout / Produkt-ID für das astrologische Vollprofil (Vollreport). Nicht im Shop-Katalog. */
@@ -71,7 +80,7 @@ const products: Product[] = [
     category: "guide",
     content:
       "Exakte Berechnung auf Basis von Datum, Uhrzeit und Ort. Enthält Archetyp, Lebensfokus, Beziehungsstil und klare Handlungsimpulse.",
-    fileUrl: "/downloads/geburtshoroskop-vollreport.pdf",
+    unlisted: true,
   },
   {
     id: PRODUCT_ID_COMPAT_PAARANALYSE,
@@ -84,7 +93,7 @@ const products: Product[] = [
     category: "compatibility",
     content:
       "Mit Synastry-Aspekten, Dimensionsanalyse und konkreten Empfehlungen zu Kommunikation, Vertrauen und Langfristigkeit.",
-    fileUrl: "/downloads/compatibility.pdf",
+    unlisted: true,
   },
   {
     id: PRODUCT_ID_READING_PROFILE_30,
@@ -140,6 +149,8 @@ const posts: Post[] = [
   {
     title: "Wie dein Sternzeichen wirklich tickt (ohne Klischees)",
     slug: "sternzeichen-ohne-klischees",
+    publishedAt: "2026-03-17",
+    updatedAt: "2026-04-19",
     seoTitle:
       "Sternzeichen ohne Klischees: Bedeutung, Stressmuster, Beziehung",
     metaDescription:
@@ -180,6 +191,8 @@ const posts: Post[] = [
   {
     title: "Warum es in der Beziehung knallt (und wie ihr es besser löst)",
     slug: "compatibility-warum-es-knallt",
+    publishedAt: "2026-03-17",
+    updatedAt: "2026-04-19",
     seoTitle:
       "Beziehung: Konflikte verstehen – Nähe, Tempo, Kommunikation",
     metaDescription:
@@ -221,6 +234,7 @@ const posts: Post[] = [
     title:
       "Geburtshoroskop & Big Three: Sonne, Mond, Aszendent – warum Datum und Ort zählen",
     slug: "geburtshoroskop-big-three-tool",
+    publishedAt: "2026-04-19",
     seoTitle:
       "Geburtshoroskop & Big Three: Sonne, Mond, Aszendent richtig berechnen",
     metaDescription:
@@ -258,6 +272,7 @@ const posts: Post[] = [
     title:
       "Paaranalyse & Synastry: Wie sich zwei Horoskope wirklich treffen (nicht nur zwei Sternzeichen)",
     slug: "paaranalyse-synastry-astrologie",
+    publishedAt: "2026-04-19",
     seoTitle:
       "Paaranalyse & Synastrie: Kompatibilität jenseits vom Sternzeichen",
     metaDescription:
@@ -296,6 +311,7 @@ const posts: Post[] = [
   {
     title: "Die 12 Häuser im Geburtshoroskop: Lebensfelder statt Esoterik-Rätsel",
     slug: "haeuser-geburtshoroskop-bedeutung",
+    publishedAt: "2026-05-12",
     seoTitle:
       "12 Häuser im Geburtshoroskop: Bedeutung ohne Fachchinesisch",
     metaDescription:
@@ -331,6 +347,7 @@ const posts: Post[] = [
   {
     title: "Aszendent vs. Sternzeichen: der eine Satz, der alles klärt",
     slug: "aszendent-sternzeichen-unterschied",
+    publishedAt: "2026-05-12",
     seoTitle: "Aszendent vs. Sternzeichen: Unterschied in zwei Minuten",
     metaDescription:
       "Sternzeichen = Sonne. Aszendent = erste Schicht nach außen. Plus Mond – so ergänzen sich die Big 3, und so rechnest du es verlässlich.",
@@ -364,6 +381,7 @@ const posts: Post[] = [
   {
     title: "Geburtszeit unbekannt: Was Astrologie (noch) für dich tun kann",
     slug: "geburtszeit-unbekannt-astrologie",
+    publishedAt: "2026-05-12",
     seoTitle:
       "Geburtszeit unbekannt: Horoskop-Teile, die trotzdem Sinn ergeben",
     metaDescription:
@@ -396,6 +414,7 @@ const posts: Post[] = [
   {
     title: "Big Three im Alltag: Sonne, Mond, Aszendent wirklich anwenden",
     slug: "big-three-im-alltag-praxis",
+    publishedAt: "2026-05-12",
     seoTitle: "Big 3 im Alltag: Sonne, Mond, Aszendent konkret anwenden",
     metaDescription:
       "Keine Theorie-Schleife: Sonne für Richtung, Mond für Bedürfnisse, Aszendent für Startmodus – mit Mini-Beispielen und Links zu Tool und Big-3-Erklärung.",
@@ -428,6 +447,7 @@ const posts: Post[] = [
   {
     title: "Was Synastrie nicht kann (und warum das gut ist)",
     slug: "synastrie-grenzen-ehrlich",
+    publishedAt: "2026-05-12",
     seoTitle:
       "Synastrie: was Paaranalyse kann – und was sie nicht leisten darf",
     metaDescription:
@@ -461,6 +481,7 @@ const posts: Post[] = [
   {
     title: "Mond-Mond in der Synastrie: wenn zwei Gefühlswelten aufeinandertreffen",
     slug: "mond-mond-synastrie-paar",
+    publishedAt: "2026-05-12",
     seoTitle:
       "Mond–Mond in der Synastrie: emotionale Sprache in der Partnerschaft",
     metaDescription:
@@ -492,6 +513,7 @@ const posts: Post[] = [
   {
     title: "Venus im Zeichen vs. Venus im Haus: was in Beziehungen wirklich zählt",
     slug: "venus-zeichen-vs-haus-partnerschaft",
+    publishedAt: "2026-05-12",
     seoTitle:
       "Venus im Zeichen vs. Haus: Liebesstil und Lebensbereiche im Chart",
     metaDescription:
@@ -521,6 +543,7 @@ const posts: Post[] = [
   {
     title: "Sternzeichen-Match vs. echtes Chart: warum der Unterschied massiv ist",
     slug: "sternzeichen-vs-vollchart-kompatibilitaet",
+    publishedAt: "2026-05-12",
     seoTitle:
       "Sternzeichen-Match vs. volles Chart: warum der Unterschied so groß ist",
     metaDescription:
@@ -551,16 +574,25 @@ const posts: Post[] = [
   },
 ];
 
+/** Öffentlich sichtbarer Katalog (Shop-Liste, Sitemap). */
 export function getProducts(): Product[] {
-  return products;
+  return products.filter((p) => !p.unlisted);
 }
 
 export function getFeaturedProducts(): Product[] {
-  return products.slice(0, 3);
+  return getProducts().slice(0, 3);
 }
 
 export function getProductBySlug(slug: string): Product | undefined {
   return products.find((p) => p.slug === slug);
+}
+
+/**
+ * Auflösung inklusive `unlisted`-Produkten – nötig für Checkout und
+ * Success-Seite, damit bereits gekaufte Zugänge weiter funktionieren.
+ */
+export function getProductById(productId: string): Product | undefined {
+  return products.find((p) => p.id === productId);
 }
 
 const POST_LIST_ORDER = [

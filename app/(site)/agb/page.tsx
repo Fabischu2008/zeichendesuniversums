@@ -6,6 +6,7 @@ import { LEGAL_PROVIDER, LEGAL_STAND } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "AGB",
   description: `Allgemeine Geschäftsbedingungen von ${SITE_NAME}.`,
+  alternates: { canonical: "/agb" },
 };
 
 export default function AgbPage() {

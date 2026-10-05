@@ -6,6 +6,7 @@ import { LEGAL_PROVIDER, LEGAL_STAND } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Datenschutzerklärung",
   description: `Informationen zur Verarbeitung personenbezogener Daten bei ${SITE_NAME}.`,
+  alternates: { canonical: "/datenschutz" },
 };
 
 export default function DatenschutzPage() {

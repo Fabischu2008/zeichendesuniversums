@@ -1,4 +1,4 @@
-/* eslint-disable no-console */
+ 
 import { computeProfileFromBirth } from "@/lib/astro/birth-to-profile";
 import { spawnSync } from "node:child_process";
 

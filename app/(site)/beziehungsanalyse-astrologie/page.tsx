@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
+import { FaqSection, type FaqItem } from "@/components/FaqSection";
 import Image from "next/image";
 import Link from "next/link";
-import { JsonLd } from "@/components/JsonLd";
 import { SITE_NAME, SOCIAL_PREVIEW_IMAGE, SOCIAL_PREVIEW_IMAGE_SIZE } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
@@ -33,33 +33,27 @@ export const metadata: Metadata = {
   },
 };
 
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: [
-    {
-      "@type": "Question",
-      name: "Welche Daten braucht eine genaue Beziehungsanalyse?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Für beide Personen: Geburtsdatum, genaue Geburtszeit und Geburtsort. Damit können Planeten, Häuser und Aspektverbindungen exakt berechnet werden.",
-      },
-    },
-    {
-      "@type": "Question",
-      name: "Was bringt mir die Analyse konkret im Alltag?",
-      acceptedAnswer: {
-        "@type": "Answer",
-        text: "Du erkennst Muster bei Kommunikation, Nähe, Konflikt und Vertrauen. Das hilft, Gespräche klarer zu führen und bewusste Entscheidungen in der Beziehung zu treffen.",
-      },
-    },
-  ],
-};
+const faqs: FaqItem[] = [
+  {
+    question: "Welche Daten braucht eine genaue Beziehungsanalyse?",
+    answer:
+      "Für beide Personen: Geburtsdatum, genaue Geburtszeit und Geburtsort. Damit können Planeten, Häuser und Aspektverbindungen exakt berechnet werden.",
+  },
+  {
+    question: "Was bringt mir die Analyse konkret im Alltag?",
+    answer:
+      "Du erkennst Muster bei Kommunikation, Nähe, Konflikt und Vertrauen. Das hilft, Gespräche klarer zu führen und bewusste Entscheidungen in der Beziehung zu treffen.",
+  },
+  {
+    question: "Ersetzt eine Beziehungsanalyse eine Paarberatung?",
+    answer:
+      "Nein. Sie macht Muster sichtbar und gibt euch Sprache dafür. Bei akuten Krisen ist eine Paarberatung der passendere Rahmen.",
+  },
+];
 
 export default function BeziehungsanalyseAstrologiePage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <JsonLd id="jsonld-beziehungsanalyse-faq" data={faqJsonLd} />
       <section className="relative isolate overflow-hidden rounded-3xl border border-black/10">
         <div className="relative min-h-[300px] sm:min-h-[360px]">
           <Image
@@ -105,6 +99,68 @@ export default function BeziehungsanalyseAstrologiePage() {
           </Link>
         </div>
       </section>
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Die drei Ebenen einer vollständigen Analyse
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Eine seriöse Beziehungsanalyse springt nicht direkt zum Vergleich. Sie
+          arbeitet sich in drei Schritten vor, weil jeder Schritt eine andere Frage
+          beantwortet:
+        </p>
+        <ol className="mt-4 space-y-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          <li>
+            <span className="font-medium text-black dark:text-white">
+              1. Beide Horoskope einzeln.
+            </span>{" "}
+            Was bringt jede Person unabhängig von der Beziehung mit? Ohne diesen
+            Schritt wird jedes Muster der Beziehung zugeschrieben, obwohl es schon
+            vorher da war.
+          </li>
+          <li>
+            <span className="font-medium text-black dark:text-white">
+              2. Die Synastrie.
+            </span>{" "}
+            Die Winkel zwischen den Planeten beider Personen. Hier zeigt sich, was
+            zwischen diesen beiden Menschen leicht fällt und was dauerhaft reibt.
+          </li>
+          <li>
+            <span className="font-medium text-black dark:text-white">
+              3. Das Composite.
+            </span>{" "}
+            Ein drittes, aus beiden errechnetes Horoskop – es beschreibt die
+            Beziehung als eigenes Gebilde, also wie sie von außen wirkt und worauf
+            sie als Einheit zusteuert.
+          </li>
+        </ol>
+      </section>
+
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Welche Fragen eine Analyse beantworten kann – und welche nicht
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Gut beantwortbar sind Fragen nach dem Muster: Warum endet jeder Streit
+          gleich? Warum fühlt sich Nähe für uns unterschiedlich an? Wo überfordern
+          wir uns gegenseitig, ohne es zu merken? Das sind strukturelle Fragen, und
+          Struktur ist genau das, was ein Horoskopvergleich zeigt.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Nicht beantwortbar sind Entscheidungsfragen. Ob ihr zusammenbleiben
+          solltet, ob jemand treu ist, ob es die große Liebe ist – darauf gibt kein
+          Horoskop eine Antwort, und jede Quelle, die das behauptet, verkauft
+          Gewissheit statt Einsicht. Eine Analyse liefert Begriffe für etwas, das
+          ihr vorher nur gefühlt habt. Was ihr damit macht, bleibt eure Entscheidung.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Benötigt werden von beiden Personen Geburtsdatum, Geburtszeit und
+          Geburtsort. Fehlt bei einer Person die Uhrzeit, bleiben Sonne, Mond und
+          die gegenseitigen Planetenaspekte nutzbar – Häuser und Aszendent nicht.
+        </p>
+      </section>
+
+      <FaqSection id="beziehungsanalyse" items={faqs} />
+
     </div>
   );
 }

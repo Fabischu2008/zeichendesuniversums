@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { ToolFooterCta } from "@/components/ToolFooterCta";
+import { backLink, btnPrimary, btnSecondary, eyebrow } from "@/lib/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { ZodiacSignIcon } from "@/components/ZodiacSignIcon";
 import { ZODIAC_SIGNS, type ZodiacSign } from "@/lib/astro/signs";
@@ -82,17 +84,12 @@ export function BewusstseinTool() {
 
   return (
     <div className="mx-auto max-w-3xl space-y-12">
-      <Link
-        href="/tools"
-        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
-      >
+      <Link href="/tools" className={backLink}>
         ← Zur Themenwahl
       </Link>
 
       <header className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
-          Tool · Bewusstsein
-        </p>
+        <p className={eyebrow}>Tool · Bewusstsein</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
           Stufen der Bewusstheit
         </h1>
@@ -194,6 +191,7 @@ export function BewusstseinTool() {
       {sign && berechneteStufe && aktuelle && naechster ? (
         <section
           ref={resultRef}
+          aria-live="polite"
           className="scroll-mt-24 space-y-6 rounded-3xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.08] via-white to-amber-500/10 p-6 sm:p-8 dark:border-white/10 dark:from-violet-500/15 dark:via-white/5 dark:to-amber-500/10"
         >
           <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
@@ -238,14 +236,11 @@ export function BewusstseinTool() {
                 setBerechneteStufe(null);
                 setMittelwert(null);
               }}
-              className="inline-flex h-12 items-center justify-center rounded-full border border-black/10 bg-white px-6 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
+              className={btnSecondary}
             >
               Fragebogen wiederholen
             </button>
-            <Link
-              href="/tools/bewusstsein/stufen"
-              className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
+            <Link href="/tools/bewusstsein/stufen" className={btnPrimary}>
               Alle Stufen nachlesen
             </Link>
           </div>
@@ -260,34 +255,7 @@ export function BewusstseinTool() {
         </section>
       ) : null}
 
-      <section className="mx-auto max-w-xl rounded-3xl border border-black/5 bg-black/[0.02] px-6 py-8 text-center dark:border-white/10 dark:bg-white/[0.03] sm:px-8">
-        <p className="text-sm font-medium text-black/80 dark:text-white/80">
-          Nächster Schritt
-        </p>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-          Wenn du dieses Tool gerade überspringst, geh einfach hier weiter.
-        </p>
-        <div className="mt-5 grid gap-2 sm:grid-cols-3">
-          <Link
-            href="/freebie"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Kostenloser Guide
-          </Link>
-          <Link
-            href="/shop"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Zum Shop
-          </Link>
-          <Link
-            href="/tools"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Nächstes Tool
-          </Link>
-        </div>
-      </section>
+      <ToolFooterCta />
     </div>
   );
 }

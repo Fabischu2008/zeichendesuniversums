@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { JsonLd } from "@/components/JsonLd";
+import { FaqSection, type FaqItem } from "@/components/FaqSection";
 import { SITE_NAME, SOCIAL_PREVIEW_IMAGE, SOCIAL_PREVIEW_IMAGE_SIZE } from "@/lib/brand";
 import { absoluteUrl } from "@/lib/site";
 
 const path = "/sternzeichen-kompatibilitaet";
 const ogImage = absoluteUrl(SOCIAL_PREVIEW_IMAGE);
-const faqs = [
+const faqs: FaqItem[] = [
   {
     question: "Wie zuverlässig ist Sternzeichen-Kompatibilität?",
     answer:
@@ -23,17 +23,7 @@ const faqs = [
     answer:
       "Wenn ihr wiederkehrende Muster bei Nähe, Kommunikation oder Konflikt besser verstehen und konkret verändern wollt.",
   },
-] as const;
-
-const faqJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "FAQPage",
-  mainEntity: faqs.map((faq) => ({
-    "@type": "Question",
-    name: faq.question,
-    acceptedAnswer: { "@type": "Answer", text: faq.answer },
-  })),
-};
+];
 
 export const metadata: Metadata = {
   title: "Sternzeichen-Kompatibilität: Schnellcheck + klare Grenzen",
@@ -51,7 +41,6 @@ export const metadata: Metadata = {
 export default function SternzeichenKompatibilitaetPage() {
   return (
     <div className="mx-auto max-w-4xl space-y-8">
-      <JsonLd id="jsonld-sternzeichen-kompatibilitaet-faq" data={faqJsonLd} />
       <section className="relative isolate overflow-hidden rounded-3xl border border-black/10">
         <div className="relative min-h-[300px] sm:min-h-[360px]">
           <Image src="/images/landing/lp-sternzeichen-kompatibilitaet-v2.jpg" alt="Kompatibilität in Beziehungen" fill sizes="100vw" className="object-cover" />
@@ -83,18 +72,52 @@ export default function SternzeichenKompatibilitaetPage() {
         </div>
       </section>
 
-      <section className="space-y-3">
-        <h2 className="text-xl font-semibold tracking-tight">Häufige Fragen</h2>
-        {faqs.map((faq) => (
-          <details
-            key={faq.question}
-            className="rounded-2xl border border-black/5 bg-white p-4 dark:border-white/10 dark:bg-white/5"
-          >
-            <summary className="cursor-pointer list-none font-medium">{faq.question}</summary>
-            <p className="mt-2 text-sm text-black/70 dark:text-white/70">{faq.answer}</p>
-          </details>
-        ))}
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Warum Sternzeichen-Tabellen so oft falsch liegen
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Eine Kompatibilitätstabelle nach Sternzeichen vergleicht genau eine Größe:
+          die Sonne. Die Sonne ist aber nur eine von rund zehn Positionen, die in
+          einer Beziehung eine Rolle spielen. Alles, was den Alltag tatsächlich
+          bestimmt – emotionale Bedürfnisse über den Mond, Anziehung über Venus und
+          Mars, Gesprächsebene über Merkur, Verbindlichkeit über Saturn – kommt
+          darin überhaupt nicht vor.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Praktisch heißt das: Zwei Menschen mit demselben Sternzeichen können
+          völlig unterschiedlich in Beziehungen funktionieren. Und zwei Zeichen, die
+          als „unpassend“ gelten, können problemlos miteinander leben, wenn ihre
+          Mond- und Venus-Positionen zusammenspielen. Die Tabelle ist nicht falsch,
+          sie ist nur viel zu grob für die Frage, die man ihr stellt.
+        </p>
       </section>
+
+      <section className="rounded-3xl border border-black/5 bg-white/60 p-6 dark:border-white/10 dark:bg-white/5">
+        <h2 className="text-xl font-semibold tracking-tight">
+          Was am Element-Vergleich trotzdem dran ist
+        </h2>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Der brauchbare Kern hinter den Tabellen ist die Elementlehre. Feuer und
+          Luft verstärken sich gegenseitig, Erde und Wasser ebenso – das beschreibt
+          vor allem ein ähnliches Tempo. Feuer-Luft-Paare sind schneller, direkter
+          und reden mehr; Erde-Wasser-Paare brauchen länger, binden dafür stärker.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Die klassisch als schwierig geltenden Mischungen, also Feuer mit Wasser
+          oder Erde mit Luft, sind nicht schlechter. Sie bedeuten nur, dass das
+          Tempo ausgehandelt werden muss, statt von allein zu passen. Wer das weiß,
+          streitet über Absprachen statt über Charakter.
+        </p>
+        <p className="mt-3 text-sm leading-6 text-black/75 dark:text-white/75">
+          Sinnvoll ist die Elementaussage deshalb als erster Eindruck – so wie ein
+          Sternzeichen ein erster Eindruck von einem Menschen ist. Für eine
+          belastbare Aussage braucht es beide vollständigen Horoskope, und dafür von
+          beiden Personen Geburtsdatum, Uhrzeit und Ort.
+        </p>
+      </section>
+
+      <FaqSection id="sternzeichen-kompatibilitaet" items={faqs} />
     </div>
   );
 }

@@ -106,7 +106,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       lastModified: now,
       changeFrequency: "monthly",
     },
+    {
+      url: absoluteUrl("/tools/stone-finder"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
     { url: absoluteUrl("/reading"), lastModified: now, changeFrequency: "monthly" },
+    {
+      url: absoluteUrl("/reading/beziehung"),
+      lastModified: now,
+      changeFrequency: "monthly",
+    },
+    { url: absoluteUrl("/coaching"), lastModified: now, changeFrequency: "monthly" },
     { url: absoluteUrl("/impressum"), lastModified: now, changeFrequency: "yearly" },
     { url: absoluteUrl("/datenschutz"), lastModified: now, changeFrequency: "yearly" },
     { url: absoluteUrl("/agb"), lastModified: now, changeFrequency: "yearly" },
@@ -119,11 +130,16 @@ export default function sitemap(): MetadataRoute.Sitemap {
     changeFrequency: "monthly",
   }));
 
-  const blogRoutes: MetadataRoute.Sitemap = getPosts().map((p) => ({
-    url: absoluteUrl(`/blog/${p.slug}`),
-    lastModified: now,
-    changeFrequency: "weekly",
-  }));
+  // Echtes Änderungsdatum statt `now`: Sonst meldet die Sitemap bei jedem Build
+  // alle Artikel als frisch geändert und entwertet das Signal.
+  const blogRoutes: MetadataRoute.Sitemap = getPosts().map((p) => {
+    const changed = p.updatedAt ?? p.publishedAt;
+    return {
+      url: absoluteUrl(`/blog/${p.slug}`),
+      lastModified: changed ? new Date(changed) : now,
+      changeFrequency: "monthly" as const,
+    };
+  });
 
   return [...staticRoutes, ...productRoutes, ...blogRoutes];
 }

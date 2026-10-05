@@ -15,6 +15,8 @@ export function ZodiacSignIcon({
   if (!isZodiacSign(sign)) return null;
   return (
     <div className={`relative shrink-0 ${sizeClassName} ${className ?? ""}`}>
+      {/* Statisches SVG-Icon – next/image bringt hier keine Optimierung. */}
+      {/* eslint-disable-next-line @next/next/no-img-element */}
       <img
         src={publicZodiacSvgPath(sign)}
         alt=""

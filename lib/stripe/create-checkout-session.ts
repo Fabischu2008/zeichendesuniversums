@@ -1,8 +1,9 @@
 import Stripe from "stripe";
 import {
-  getProducts,
+  getProductById,
   PRICE_ASTRO_VOLLPROFIL,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_COACHING_EINFLUSS,
   PRODUCT_ID_COMPAT_PAARANALYSE,
 } from "@/lib/cms";
 import {
@@ -123,7 +124,7 @@ type ResolvedCheckoutProduct = {
 };
 
 function resolveProduct(productId: string): ResolvedCheckoutProduct | null {
-  const fromCatalog = getProducts().find((p) => p.id === productId);
+  const fromCatalog = getProductById(productId);
   if (fromCatalog) {
     return {
       id: fromCatalog.id,
@@ -145,17 +146,28 @@ function resolveProduct(productId: string): ResolvedCheckoutProduct | null {
  * Erstellt eine Stripe Checkout Session und gibt die Hosted-Checkout-URL zurück.
  * Ohne `STRIPE_SECRET_KEY`: MVP – Weiterleitung zur lokalen Success-Seite (kein Stripe).
  */
+function isValidAstroPayload(x: CheckoutAstroPayload | undefined): boolean {
+  return Boolean(
+    x &&
+      /^\d{4}-\d{2}-\d{2}$/.test(x.birthdate) &&
+      /^\d{2}:\d{2}$/.test(x.birthtime) &&
+      x.place &&
+      typeof x.place.lat === "number" &&
+      typeof x.place.lon === "number",
+  );
+}
+
 function isValidCompatPayload(
   c: { a: CheckoutAstroPayload; b: CheckoutAstroPayload },
 ): boolean {
-  const check = (x: CheckoutAstroPayload) =>
-    /^\d{4}-\d{2}-\d{2}$/.test(x.birthdate) &&
-    /^\d{2}:\d{2}$/.test(x.birthtime) &&
-    x.place &&
-    typeof x.place.lat === "number" &&
-    typeof x.place.lon === "number";
-  return check(c.a) && check(c.b);
+  return isValidAstroPayload(c.a) && isValidAstroPayload(c.b);
 }
+
+/**
+ * Fehler, die der Aufrufer verursacht hat (falsche/fehlende Eingaben) – im
+ * Gegensatz zu Konfigurations- oder Stripe-Fehlern. Steuert den HTTP-Status.
+ */
+export type CheckoutError = { error: string; kind: "input" | "server" };
 
 export async function createCheckoutSessionForProduct(
   productId: string,
@@ -163,10 +175,34 @@ export async function createCheckoutSessionForProduct(
     astro?: CheckoutAstroPayload;
     compat?: { a: CheckoutAstroPayload; b: CheckoutAstroPayload };
   },
-): Promise<{ url: string } | { error: string }> {
+): Promise<{ url: string } | CheckoutError> {
   const product = resolveProduct(productId);
   if (!product) {
-    return { error: "Unbekanntes Produkt." };
+    return { error: "Unbekanntes Produkt.", kind: "input" };
+  }
+
+  // Das Coaching wird ausschließlich nach einem Erstgespräch vergeben – es darf
+  // über den Checkout nicht direkt kaufbar sein.
+  if (product.id === PRODUCT_ID_COACHING_EINFLUSS) {
+    return {
+      error:
+        "Das Einfluss Coaching wird nur nach einem persönlichen Erstgespräch vergeben und kann nicht direkt gekauft werden.",
+      kind: "input",
+    };
+  }
+
+  // Ohne Geburtsdaten in den Metadaten kann die Success-Seite nach der Zahlung
+  // kein Ergebnis ausliefern. Lieber hier abbrechen als Geld für ein Produkt
+  // nehmen, das danach nicht erzeugt werden kann.
+  if (
+    product.id === PRODUCT_ID_ASTRO_VOLLPROFIL &&
+    !isValidAstroPayload(options?.astro)
+  ) {
+    return {
+      error:
+        "Für das Geburtshoroskop werden Geburtsdatum, Uhrzeit und Geburtsort benötigt. Bitte starte im Geburtshoroskop-Tool.",
+      kind: "input",
+    };
   }
 
   if (product.id === PRODUCT_ID_COMPAT_PAARANALYSE) {
@@ -175,6 +211,7 @@ export async function createCheckoutSessionForProduct(
       return {
         error:
           "Für die Paaranalyse werden vollständige Geburtsdaten für Person A und B benötigt.",
+        kind: "input",
       };
     }
   }
@@ -185,6 +222,7 @@ export async function createCheckoutSessionForProduct(
       return {
         error:
           "Checkout ist aktuell nicht konfiguriert. Bitte STRIPE_SECRET_KEY in Production setzen.",
+        kind: "server",
       };
     }
 
@@ -277,8 +315,9 @@ export async function createCheckoutSessionForProduct(
   try {
     const session = await stripe.checkout.sessions.create({
       mode: "payment",
-      // Keep checkout behavior consistent across all products.
-      payment_method_types: ["card", "klarna"],
+      // Kein `payment_method_types`: Ohne feste Liste nutzt Checkout die
+      // dynamischen Zahlungsarten aus dem Stripe-Dashboard. Eine Liste hier
+      // würde PayPal, SEPA & Co. dauerhaft ausschließen.
       allow_promotion_codes: true,
       line_items: [
         {
@@ -298,13 +337,16 @@ export async function createCheckoutSessionForProduct(
     });
 
     if (!session.url) {
-      return { error: "Stripe hat keine Checkout-URL zurückgegeben." };
+      return {
+        error: "Stripe hat keine Checkout-URL zurückgegeben.",
+        kind: "server",
+      };
     }
     return { url: session.url };
   } catch (e) {
     console.error("[stripe] checkout.sessions.create", e);
     const msg =
       e instanceof Error ? e.message : "Checkout konnte nicht gestartet werden.";
-    return { error: msg };
+    return { error: msg, kind: "server" };
   }
 }

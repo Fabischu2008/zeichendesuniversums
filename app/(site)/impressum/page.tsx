@@ -11,6 +11,7 @@ import {
 export const metadata: Metadata = {
   title: "Impressum",
   description: `Impressum und Anbieterkennzeichnung von ${SITE_NAME}.`,
+  alternates: { canonical: "/impressum" },
 };
 
 export default function ImpressumPage() {

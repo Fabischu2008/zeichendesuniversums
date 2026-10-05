@@ -5,31 +5,16 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import type { Dispatch, SetStateAction } from "react";
 import { useMemo, useState } from "react";
-import { ELEMENT_BY_SIGN, type AstroProfileResult, type Element } from "@/lib/astro/profile";
-import {
-  ZODIAC_SIGNS,
-  type ZodiacSign,
-} from "@/lib/astro/signs";
+import type { AstroProfileResult, Element } from "@/lib/astro/profile";
+import type { ZodiacSign } from "@/lib/astro/signs";
 import type {
   DeepCompatibilityReport,
   SynastryReport,
 } from "@/lib/astro/synastry";
 import { useGeoPlaces, type GeoPlace } from "@/hooks/useGeoPlaces";
+import { ToolFooterCta } from "@/components/ToolFooterCta";
 import { VollreportCoachingCta } from "@/components/VollreportCoachingCta";
-import type { CheckoutAstroPayload } from "@/lib/stripe/create-checkout-session";
-import {
-  PRICE_COMPAT_PAARANALYSE,
-  PRODUCT_ID_COMPAT_PAARANALYSE,
-} from "@/lib/cms";
-
-function formatPaarPriceEur(amount: number) {
-  return new Intl.NumberFormat("de-DE", {
-    style: "currency",
-    currency: "EUR",
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2,
-  }).format(amount);
-}
+import { backLink, btnPrimary, eyebrow } from "@/lib/ui";
 
 function safeJsonParse(raw: string): unknown {
   if (!raw) return {};
@@ -136,124 +121,6 @@ const SIGN_RELATION_HINTS: Record<
   },
 };
 
-function signGroup(sign: ZodiacSign): "fire" | "earth" | "air" | "water" {
-  if (["Widder", "Löwe", "Schütze"].includes(sign)) return "fire";
-  if (["Stier", "Jungfrau", "Steinbock"].includes(sign)) return "earth";
-  if (["Zwillinge", "Waage", "Wassermann"].includes(sign)) return "air";
-  return "water";
-}
-
-function signModality(sign: ZodiacSign): "cardinal" | "fixed" | "mutable" {
-  if (["Widder", "Krebs", "Waage", "Steinbock"].includes(sign)) return "cardinal";
-  if (["Stier", "Löwe", "Skorpion", "Wassermann"].includes(sign)) return "fixed";
-  return "mutable";
-}
-
-function signPolarity(sign: ZodiacSign): "yang" | "yin" {
-  if (["Widder", "Zwillinge", "Löwe", "Waage", "Schütze", "Wassermann"].includes(sign)) return "yang";
-  return "yin";
-}
-
-function signIndex(sign: ZodiacSign): number {
-  return [
-    "Widder",
-    "Stier",
-    "Zwillinge",
-    "Krebs",
-    "Löwe",
-    "Jungfrau",
-    "Waage",
-    "Skorpion",
-    "Schütze",
-    "Steinbock",
-    "Wassermann",
-    "Fische",
-  ].indexOf(sign);
-}
-
-function pairSeed(a: ZodiacSign, b: ZodiacSign): number {
-  const key = [a, b].sort().join("|");
-  return [...key].reduce((sum, ch) => sum + ch.charCodeAt(0), 0);
-}
-
-function signBasedHarmony(previewA: ZodiacSign, previewB: ZodiacSign): {
-  flowPercent: number;
-  growthPercent: number;
-  contextLines: string[];
-} {
-  const a = signGroup(previewA);
-  const b = signGroup(previewB);
-  const modalityA = signModality(previewA);
-  const modalityB = signModality(previewB);
-  const polarityA = signPolarity(previewA);
-  const polarityB = signPolarity(previewB);
-  const idxA = signIndex(previewA);
-  const idxB = signIndex(previewB);
-  const directDistance = Math.abs(idxA - idxB);
-  const distance = Math.min(directDistance, 12 - directDistance);
-  const seed = pairSeed(previewA, previewB);
-  const hintA = SIGN_RELATION_HINTS[previewA];
-  const hintB = SIGN_RELATION_HINTS[previewB];
-
-  let flow = 52;
-  if (a === b) flow = 70;
-  if ((a === "fire" && b === "air") || (a === "air" && b === "fire")) flow = 63;
-  if ((a === "water" && b === "earth") || (a === "earth" && b === "water")) flow = 61;
-  if ((a === "fire" && b === "water") || (a === "water" && b === "fire")) flow = 44;
-  if ((a === "air" && b === "earth") || (a === "earth" && b === "air")) flow = 46;
-
-  if (modalityA === modalityB) flow += 4;
-  if (
-    (modalityA === "cardinal" && modalityB === "fixed") ||
-    (modalityA === "fixed" && modalityB === "cardinal")
-  ) {
-    flow -= 4;
-  }
-  if (polarityA !== polarityB) flow += 2;
-
-  const aspectBiasByDistance: Record<number, number> = {
-    0: 6, // conjunction
-    1: -2, // semi-sextile: adjustment
-    2: 2, // sextile-ish tone
-    3: 5, // trine-ish tone
-    4: -5, // square
-    5: 3, // quincunx/sextile blend
-    6: -3, // opposition
-  };
-  flow += aspectBiasByDistance[distance] ?? 0;
-
-  // deterministic fine-grain variation per specific sign pair
-  flow += (seed % 5) - 2;
-
-  flow = Math.max(30, Math.min(78, flow));
-  const growth = 100 - flow;
-
-  const distanceText: Record<number, string> = {
-    0: "Sehr direkte Spiegelung: starke Resonanz, aber auch Trigger liegen offen.",
-    1: "Feinabstimmung im Alltag wichtig: kleine Unterschiede summieren sich schnell.",
-    2: "Gute Lernachse: ihr könnt euch leicht ergänzen, wenn Rollen klar sind.",
-    3: "Natürlicher Flow zwischen euch: Kooperation fällt meist leicht.",
-    4: "Spannungsachse: hohe Entwicklungskraft, wenn Konflikte bewusst geführt werden.",
-    5: "Dynamische Ergänzung: braucht flexible Absprachen statt starre Erwartungen.",
-    6: "Gegenpol-Dynamik: starke Anziehung plus Reibung bei Prioritäten möglich.",
-  };
-  const actionVariants = [
-    "Hebel: ein wöchentliches 15-Minuten-Check-in zu Nähe, Tempo und Entscheidungen.",
-    "Hebel: klärt vor Konflikten, wer gerade führt und wer spiegelt.",
-    "Hebel: definiert ein gemeinsames Ritual, das Sicherheit und Freiraum verbindet.",
-  ];
-
-  const lines = [
-    `Sonnenzeichen: ${previewA} trifft auf ${previewB}.`,
-    distanceText[distance] ??
-      "Unterschiedliche Element-Basis bringt Ergänzung, wenn ihr Tempo und Kommunikation bewusst abstimmt.",
-    `${previewA}: ${hintA.strength}. ${previewB}: ${hintB.strength}.`,
-    actionVariants[seed % actionVariants.length],
-  ];
-
-  return { flowPercent: flow, growthPercent: growth, contextLines: lines };
-}
-
 function elementMixFromProfile(profile: AstroProfileResult): Array<{ element: Element; value: number }> {
   const map = new Map<Element, number>();
   for (const item of profile.elementBalance) {
@@ -293,7 +160,19 @@ function ElementCircle({
   const total = Math.max(1, mix.reduce((sum, x) => sum + x.value, 0));
   const radius = 44;
   const circumference = 2 * Math.PI * radius;
-  let offset = 0;
+  // Startwinkel jedes Segments als kumulative Länge der vorherigen Segmente.
+  const segments = mix.reduce<
+    { element: Element; length: number; start: number }[]
+  >((acc, m) => {
+    const previous = acc[acc.length - 1];
+    const start = previous ? previous.start + previous.length : 0;
+    acc.push({
+      element: m.element,
+      length: (m.value / total) * circumference,
+      start,
+    });
+    return acc;
+  }, []);
   return (
     <div className="rounded-2xl border border-black/10 bg-white/80 p-4 dark:border-white/15 dark:bg-black/20">
       <p className="text-xs font-semibold uppercase tracking-[0.14em] text-black/60 dark:text-white/60">
@@ -302,27 +181,21 @@ function ElementCircle({
       <div className="mt-3 flex items-center gap-4">
         <svg width="112" height="112" viewBox="0 0 112 112" className="shrink-0">
           <circle cx="56" cy="56" r={radius} fill="none" stroke="rgba(0,0,0,0.08)" strokeWidth="14" />
-          {mix.map((m) => {
-            const len = (m.value / total) * circumference;
-            const dashArray = `${len} ${circumference - len}`;
-            const dashOffset = -offset;
-            offset += len;
-            return (
-              <circle
-                key={`${title}-${m.element}`}
-                cx="56"
-                cy="56"
-                r={radius}
-                fill="none"
-                stroke={ELEMENT_COLORS[m.element]}
-                strokeWidth="14"
-                strokeDasharray={dashArray}
-                strokeDashoffset={dashOffset}
-                transform="rotate(-90 56 56)"
-                strokeLinecap="butt"
-              />
-            );
-          })}
+          {segments.map((segment) => (
+            <circle
+              key={`${title}-${segment.element}`}
+              cx="56"
+              cy="56"
+              r={radius}
+              fill="none"
+              stroke={ELEMENT_COLORS[segment.element]}
+              strokeWidth="14"
+              strokeDasharray={`${segment.length} ${circumference - segment.length}`}
+              strokeDashoffset={-segment.start}
+              transform="rotate(-90 56 56)"
+              strokeLinecap="butt"
+            />
+          ))}
         </svg>
         <div className="grid gap-1 text-xs">
           {mix.map((m) => (
@@ -341,31 +214,6 @@ function ElementCircle({
       </div>
     </div>
   );
-}
-
-function personFormToCheckoutPayload(
-  form: PersonForm,
-): CheckoutAstroPayload | null {
-  if (
-    !form.place ||
-    !/^\d{4}-\d{2}-\d{2}$/.test(form.birthdate) ||
-    !/^\d{2}:\d{2}$/.test(form.birthtime)
-  ) {
-    return null;
-  }
-  return {
-    birthdate: form.birthdate,
-    birthtime: form.birthtime,
-    place: {
-      id: form.place.id,
-      label: form.place.label,
-      city: form.place.city,
-      country: form.place.country,
-      countryCode: form.place.countryCode,
-      lat: form.place.lat,
-      lon: form.place.lon,
-    },
-  };
 }
 
 function PersonFields({
@@ -463,62 +311,6 @@ function PersonFields({
           </div>
         ) : null}
       </div>
-    </section>
-  );
-}
-
-function CompactProfileCard({
-  label,
-  profile,
-  big3,
-}: {
-  label: string;
-  profile: AstroProfileResult;
-  big3: { sun: string; moon: string; ascendant: string };
-}) {
-  const topHouses = [...profile.houseFocus]
-    .sort((a, b) => b.count - a.count)
-    .slice(0, 2);
-  const venusSign = profile.planets.find((p) => p.key === "venus")?.sign ?? "Unbekannt";
-  const marsSign = profile.planets.find((p) => p.key === "mars")?.sign ?? "Unbekannt";
-  return (
-    <section className="rounded-3xl border border-black/5 bg-white p-6 dark:border-white/10 dark:bg-white/5">
-      <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-        {label}
-      </p>
-      <h3 className="mt-2 text-xl font-semibold tracking-tight">
-        {profile.archetype.title}
-      </h3>
-      <p className="mt-1 text-sm text-black/70 dark:text-white/70">
-        {profile.archetype.subtitle}
-      </p>
-      <div className="mt-4 grid gap-2 sm:grid-cols-3">
-        <SignChip label="Sonne" sign={big3.sun} />
-        <SignChip label="Mond" sign={big3.moon} />
-        <SignChip label="Aszendent" sign={big3.ascendant} />
-      </div>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2">
-        <SignChip label="Venus · weiblich · langfristig" sign={venusSign} />
-        <SignChip label="Mars · männlich · sexuell" sign={marsSign} />
-      </div>
-      <div className="mt-4 grid gap-2 sm:grid-cols-2">
-        <p className="sm:col-span-2 text-[11px] leading-relaxed text-black/55 dark:text-white/55">
-          Hausfokus zeigt, in welchen Lebensbereichen eure Beziehung am meisten
-          Energie, Reibung und Entwicklung aktiviert.
-        </p>
-        {topHouses.map((h) => (
-          <div
-            key={`${label}-${h.house}`}
-            className="rounded-2xl border border-black/8 bg-black/[0.03] px-3 py-2 text-xs dark:border-white/10 dark:bg-white/10"
-          >
-            <p className="font-semibold">Haus {h.house}</p>
-            <p className="mt-0.5 text-black/65 dark:text-white/65">{h.theme}</p>
-          </div>
-        ))}
-      </div>
-      <p className="mt-4 text-sm text-black/75 dark:text-white/75">
-        {profile.narrative.relationshipStyle}
-      </p>
     </section>
   );
 }
@@ -700,83 +492,6 @@ function CompatibilityOctagon({
   );
 }
 
-function PreviewOctagonDemo() {
-  const axes = [
-    { score: 68 },
-    { score: 74 },
-    { score: 59 },
-    { score: 63 },
-    { score: 52 },
-    { score: 70 },
-    { score: 61 },
-    { score: 66 },
-  ];
-  const size = 280;
-  const center = size / 2;
-  const radius = 92;
-  const rings = [0.25, 0.5, 0.75, 1];
-  const angleFor = (i: number) => -Math.PI / 2 + (i * (Math.PI * 2)) / axes.length;
-  const pointFor = (idx: number, r: number) => {
-    const a = angleFor(idx);
-    return { x: center + Math.cos(a) * r, y: center + Math.sin(a) * r };
-  };
-  const polygon = axes
-    .map((d, idx) => {
-      const p = pointFor(idx, radius * (d.score / 100));
-      return `${p.x},${p.y}`;
-    })
-    .join(" ");
-
-  return (
-    <div className="mt-3 flex justify-center">
-      <svg
-        width={size}
-        height={size}
-        viewBox={`0 0 ${size} ${size}`}
-        className="h-auto w-full max-w-[280px]"
-        aria-label="Beispiel Oktagon-Matrix"
-      >
-        {rings.map((r) => (
-          <polygon
-            key={r}
-            points={axes
-              .map((_, idx) => {
-                const p = pointFor(idx, radius * r);
-                return `${p.x},${p.y}`;
-              })
-              .join(" ")}
-            fill="none"
-            stroke="currentColor"
-            className="text-black/10 dark:text-white/20"
-            strokeWidth="1"
-          />
-        ))}
-        {axes.map((_, idx) => {
-          const p = pointFor(idx, radius);
-          return (
-            <line
-              key={`axis-${idx}`}
-              x1={center}
-              y1={center}
-              x2={p.x}
-              y2={p.y}
-              stroke="currentColor"
-              className="text-black/10 dark:text-white/20"
-              strokeWidth="1"
-            />
-          );
-        })}
-        <polygon
-          points={polygon}
-          fill="rgba(124,58,237,0.26)"
-          stroke="rgba(109,40,217,0.9)"
-          strokeWidth="2"
-        />
-      </svg>
-    </div>
-  );
-}
-
 function dimensionAnalysisText(
   key: string,
   score: number,
@@ -854,9 +569,6 @@ function dimensionAnalysisText(
 
 export default function CompatibilityToolPage() {
   const [stage, setStage] = useState<FunnelStage>("exact");
-  const [previewA, setPreviewA] = useState<ZodiacSign>("Widder");
-  const [previewB, setPreviewB] = useState<ZodiacSign>("Waage");
-  const [miniPreviewReady, setMiniPreviewReady] = useState(false);
   const [a, setA] = useState<PersonForm>(emptyPerson);
   const [b, setB] = useState<PersonForm>(emptyPerson);
 
@@ -967,288 +679,23 @@ export default function CompatibilityToolPage() {
     }
   }
 
-  const previewHarmony = useMemo(
-    () => signBasedHarmony(previewA, previewB),
-    [previewA, previewB],
-  );
-
   return (
     <div className="w-full max-w-none space-y-8 px-2 sm:px-4 lg:mx-auto lg:max-w-[1200px] lg:px-8">
-      <Link
-        href="/tools"
-        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
-      >
+      <Link href="/tools" className={backLink}>
         ← Zur Themenwahl
       </Link>
-      <header className="space-y-3">
+      <header className="space-y-4">
+        <p className={eyebrow}>Tool · Paaranalyse</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Beziehungstool · Direkte Paaranalyse
+          Eure vollständige Synastrie
         </h1>
-        <p className="text-black/70 dark:text-white/70">
-          Für Partnerschaft, Dating oder enge Freundschaft: gib direkt beide
-          Geburtsprofile ein und berechne eure vollständige Synastrie kostenlos
-          - ohne Vorschau- oder Bezahl-Schritt.
+        <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
+          Für Partnerschaft, Dating oder enge Freundschaft: gib beide
+          Geburtsprofile ein und berechne eure komplette Paaranalyse – kostenlos,
+          ohne Vorschau- oder Bezahl-Schritt.
         </p>
       </header>
 
-      {false ? (
-        <>
-        <section className="rounded-2xl border border-black/5 bg-white/70 p-4 sm:rounded-3xl sm:p-6 lg:p-8 dark:border-white/10 dark:bg-white/5">
-          <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
-            Schritt 2 · Kleine Analyse
-          </p>
-          <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-            Schneller Check ohne Geburtszeit
-          </h2>
-          <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-            Für den Einstieg reicht je ein Sternzeichen. Danach kannst du die exakte
-            Paaranalyse mit vollständigen Daten freischalten.
-          </p>
-          <div className="mt-6 grid gap-4 sm:grid-cols-2">
-            <label className="space-y-2">
-              <span className="text-sm font-medium">Person A – Sternzeichen</span>
-              <select
-                value={previewA}
-                onChange={(e) => {
-                  setPreviewA(e.target.value as ZodiacSign);
-                  setMiniPreviewReady(false);
-                }}
-                className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
-              >
-                {ZODIAC_SIGNS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </label>
-            <label className="space-y-2">
-              <span className="text-sm font-medium">Person B – Sternzeichen</span>
-              <select
-                value={previewB}
-                onChange={(e) => {
-                  setPreviewB(e.target.value as ZodiacSign);
-                  setMiniPreviewReady(false);
-                }}
-                className="h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm dark:border-white/15 dark:bg-black/20"
-              >
-                {ZODIAC_SIGNS.map((s) => (
-                  <option key={s} value={s}>
-                    {s}
-                  </option>
-                ))}
-              </select>
-            </label>
-          </div>
-          <div className="mt-6">
-            <button
-              type="button"
-              onClick={() => setMiniPreviewReady(true)}
-              className="inline-flex h-12 items-center justify-center rounded-full border border-violet-500/30 bg-violet-500/10 px-6 text-sm font-semibold text-violet-900 hover:bg-violet-500/15 dark:border-violet-400/30 dark:bg-violet-500/15 dark:text-violet-100"
-            >
-              Kleine Paaranalyse erstellen
-            </button>
-          </div>
-
-          {miniPreviewReady ? (
-            <div className="mt-6 rounded-2xl border border-violet-500/20 bg-violet-500/[0.08] p-4 text-sm leading-relaxed text-black/85 dark:border-violet-400/20 dark:bg-violet-500/10 dark:text-white/85">
-              <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
-                Kleine Analyse · Harmonie-Dynamik
-              </p>
-              <h3 className="mt-2 text-lg font-semibold">
-                {previewA} × {previewB}
-              </h3>
-              <div className="mt-4 rounded-2xl border border-black/10 bg-white/70 p-4 dark:border-white/15 dark:bg-black/20">
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-black/70 dark:text-white/70">
-                  Polarität
-                </p>
-                <div className="mt-3">
-                  <div className="mb-2 flex items-end justify-between text-[11px]">
-                    <div>
-                      <p className="font-medium text-black/80 dark:text-white/80">
-                        Leichtigkeit &amp; Flow
-                      </p>
-                      <p className="tabular-nums text-black/55 dark:text-white/55">
-                        {previewHarmony.flowPercent}%
-                      </p>
-                    </div>
-                    <div className="text-right">
-                      <p className="font-medium text-black/80 dark:text-white/80">
-                        Reibung &amp; Wachstum
-                      </p>
-                      <p className="tabular-nums text-black/55 dark:text-white/55">
-                        {previewHarmony.growthPercent}%
-                      </p>
-                    </div>
-                  </div>
-                  <div className="relative h-3 rounded-full bg-violet-500/45">
-                    <div
-                      className="absolute top-0 h-full w-px bg-white/70 dark:bg-black/55"
-                      style={{ left: `${previewHarmony.flowPercent}%` }}
-                    />
-                    <div
-                      className="absolute top-1/2 h-5 w-5 -translate-y-1/2 rounded-full border-2 border-violet-700 bg-violet-500 shadow-sm dark:border-violet-300 dark:bg-violet-400"
-                      style={{ left: `calc(${previewHarmony.flowPercent}% - 10px)` }}
-                    />
-                  </div>
-                </div>
-              </div>
-              <div className="mt-3 space-y-2 text-xs text-black/70 dark:text-white/75">
-                {previewHarmony.contextLines.map((line) => (
-                  <p key={line}>{line}</p>
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </section>
-
-        {miniPreviewReady ? (
-          <section className="relative mt-6 w-full overflow-hidden rounded-2xl border border-black/10 bg-white p-4 sm:rounded-3xl sm:p-6 dark:border-white/15 dark:bg-white/5">
-            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,transparent_0%,rgba(0,0,0,0.03)_100%)] dark:bg-[linear-gradient(180deg,transparent_0%,rgba(255,255,255,0.04)_100%)]" />
-            <div className="relative">
-                  <p className="text-xs font-semibold uppercase tracking-[0.16em] text-violet-700 dark:text-violet-300">
-                    Schritt 3 · Große Analyse
-                  </p>
-                  <h3 className="mt-2 text-xl font-semibold tracking-tight sm:text-2xl">
-                    So sieht die vollständige Paaranalyse aus
-                  </h3>
-                  <p className="mt-3 inline-flex rounded-full border border-black/15 bg-white/90 px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-black/60 shadow-sm dark:border-white/20 dark:bg-black/70 dark:text-white/70">
-                    Demo · keine exakten Synastry-Texte
-                  </p>
-                  <p className="mt-2 text-sm text-black/70 dark:text-white/70">
-                    Kein Rätselraten mehr: In der Vollversion werden beide Horoskope
-                    vollständig berechnet und dann glasklar verglichen
-                    (Aspekte, Dimensionen, Profiltexte).
-                  </p>
-
-                  <div className="mt-6 grid gap-4 lg:grid-cols-2">
-                    <div className="rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
-                        Profilvergleich (A/B)
-                      </p>
-                      <p className="mt-2 text-sm font-medium text-black/45 dark:text-white/50">
-                        Wer bringt was in die Beziehung? · Demo
-                      </p>
-                      <p className="mt-1 text-xs text-black/55 dark:text-white/55">
-                        In der exakten Analyse siehst du Big 3, Hausfokus, Narrative
-                        und die echten Unterschiede zwischen Person A und B.
-                      </p>
-                    </div>
-                    <div className="rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
-                        Oktagon-Matrix
-                      </p>
-                      <PreviewOctagonDemo />
-                      <p className="mt-2 text-xs text-black/55 dark:text-white/55">
-                        Auf einen Blick: wo ihr stark harmoniert und wo ihr bewusst
-                        nachschärfen solltet.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-4 rounded-2xl border border-black/10 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
-                    <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
-                      Synastry-Aspekte · Auszug
-                    </p>
-                    <div className="mt-2 space-y-2">
-                      {[
-                        "Venus (A) – Mars (B) · Konjunktion · gemischt",
-                        "Mond (A) – Mond (B) · Trigon · harmonisch",
-                        "Saturn (A) – Sonne (B) · Quadrat · herausfordernd",
-                      ].map((line) => (
-                        <p
-                          key={line}
-                          className="rounded-xl border border-black/10 bg-black/[0.02] px-3 py-2 text-xs text-black/45 dark:border-white/10 dark:bg-white/10 dark:text-white/50"
-                        >
-                          {line}
-                        </p>
-                      ))}
-                    </div>
-                    <p className="mt-2 text-xs text-black/55 dark:text-white/55">
-                      Das ist der Kern: konkrete astrologische Verbindungspunkte statt
-                      oberflächlicher Standardtexte.
-                    </p>
-                  </div>
-
-                  <div className="mt-6 grid gap-4 lg:grid-cols-2 lg:gap-6">
-                    <div className="rounded-2xl border border-black/8 bg-white/90 p-4 dark:border-white/10 dark:bg-black/20">
-                      <p className="text-xs font-semibold uppercase tracking-wider text-black/45 dark:text-white/45">
-                        Im kostenlosen Vorgeschmack
-                      </p>
-                      <ul className="mt-3 space-y-2 text-sm text-black/75 dark:text-white/75">
-                        <li className="flex gap-2">
-                          <span className="text-emerald-600 dark:text-emerald-400">✓</span>
-                          Schneller Mini-Eindruck auf Basis Sternzeichen
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-emerald-600 dark:text-emerald-400">✓</span>
-                          Demo-Vorschau der großen Paaranalyse
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-black/35 dark:text-white/35">—</span>
-                          Keine exakten A/B-Profile, keine personalisierten Aspekttexte
-                        </li>
-                      </ul>
-                    </div>
-                    <div
-                      className="rounded-2xl border border-violet-500/30 bg-violet-500/[0.08] p-4 dark:border-violet-400/25 dark:bg-violet-500/10"
-                      data-product={PRODUCT_ID_COMPAT_PAARANALYSE}
-                    >
-                      <p className="text-xs font-semibold uppercase tracking-wider text-violet-900 dark:text-violet-100">
-                        Exakte Paaranalyse
-                      </p>
-                      <ul className="mt-3 space-y-2 text-sm text-black/85 dark:text-white/85">
-                        <li className="flex gap-2">
-                          <span className="text-violet-700 dark:text-violet-300">✓</span>
-                          Vollprofil für Person A und B (inkl. Planeten + Häuser)
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-violet-700 dark:text-violet-300">✓</span>
-                          Komplettes Oktagon + Klartext-Analyse je Dimension
-                        </li>
-                        <li className="flex gap-2">
-                          <span className="text-violet-700 dark:text-violet-300">✓</span>
-                          Persönliche Zugangslinks (Paaranalyse + beide Einzelprofile)
-                        </li>
-                      </ul>
-                      <p className="mt-4 text-2xl font-semibold tracking-tight text-violet-950 dark:text-violet-50">
-                        {formatPaarPriceEur(PRICE_COMPAT_PAARANALYSE)}{" "}
-                        <span className="text-sm font-normal text-black/50 dark:text-white/50">
-                          einmalig
-                        </span>
-                      </p>
-                      <p className="mt-2 text-xs leading-relaxed text-black/55 dark:text-white/55">
-                        Nach der Zahlung erhältst du drei persönliche Links – Paaranalyse
-                        und beide Einzelprofile.
-                      </p>
-                    </div>
-                  </div>
-
-                  <div className="mt-6 flex flex-col gap-3 sm:flex-row">
-                    <button
-                      type="button"
-                      onClick={() => setStage("exact")}
-                      className="inline-flex h-12 items-center justify-center rounded-full bg-black px-6 text-sm font-semibold text-white hover:bg-black/90 dark:bg-white dark:text-black"
-                    >
-                      Exakte Paaranalyse freischalten
-                    </button>
-                  </div>
-            </div>
-          </section>
-        ) : (
-          <section className="mt-6 rounded-2xl border border-black/5 bg-white p-4 sm:rounded-3xl sm:p-6 dark:border-white/10 dark:bg-white/5">
-            <h3 className="text-xl font-semibold tracking-tight sm:text-2xl">
-              Schritt 3 · Ergebnis &amp; Demo
-            </h3>
-            <p className="mt-4 text-sm text-black/65 dark:text-white/65">
-              Sobald du die kleine Paaranalyse erstellt hast, erscheinen hier die
-              Demo-Ansicht der vollständigen Paaranalyse und der Weg zur exakten
-              Auswertung.
-            </p>
-          </section>
-        )}
-        </>
-      ) : null}
 
       {stage === "exact" ? (
         <>
@@ -1276,20 +723,26 @@ export default function CompatibilityToolPage() {
               type="button"
               disabled={!canSubmit || loading}
               onClick={() => void calculateCompatibility()}
-              className="inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 disabled:opacity-60 sm:w-auto dark:bg-white dark:text-black dark:hover:bg-white/90"
+              className={`${btnPrimary} w-full sm:w-auto`}
             >
-              {loading ? "Berechne Paaranalyse..." : "Kostenlose Paaranalyse berechnen"}
+              {loading ? "Berechne Paaranalyse…" : "Kostenlose Paaranalyse berechnen"}
             </button>
           </div>
         </>
       ) : null}
 
       {error ? (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
+        <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+          {error}
+        </p>
       ) : null}
 
       {report ? (
-        <div className="-mx-1 space-y-6 sm:mx-0 sm:space-y-8">
+        <div
+          id="ergebnis"
+          aria-live="polite"
+          className="-mx-1 space-y-6 sm:mx-0 sm:space-y-8"
+        >
           <section className="rounded-2xl border border-black/5 bg-white/70 p-4 sm:rounded-3xl sm:p-8 dark:border-white/10 dark:bg-white/5">
             <p className="text-xs font-semibold uppercase tracking-[0.18em] text-violet-700 dark:text-violet-300">
               Große Analyse · Profile
@@ -1324,10 +777,6 @@ export default function CompatibilityToolPage() {
                   (a.planetA === "venus" && a.planetB === "mars") ||
                   (a.planetA === "mars" && a.planetB === "venus"),
               );
-              const sunA = report.a.big3.sun as ZodiacSign;
-              const sunB = report.b.big3.sun as ZodiacSign;
-              const hintA = SIGN_RELATION_HINTS[sunA];
-              const hintB = SIGN_RELATION_HINTS[sunB];
               return (
                 <div className="mt-5 space-y-4">
                   <div className="space-y-4">
@@ -1613,36 +1062,7 @@ export default function CompatibilityToolPage() {
         </div>
       ) : null}
 
-      {stage === "preview" ? (
-          <section className="w-full max-w-none rounded-2xl border border-black/5 bg-black/[0.02] px-4 py-6 text-center dark:border-white/10 dark:bg-white/[0.03] sm:rounded-3xl sm:px-8 sm:py-8">
-          <p className="text-sm font-medium text-black/80 dark:text-white/80">
-            Nächster Schritt
-          </p>
-          <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-            Wenn du dieses Tool gerade überspringst, geh einfach hier weiter.
-          </p>
-          <div className="mt-5 grid gap-2 sm:grid-cols-3">
-            <Link
-              href="/freebie"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-            >
-              Kostenloser Guide
-            </Link>
-            <Link
-              href="/shop"
-              className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-            >
-              Zum Shop
-            </Link>
-            <Link
-              href="/tools"
-              className="inline-flex h-11 items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-            >
-              Nächstes Tool
-            </Link>
-          </div>
-        </section>
-      ) : null}
+      <ToolFooterCta />
     </div>
   );
 }

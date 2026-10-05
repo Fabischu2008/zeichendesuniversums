@@ -88,7 +88,9 @@ export function RichText({
 }: RichTextProps) {
   const blocks = content.split(/\n{2,}/g);
   const isArticle = variant === "article";
-  let paragraphIndex = 0;
+  const firstParagraphIndex = blocks.findIndex(
+    (b) => !b.startsWith("### ") && !b.startsWith("## ") && !b.startsWith("- "),
+  );
 
   return (
     <div className={isArticle ? "space-y-6" : "space-y-4"}>
@@ -164,8 +166,7 @@ export function RichText({
           return list;
         }
 
-        const isFirstParagraph = paragraphIndex === 0;
-        paragraphIndex += 1;
+        const isFirstParagraph = idx === firstParagraphIndex;
 
         return (
           <p

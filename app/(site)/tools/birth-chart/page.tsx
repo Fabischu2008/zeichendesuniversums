@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { ToolFooterCta } from "@/components/ToolFooterCta";
+import { backLink, eyebrow } from "@/lib/ui";
 import { useEffect, useMemo, useRef, useState } from "react";
 import {
   clearAstroSession,
@@ -185,23 +187,18 @@ export default function BirthChartToolPage() {
 
   return (
     <div className="w-full max-w-none space-y-8 px-2 sm:px-4 lg:mx-auto lg:max-w-3xl lg:px-0">
-      <Link
-        href="/tools"
-        className="inline-block text-sm text-black/55 hover:text-black dark:text-white/55 dark:hover:text-white"
-      >
+      <Link href="/tools" className={backLink}>
         ← Zur Themenwahl
       </Link>
 
       <header className="space-y-4">
-        <p className="text-xs font-semibold uppercase tracking-[0.2em] text-violet-700 dark:text-violet-300">
-          Mehr über dich · Geburtshoroskop
-        </p>
+        <p className={eyebrow}>Tool · Geburtshoroskop</p>
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          Dein Geburtshoroskop - direkt zum vollen Profil
+          Dein Geburtshoroskop – direkt zum vollen Profil
         </h1>
         <p className="text-base leading-relaxed text-black/70 dark:text-white/70">
-          Gib deine Geburtsdaten ein und berechne direkt dein kostenloses
-          Gesamtprofil - ohne Vorschau-Schritt.
+          Gib deine Geburtsdaten ein und berechne dein kostenloses Gesamtprofil
+          – ohne Vorschau-Schritt.
         </p>
       </header>
 
@@ -249,7 +246,7 @@ export default function BirthChartToolPage() {
           </label>
 
           {placesError ? (
-            <p className="mt-2 text-sm text-red-600 dark:text-red-400">
+            <p role="alert" className="mt-2 text-sm text-red-600 dark:text-red-400">
               {placesError}
             </p>
           ) : null}
@@ -310,13 +307,14 @@ export default function BirthChartToolPage() {
 
       <section
         ref={resultRef}
+        aria-live="polite"
         className="scroll-mt-24 space-y-6 rounded-2xl border border-black/5 bg-white p-4 sm:space-y-8 sm:rounded-3xl sm:p-8 dark:border-white/10 dark:bg-white/5"
       >
         <h2 className="text-xl font-semibold tracking-tight sm:text-2xl">
           Schritt 3 · Profil öffnen
         </h2>
         {calcError ? (
-          <p className="text-sm text-red-600 dark:text-red-400">{calcError}</p>
+          <p role="alert" className="text-sm text-red-600 dark:text-red-400">{calcError}</p>
         ) : null}
 
         {big3 ? (
@@ -333,7 +331,7 @@ export default function BirthChartToolPage() {
             ) : null}
             <div className="mt-5 rounded-2xl border border-emerald-500/25 bg-emerald-500/[0.08] p-4 dark:border-emerald-500/30 dark:bg-emerald-500/10">
               <p className="text-sm text-black/75 dark:text-white/75">
-                Oeffne jetzt dein vollständiges Profil kostenlos.
+                Öffne jetzt dein vollständiges Profil – kostenlos.
               </p>
               <Link
                 href="/tools/birth-chart/profile#vollreport"
@@ -351,34 +349,7 @@ export default function BirthChartToolPage() {
         )}
       </section>
 
-      <section className="w-full max-w-none rounded-2xl border border-black/5 bg-black/[0.02] px-4 py-6 text-center dark:border-white/10 dark:bg-white/[0.03] sm:rounded-3xl sm:px-8 sm:py-8">
-        <p className="text-sm font-medium text-black/80 dark:text-white/80">
-          Nächster Schritt
-        </p>
-        <p className="mt-2 text-sm text-black/60 dark:text-white/60">
-          Wenn du dieses Tool gerade überspringst, geh einfach hier weiter.
-        </p>
-        <div className="mt-5 grid gap-2 sm:grid-cols-3">
-          <Link
-            href="/freebie"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Kostenloser Guide
-          </Link>
-          <Link
-            href="/shop"
-            className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
-          >
-            Zum Shop
-          </Link>
-          <Link
-            href="/tools"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-black px-4 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Nächstes Tool
-          </Link>
-        </div>
-      </section>
+      <ToolFooterCta />
     </div>
   );
 }

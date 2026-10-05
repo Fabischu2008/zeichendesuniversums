@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Post, PostAccent } from "@/lib/cms";
+import { formatPostDate } from "@/lib/format-date";
 
 const CARD_ACCENT: Record<PostAccent, string> = {
   violet:
@@ -37,6 +38,14 @@ export function BlogCard({ post }: { post: Post }) {
       ) : null}
 
       <div className="flex flex-1 flex-col p-6">
+        {post.publishedAt ? (
+          <time
+            dateTime={post.publishedAt}
+            className="mb-2 text-xs font-medium text-black/50 dark:text-white/50"
+          >
+            {formatPostDate(post.publishedAt)}
+          </time>
+        ) : null}
         <h3 className="text-lg font-semibold leading-snug tracking-tight">
           {post.title}
         </h3>

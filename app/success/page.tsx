@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import Script from "next/script";
 import { AccessBrandHeader } from "@/components/AccessBrandHeader";
 import { AsyncCheckoutPaymentPoller } from "@/components/AsyncCheckoutPaymentPoller";
@@ -9,7 +10,7 @@ import { StripeProfileEmailOnce } from "@/components/StripeProfileEmailOnce";
 import { StripSuccessEmailQuery } from "@/components/StripSuccessEmailQuery";
 import { buildCompatibilityAccessLinks } from "@/lib/compatibility-access-links";
 import {
-  getProducts,
+  getProductById,
   PRODUCT_ID_ASTRO_VOLLPROFIL,
   PRODUCT_ID_COACHING_EINFLUSS,
   PRODUCT_ID_COMPAT_PAARANALYSE,
@@ -30,9 +31,11 @@ import {
   resolveCompatibilityAccessForSuccess,
   resolveProfileAccessForSuccess,
 } from "@/lib/profile-access-policy";
+import { LEGAL_PROVIDER } from "@/lib/legal";
 import { buildProfileAccessWithUnlockUrl } from "@/lib/profile-unlock-url";
 import { getSiteUrl } from "@/lib/site";
 import { asyncPaymentPendingForProduct } from "@/lib/stripe-checkout-session";
+import { btnPrimary, btnSecondary } from "@/lib/ui";
 
 export const runtime = "nodejs";
 
@@ -119,7 +122,7 @@ export default async function SuccessPage({
     "https://calendly.com/zeichendesuniversums-info/meeting";
   const coachingCalendlyUrl = unifiedCalendlyUrl;
   const readingCalendlyUrl = unifiedCalendlyUrl;
-  const product = getProducts().find((p) => p.id === productId);
+  const product = getProductById(productId);
   const adsSendToRaw =
     process.env.NEXT_PUBLIC_GOOGLE_ADS_PURCHASE_SEND_TO?.trim() || "";
   const adsSendTo = /^AW-\d+\/[A-Za-z0-9_-]+$/i.test(adsSendToRaw)
@@ -200,11 +203,7 @@ export default async function SuccessPage({
         <main className="mx-auto w-full max-w-4xl px-4 py-8">
           <div className="mx-auto max-w-2xl">
             {showStripeClientMail ? (
-              <StripeProfileEmailOnce
-                sessionId={sessionId!}
-                profileUrl={profileAccessUrl}
-                customerEmail={safeStripeCustomerEmail!}
-              />
+              <StripeProfileEmailOnce sessionId={sessionId!} />
             ) : null}
             {rawQueryEmail || apParam ? <StripSuccessEmailQuery /> : null}
             <ProfileAccessLinkCard
@@ -237,13 +236,7 @@ export default async function SuccessPage({
         <main className="mx-auto w-full max-w-4xl px-4 py-8">
           <div className="mx-auto max-w-2xl space-y-6">
             {showStripeCompatMail ? (
-              <StripeCompatibilityEmailOnce
-                sessionId={sessionId!}
-                pairLink={compatLinks.pairLink}
-                profileUrlA={compatLinks.profileLinkA}
-                profileUrlB={compatLinks.profileLinkB}
-                customerEmail={compatResolved.stripeCustomerEmail!}
-              />
+              <StripeCompatibilityEmailOnce sessionId={sessionId!} />
             ) : null}
             {rawQueryEmail || apaParam || apbParam ? (
               <StripSuccessEmailQuery />
@@ -464,14 +457,28 @@ export default async function SuccessPage({
         <div className="mx-auto max-w-2xl rounded-3xl border border-black/10 bg-white/60 p-6 sm:p-8 dark:border-white/10 dark:bg-white/5">
           <h1 className="text-2xl font-semibold tracking-tight">Danke für deinen Kauf</h1>
           <p className="mt-3 text-sm text-black/70 dark:text-white/70">
-            {product ? `Produkt: ${product.name}` : "Dein Produkt ist bereit."}
+            {product
+              ? `Deine Bestellung „${product.name}“ ist eingegangen.`
+              : "Deine Bestellung ist eingegangen."}
           </p>
-          <a
-            href={product?.fileUrl || "/downloads/demo.pdf"}
-            className="mt-6 inline-flex h-12 w-full items-center justify-center rounded-full bg-black px-6 text-sm font-medium text-white hover:bg-black/90 dark:bg-white dark:text-black dark:hover:bg-white/90"
-          >
-            Download
-          </a>
+          <p className="mt-3 text-sm text-black/70 dark:text-white/70">
+            Du bekommst alle Zugangsdaten und nächsten Schritte per E‑Mail an die
+            Adresse, die du beim Bezahlen angegeben hast. Falls innerhalb von
+            15 Minuten nichts ankommt, schreib uns kurz – wir klären das sofort.
+          </p>
+          <div className="mt-6 flex flex-col gap-3 sm:flex-row">
+            <a
+              href={`mailto:${LEGAL_PROVIDER.email}?subject=${encodeURIComponent(
+                product ? `Bestellung: ${product.name}` : "Bestellung",
+              )}`}
+              className={`${btnPrimary} w-full sm:w-auto`}
+            >
+              Support kontaktieren
+            </a>
+            <Link href="/tools" className={`${btnSecondary} w-full sm:w-auto`}>
+              Zu den Tools
+            </Link>
+          </div>
           {canTrackAdsPurchase ? (
             <AdsPurchaseConversionScript
               sendTo={adsSendTo!}

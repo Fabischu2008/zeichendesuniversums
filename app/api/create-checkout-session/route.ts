@@ -72,8 +72,10 @@ export async function POST(req: Request) {
         : undefined,
   );
   if ("error" in result) {
-    const status = result.error.includes("Unbekanntes Produkt") ? 400 : 503;
-    return NextResponse.json({ message: result.error }, { status });
+    return NextResponse.json(
+      { message: result.error },
+      { status: result.kind === "input" ? 400 : 503 },
+    );
   }
 
   return NextResponse.json({ url: result.url });

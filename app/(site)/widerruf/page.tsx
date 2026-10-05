@@ -6,6 +6,7 @@ import { LEGAL_PROVIDER, LEGAL_STAND } from "@/lib/legal";
 export const metadata: Metadata = {
   title: "Widerrufsbelehrung",
   description: `Widerrufsrecht und Muster-Widerrufsformular bei ${SITE_NAME}.`,
+  alternates: { canonical: "/widerruf" },
 };
 
 export default function WiderrufPage() {

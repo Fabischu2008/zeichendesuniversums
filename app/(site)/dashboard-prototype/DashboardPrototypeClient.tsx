@@ -266,13 +266,14 @@ const AREA_BADGE: Record<StrategyCard["area"], string> = {
 };
 
 function ElementDonut() {
-  let start = 0;
-  const stops = ELEMENT_SHARE.map((part) => {
-    const from = start;
-    const to = start + part.pct;
-    start = to;
-    return `${part.color} ${from}% ${to}%`;
-  }).join(", ");
+  const stops = ELEMENT_SHARE.reduce<{ css: string[]; start: number }>(
+    (acc, part) => {
+      const to = acc.start + part.pct;
+      acc.css.push(`${part.color} ${acc.start}% ${to}%`);
+      return { css: acc.css, start: to };
+    },
+    { css: [], start: 0 },
+  ).css.join(", ");
 
   return (
     <div className="grid gap-5 sm:grid-cols-[180px_1fr] sm:items-center">
@@ -363,14 +364,18 @@ export function DashboardPrototypeClient() {
   const [reflection, setReflection] = useState("");
   const [saveStatus, setSaveStatus] = useState<"idle" | "saved">("idle");
 
+  // localStorage gibt es auf dem Server nicht. Ein Lazy-Initializer würde eine
+  // Hydration-Abweichung erzeugen, deshalb wird der Stand nach dem Mount geladen.
   useEffect(() => {
     try {
       const rawPlan = window.localStorage.getItem(STORAGE_KEYS.plan);
       if (rawPlan) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCompleted(JSON.parse(rawPlan) as Record<string, boolean>);
       }
       const rawReflection = window.localStorage.getItem(STORAGE_KEYS.reflection);
       if (rawReflection) {
+         
         setReflection(rawReflection);
       }
     } catch {
@@ -654,10 +659,10 @@ export function DashboardPrototypeClient() {
             Zum Astro-Profil
           </Link>
           <Link
-            href="/test"
+            href="/"
             className="inline-flex h-10 items-center justify-center rounded-full border border-black/10 bg-white px-4 text-sm font-medium text-black hover:bg-black/5 dark:border-white/15 dark:bg-transparent dark:text-white dark:hover:bg-white/10"
           >
-            Zur Test-Homepage
+            Zur Startseite
           </Link>
         </div>
       </section>

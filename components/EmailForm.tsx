@@ -122,6 +122,9 @@ export function EmailForm({
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           type="email"
+          name="email"
+          autoComplete="email"
+          inputMode="email"
           required
           placeholder="du@beispiel.de"
           className="mt-2 h-12 w-full rounded-2xl border border-black/10 bg-white px-4 text-sm outline-none placeholder:text-black/40 focus:border-black/30 dark:border-white/15 dark:bg-black/20 dark:placeholder:text-white/40 dark:focus:border-white/30"
@@ -136,6 +139,7 @@ export function EmailForm({
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
           type="tel"
+          name="tel"
           inputMode="tel"
           autoComplete="tel"
           placeholder="z.B. +49 …"
@@ -151,14 +155,18 @@ export function EmailForm({
         {status === "loading" ? "Sende…" : submitLabel}
       </button>
 
-      {status === "error" ? (
-        <p className="text-sm text-red-600 dark:text-red-400">{error}</p>
-      ) : null}
-      {status === "success" ? (
-        <p className="text-sm text-emerald-700 dark:text-emerald-400">
-          Danke! Weiterleitung…
-        </p>
-      ) : null}
+      <div aria-live="polite">
+        {status === "error" ? (
+          <p role="alert" className="text-sm text-red-600 dark:text-red-400">
+            {error}
+          </p>
+        ) : null}
+        {status === "success" ? (
+          <p className="text-sm text-emerald-700 dark:text-emerald-400">
+            Danke! Weiterleitung…
+          </p>
+        ) : null}
+      </div>
     </form>
   );
 }

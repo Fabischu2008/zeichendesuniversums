@@ -3,57 +3,25 @@
 import { useEffect, useRef } from "react";
 
 /**
- * Sendet den Profil-Link einmal pro Browser an die Stripe-Kunden-E-Mail (localStorage-Guard).
+ * Stößt die Auslieferung an die Stripe-Kunden-E-Mail an. Ob wirklich versendet
+ * wird, entscheidet serverseitig die Versandsperre, die auch der Webhook nutzt –
+ * der Kunde bekommt also genau eine Mail, egal welcher Weg zuerst greift.
  */
-export function StripeProfileEmailOnce({
-  sessionId,
-  profileUrl,
-  customerEmail,
-}: {
-  sessionId: string;
-  profileUrl: string;
-  customerEmail: string;
-}) {
+export function StripeProfileEmailOnce({ sessionId }: { sessionId: string }) {
   const done = useRef(false);
 
   useEffect(() => {
-    if (done.current) return;
-    if (!sessionId || !profileUrl.startsWith("http") || !customerEmail.trim()) {
-      return;
-    }
-    const key = `zd:profileMailSent:${sessionId}`;
-    try {
-      if (typeof sessionStorage !== "undefined" && sessionStorage.getItem(key)) {
-        return;
-      }
-    } catch {
-      /* private mode */
-    }
-
+    if (done.current || !sessionId) return;
     done.current = true;
-    void (async () => {
-      try {
-        const res = await fetch("/api/email/profile-access", {
-          method: "POST",
-          headers: { "content-type": "application/json" },
-          body: JSON.stringify({
-            email: customerEmail.trim(),
-            profileUrl,
-          }),
-        });
-        const data = (await res.json().catch(() => ({}))) as { ok?: boolean };
-        if (res.ok && data.ok) {
-          try {
-            sessionStorage.setItem(key, "1");
-          } catch {
-            /* ignore */
-          }
-        }
-      } catch {
-        /* Netzwerk – Nutzer kann Formular nutzen */
-      }
-    })();
-  }, [sessionId, profileUrl, customerEmail]);
+
+    void fetch("/api/stripe/deliver-access", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ sessionId }),
+    }).catch(() => {
+      /* Netzwerk – Webhook liefert aus, sonst bleibt das Formular */
+    });
+  }, [sessionId]);
 
   return null;
 }
