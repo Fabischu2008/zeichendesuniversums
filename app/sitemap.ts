@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 import { absoluteUrl } from "@/lib/site";
-import { getPosts, getProducts } from "@/lib/cms";
+import { getPosts } from "@/lib/cms";
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
@@ -112,23 +112,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: "monthly",
     },
     { url: absoluteUrl("/reading"), lastModified: now, changeFrequency: "monthly" },
-    {
-      url: absoluteUrl("/reading/beziehung"),
-      lastModified: now,
-      changeFrequency: "monthly",
-    },
     { url: absoluteUrl("/coaching"), lastModified: now, changeFrequency: "monthly" },
     { url: absoluteUrl("/impressum"), lastModified: now, changeFrequency: "yearly" },
     { url: absoluteUrl("/datenschutz"), lastModified: now, changeFrequency: "yearly" },
     { url: absoluteUrl("/agb"), lastModified: now, changeFrequency: "yearly" },
     { url: absoluteUrl("/widerruf"), lastModified: now, changeFrequency: "yearly" },
   ];
-
-  const productRoutes: MetadataRoute.Sitemap = getProducts().map((p) => ({
-    url: absoluteUrl(`/shop/${p.slug}`),
-    lastModified: now,
-    changeFrequency: "monthly",
-  }));
 
   // Echtes Änderungsdatum statt `now`: Sonst meldet die Sitemap bei jedem Build
   // alle Artikel als frisch geändert und entwertet das Signal.
@@ -141,6 +130,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     };
   });
 
-  return [...staticRoutes, ...productRoutes, ...blogRoutes];
+  return [...staticRoutes, ...blogRoutes];
 }
 

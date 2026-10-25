@@ -54,12 +54,11 @@ export function Hero({
             className="object-cover object-[15%_50%] sm:object-[25%_50%]"
           />
         )}
-        {/* Das Auge ist stellenweise fast weiß. Ohne diese Abdunkelung ist die
-            helle Schrift darauf nicht lesbar. Auf Mobile liegt der Text über dem
-            ganzen Bild, ab `sm` nur links – daher zwei Verläufe. */}
+        {/* Leichte Abdunkelung nur hinter dem Text, damit das Auge sichtbar
+            bleibt und die weiße Schrift trotzdem lesbar ist. */}
         <div
           aria-hidden="true"
-          className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/55 to-black/75 sm:bg-gradient-to-r sm:from-black/80 sm:via-black/55 sm:to-black/10"
+          className="absolute inset-0 bg-gradient-to-b from-black/45 via-black/25 to-black/40 sm:bg-gradient-to-r sm:from-black/50 sm:via-black/20 sm:to-transparent"
         />
         <div className="relative z-10 max-w-2xl">
           <p className="text-base font-medium text-white/90 sm:text-lg">

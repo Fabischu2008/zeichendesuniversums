@@ -5,6 +5,8 @@ import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
   PRODUCT_ID_COACHING_EINFLUSS,
   PRODUCT_ID_COMPAT_PAARANALYSE,
+  PRODUCT_ID_READING_RELATIONSHIP,
+  PRODUCT_ID_READING_TAROT_60,
 } from "@/lib/cms";
 import {
   encodeAstroSuccessPack,
@@ -187,6 +189,17 @@ export async function createCheckoutSessionForProduct(
     return {
       error:
         "Das Einfluss Coaching wird nur nach einem persönlichen Erstgespräch vergeben und kann nicht direkt gekauft werden.",
+      kind: "input",
+    };
+  }
+
+  if (
+    product.id === PRODUCT_ID_READING_TAROT_60 ||
+    product.id === PRODUCT_ID_READING_RELATIONSHIP
+  ) {
+    return {
+      error:
+        "Dieses Reading wird aktuell nicht angeboten. Bitte buche das persönliche Reading zu Geburtshoroskop und Energieflüssen.",
       kind: "input",
     };
   }

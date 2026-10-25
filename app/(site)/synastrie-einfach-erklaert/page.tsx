@@ -131,10 +131,10 @@ export default function SynastrieEinfachErklaertPage() {
             Jetzt Synastrie starten
           </Link>
           <Link
-            href="/reading/beziehung"
+            href="/reading"
             className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-5 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10"
           >
-            Zum Beziehungs-Reading
+            Zum Reading
           </Link>
         </div>
       </section>

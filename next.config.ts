@@ -29,6 +29,31 @@ const nextConfig: NextConfig = {
         destination: "/",
         permanent: true,
       },
+      {
+        source: "/reading/beziehung",
+        destination: "/reading",
+        permanent: true,
+      },
+      {
+        source: "/shop/reading-tarot-60",
+        destination: "/reading",
+        permanent: true,
+      },
+      {
+        source: "/shop/reading-beziehung",
+        destination: "/reading",
+        permanent: true,
+      },
+      {
+        source: "/shop/reading-profil-30",
+        destination: "/reading",
+        permanent: true,
+      },
+      {
+        source: "/shop/coaching-einfluss",
+        destination: "/coaching",
+        permanent: true,
+      },
     ];
   },
   async rewrites() {

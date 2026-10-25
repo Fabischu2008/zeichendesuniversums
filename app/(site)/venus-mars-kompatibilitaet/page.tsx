@@ -118,8 +118,8 @@ export default function VenusMarsKompatibilitaetPage() {
           <Link href="/tools/compatibility" className="inline-flex h-11 items-center justify-center rounded-full bg-violet-700 px-5 text-sm font-semibold text-white hover:bg-violet-600">
             Venus-Mars im Vergleich sehen
           </Link>
-          <Link href="/reading/beziehung" className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-5 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10">
-            Beziehungs-Reading
+          <Link href="/reading" className="inline-flex h-11 items-center justify-center rounded-full border border-black/10 px-5 text-sm font-medium hover:bg-black/5 dark:border-white/15 dark:hover:bg-white/10">
+            Zum Reading
           </Link>
         </div>
       </section>

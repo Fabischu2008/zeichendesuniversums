@@ -40,7 +40,6 @@ const columns = [
       { href: "/freebie-auswahl", label: "Kostenlose Guides" },
       { href: "/beziehung", label: "Beziehung & Paaranalyse" },
       { href: "/reading", label: "Persönliches Reading" },
-      { href: "/reading/beziehung", label: "Beziehungs-Reading" },
       { href: "/coaching", label: "Coaching" },
       { href: "/shop", label: "Shop" },
     ],

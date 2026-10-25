@@ -97,15 +97,15 @@ const products: Product[] = [
   },
   {
     id: PRODUCT_ID_READING_PROFILE_30,
-    name: "Astro-Reading",
+    name: "Persönliches Reading",
     slug: "reading-profil-30",
     price: PRICE_READING_PROFILE_30,
     description:
-      "30 Min Astro-Reading mit Analyse deines Geburtshoroskop-Bilds und klaren Impulsen fuer Alltag und Beziehungen.",
+      "30 Minuten: Geburtshoroskop und Energieflüsse – klar, persönlich, mit nächsten Schritten.",
     image: "/auge.jpg",
     category: "guide",
     content:
-      "Halbe Stunde Reading mit Analyse deines Geburtsbilds/Horoskops, Selbstreflexion und konkreten Next Steps fuer deinen Alltag.",
+      "Wir gehen dein Geburtshoroskop durch und lesen die Energieflüsse: wo Kraft frei fließt, wo sie sich staut, und was du konkret damit machen kannst.",
   },
   {
     id: PRODUCT_ID_READING_TAROT_60,
@@ -113,11 +113,12 @@ const products: Product[] = [
     slug: "reading-tarot-60",
     price: PRICE_READING_TAROT_60,
     description:
-      "60 Min Reading mit gleicher Horoskop-Analyse wie im Astro-Reading plus Tarot-Legung zu einem speziellen Thema.",
+      "60 Min Reading mit Horoskop-Analyse plus Tarot-Legung zu einem speziellen Thema.",
     image: "/auge.jpg",
     category: "guide",
     content:
-      "60 Minuten Reading: Analyse deines Geburtsbilds/Horoskops und zusaetzlich eine Tarot-Legung zu einem speziellen Thema mit konkreten Impulsen.",
+      "60 Minuten Reading: Analyse deines Geburtsbilds und zusätzlich eine Tarot-Legung.",
+    unlisted: true,
   },
   {
     id: PRODUCT_ID_READING_RELATIONSHIP,
@@ -125,11 +126,12 @@ const products: Product[] = [
     slug: "reading-beziehung",
     price: PRICE_READING_RELATIONSHIP,
     description:
-      "Beziehungsfokus mit klaren Impulsen zu Verbindung, Kommunikation und wiederkehrenden Mustern.",
+      "Beziehungsfokus mit Impulsen zu Verbindung, Kommunikation und Mustern.",
     image: "/auge.jpg",
     category: "compatibility",
     content:
-      "Fokussiertes Reading fuer Beziehungsthemen mit konkreten Schritten zu Naehe, Grenzen, Kommunikation und Verbundenheit.",
+      "Fokussiertes Reading für Beziehungsthemen.",
+    unlisted: true,
   },
   {
     id: PRODUCT_ID_COACHING_EINFLUSS,
@@ -137,11 +139,12 @@ const products: Product[] = [
     slug: "coaching-einfluss",
     price: PRICE_COACHING_EINFLUSS,
     description:
-      "Intensive Begleitung mit persoenlichem Coach und 2 Calls pro Woche.",
+      "Intensive Begleitung mit persönlichem Coach und 2 Calls pro Woche.",
     image: "/auge.jpg",
     category: "guide",
     content:
-      "Premium-Coaching fuer tiefe Selbstreflexion und Einfluss auf dein eigenes System, um mehr Einklang, Verbundenheit und Wohlbefinden zu verankern.",
+      "Premium-Coaching für tiefe Selbstreflexion.",
+    unlisted: true,
   },
 ];
 

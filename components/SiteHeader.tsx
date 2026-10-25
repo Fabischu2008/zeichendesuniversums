@@ -8,7 +8,6 @@ const nav = [
   { href: "/beziehung", label: "Beziehung" },
   { href: "/blog", label: "Blog" },
   { href: "/reading", label: "Reading" },
-  { href: "/shop", label: "Shop" },
 ];
 
 // Im Mobile-Menü fehlt der Header-CTA, deshalb kommen Startseite und Guides dort dazu.

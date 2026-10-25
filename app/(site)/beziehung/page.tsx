@@ -74,9 +74,9 @@ const relationshipFaqs = [
       "Als nächsten Schritt kannst du direkt in die Paaranalyse wechseln und eure Konstellation tiefer einordnen.",
   },
   {
-    question: "Gibt es danach auch Reading oder Coaching?",
+    question: "Gibt es danach auch ein Reading?",
     answer:
-      "Ja. Nach dem Freebie kannst du bei Bedarf ein Beziehungs-Reading buchen oder ein Erstgespräch fürs Coaching anfragen, wenn du persönliche Begleitung willst.",
+      "Ja. Wenn du persönlich tiefer gehen willst, ist der nächste Schritt das Reading zu Geburtshoroskop und Energieflüssen.",
   },
 ] as const;
 

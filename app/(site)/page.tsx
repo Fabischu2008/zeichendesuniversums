@@ -81,10 +81,10 @@ const entryCards = [
     cta: "Zum Astrologie-Blog",
   },
   {
-    title: "Reading & Coaching",
-    body: "Persönliche Begleitung mit Readings oder Erstgespräch für Coaching.",
+    title: "Persönliches Reading",
+    body: "30 Minuten zu Geburtshoroskop und Energieflüssen – mit einem klaren nächsten Schritt.",
     href: "/reading",
-    cta: "Zu Reading & Coaching",
+    cta: "Zum Reading",
   },
 ] as const;
 
@@ -176,9 +176,9 @@ const homeFaqs = [
       "Die Tools liefern dir sofort tieferen Kontext, z. B. zu Big Three, Paaranalyse oder Bewusstsein. So bekommst du schneller Klarheit für deinen Alltag.",
   },
   {
-    question: "Wann machen Readings oder Coaching Sinn?",
+    question: "Wann macht ein Reading Sinn?",
     answer:
-      "Wenn du nach Guide und Tools tiefer gehen willst, sind Readings der nächste Schritt. Für persönliche Begleitung kannst du ein Erstgespräch fürs Coaching buchen.",
+      "Wenn du nach Guide und Tools tiefer gehen willst: 30 Minuten zu deinem Geburtshoroskop und den Energieflüssen, mit einem konkreten nächsten Schritt.",
   },
 ] as const;
 
