@@ -6,6 +6,7 @@ import { AsyncCheckoutPaymentPoller } from "@/components/AsyncCheckoutPaymentPol
 import { CompatibilityAccessLinksCard } from "@/components/CompatibilityAccessLinksCard";
 import { ProfileAccessLinkCard } from "@/components/ProfileAccessLinkCard";
 import { StripeCompatibilityEmailOnce } from "@/components/StripeCompatibilityEmailOnce";
+import { BookEmailButton } from "@/components/BookEmailButton";
 import { StripeProfileEmailOnce } from "@/components/StripeProfileEmailOnce";
 import { StripSuccessEmailQuery } from "@/components/StripSuccessEmailQuery";
 import { buildCompatibilityAccessLinks } from "@/lib/compatibility-access-links";
@@ -333,57 +334,68 @@ export default async function SuccessPage({
     const bookDownloadUrl =
       bookToken ? buildBookDownloadUrl(getSiteUrl(), bookToken) : null;
     const bookReady = bookBalanceFileExists();
-    const showStripeMail =
+    const canEmail =
       Boolean(sessionId) && bookPaid.ok && Boolean(bookPaid.customerEmail);
 
     return (
       <>
         <AccessBrandHeader />
-        {showStripeMail ? (
-          <StripeProfileEmailOnce sessionId={sessionId!} />
-        ) : null}
         <main className="mx-auto w-full max-w-4xl px-4 py-8">
-          <div className="mx-auto max-w-2xl space-y-6">
+          <div className="mx-auto max-w-xl space-y-6">
             <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/[0.08] p-6 sm:p-8">
               <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/35 bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-800">
                 <span aria-hidden="true">✓</span>
                 {pollAsync ? "Zahlung wird bestätigt …" : "Bezahlt"}
               </div>
-              <h1 className="mt-3 text-2xl font-semibold tracking-tight">
-                Danke für deinen Kauf
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight sm:text-3xl">
+                Hier ist dein Buch
               </h1>
               <p className="mt-2 text-sm text-black/70">
                 {pollAsync
-                  ? "Bei SEPA oder ähnlichen Methoden bestätigt Stripe die Zahlung oft erst kurz nach der Rückkehr. Danach kommt das Buch automatisch an die Checkout-E-Mail."
+                  ? "Bei SEPA oder ähnlichen Methoden bestätigt Stripe die Zahlung oft erst kurz nach der Rückkehr. Danach kannst du das PDF hier laden."
                   : isBookCallProduct
-                    ? "Buch + Perspektivenwechsel ist bezahlt. Das Buch geht an die E-Mail aus dem Checkout — und du kannst es hier direkt laden."
-                    : "Dein Sternzeichen in Balance ist bezahlt. Das Buch geht an die E-Mail aus dem Checkout — und du kannst es hier direkt laden."}
+                    ? "Buch + Perspektivenwechsel ist bezahlt. Speichere das PDF jetzt – den Call buchst du direkt darunter."
+                    : "Danke. Du kannst das Buch jetzt direkt als PDF speichern."}
               </p>
               {!bookReady && !pollAsync ? (
                 <p className="mt-4 text-sm text-black/60">
-                  Die Datei wird gerade hinterlegt. Sobald sie bereit ist, kommt
-                  sie automatisch per E-Mail.
+                  Die Datei wird gerade hinterlegt. Bitte die Seite in einem
+                  Moment neu laden.
                 </p>
               ) : null}
-              <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+              <div className="mt-6 flex flex-col gap-3">
                 {bookDownloadUrl && bookReady ? (
-                  <a href={bookDownloadUrl} className={btnPrimary}>
-                    Buch herunterladen
+                  <a
+                    href={bookDownloadUrl}
+                    download
+                    className={`${btnPrimary} w-full`}
+                  >
+                    PDF herunterladen
                   </a>
+                ) : null}
+                {canEmail && bookReady ? (
+                  <BookEmailButton
+                    sessionId={sessionId!}
+                    className={`${btnSecondary} w-full`}
+                  />
                 ) : null}
                 {isBookCallProduct ? (
                   <a
                     href={readingCalendlyUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className={
-                      bookDownloadUrl && bookReady ? btnSecondary : btnPrimary
-                    }
+                    className={`${btnSecondary} w-full`}
                   >
                     Termin für den Call wählen
                   </a>
                 ) : null}
               </div>
+              {bookDownloadUrl && bookReady ? (
+                <p className="mt-4 text-xs text-black/50">
+                  Falls der Download nicht startet, tippe mit gedrückter Taste
+                  auf den Button oder öffne den Link im Browser.
+                </p>
+              ) : null}
               {pollAsync && sessionId ? (
                 <AsyncCheckoutPaymentPoller
                   sessionId={sessionId}

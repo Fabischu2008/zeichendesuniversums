@@ -7,6 +7,7 @@ import type { ZodiacSign } from "@/lib/astro/signs";
 import { LEGAL_PROVIDER } from "@/lib/legal";
 import {
   BOOK_CHECKOUT_HREF,
+  BOOK_PREVIEWS,
   BOOK_PRICE,
   CALL_CHECKOUT_HREF,
   CALL_PRICE,
@@ -31,6 +32,9 @@ const ghostBtn =
 
 export function SalesLanding() {
   const [sign, setSign] = useState<ZodiacSign | null>(null);
+  const [preview, setPreview] = useState<(typeof BOOK_PREVIEWS)[number] | null>(
+    null,
+  );
   const opposite = sign ? SIGN_OPPOSITE[sign] : null;
 
   const bookCta = useMemo(
@@ -178,6 +182,40 @@ export function SalesLanding() {
         <section id="blick" className="border-t border-white/10 px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-6xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e8d5a3]">
+              Ein Blick hinein
+            </p>
+            <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
+              Drei Seiten aus dem Buch.
+            </h2>
+            <p className="mt-4 max-w-2xl text-base leading-7 text-[#c8bfd8]">
+              Cover, die sechs Achsen und eine Zeichenseite. Tippe auf eine
+              Seite, um sie größer zu sehen.
+            </p>
+            <div className="mt-10 grid gap-4 sm:grid-cols-3">
+              {BOOK_PREVIEWS.map((page) => (
+                <button
+                  key={page.src}
+                  type="button"
+                  onClick={() => setPreview(page)}
+                  className="group overflow-hidden rounded-3xl border border-white/10 bg-[#16102a] text-left transition hover:border-[#e8d5a3]/50"
+                >
+                  <span className="relative block aspect-[3/4] overflow-hidden">
+                    <Image
+                      src={page.src}
+                      alt={page.alt}
+                      fill
+                      sizes="(max-width: 640px) 100vw, 33vw"
+                      className="object-cover object-top transition duration-300 group-hover:scale-[1.02]"
+                    />
+                  </span>
+                  <span className="block px-4 py-3 text-sm font-medium text-[#e8d5a3]">
+                    {page.label}
+                  </span>
+                </button>
+              ))}
+            </div>
+
+            <p className="mt-16 text-xs font-semibold uppercase tracking-[0.22em] text-[#e8d5a3]">
               Das Zeichen hinter allen Zeichen
             </p>
             <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">
@@ -595,6 +633,32 @@ export function SalesLanding() {
           {bookCta}
         </Link>
       </div>
+
+      {preview ? (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center bg-[#0b0618]/85 p-4 backdrop-blur-sm"
+          role="dialog"
+          aria-modal="true"
+          aria-label={preview.alt}
+          onClick={() => setPreview(null)}
+        >
+          <button
+            type="button"
+            className="absolute right-4 top-4 rounded-full border border-white/20 bg-[#0b0618]/70 px-4 py-2 text-sm text-[#f6efe2]"
+            onClick={() => setPreview(null)}
+          >
+            Schließen
+          </button>
+          <Image
+            src={preview.src}
+            alt={preview.alt}
+            width={804}
+            height={1137}
+            className="max-h-[90vh] w-auto max-w-full rounded-2xl border border-white/15 shadow-2xl"
+            onClick={(e) => e.stopPropagation()}
+          />
+        </div>
+      ) : null}
     </div>
   );
 }

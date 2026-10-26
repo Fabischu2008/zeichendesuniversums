@@ -56,6 +56,24 @@ export const SALES_SIGNS = ZODIAC_SIGNS.map((sign) => ({
   opposite: SIGN_OPPOSITE[sign],
 }));
 
+export const BOOK_PREVIEWS = [
+  {
+    src: "/images/book-preview/cover.jpg",
+    alt: "Cover: Dein Sternzeichen in Balance",
+    label: "Das Cover",
+  },
+  {
+    src: "/images/book-preview/achsen.jpg",
+    alt: "Seite zu den sechs Zeichen-Achsen",
+    label: "Die sechs Achsen",
+  },
+  {
+    src: "/images/book-preview/widder.jpg",
+    alt: "Beispielseite Widder mit Gegenpol Waage",
+    label: "Ein Zeichen, zwei Seiten",
+  },
+] as const;
+
 export const SALES_FAQS = [
   {
     question: "Brauche ich meine Geburtszeit?",
@@ -70,7 +88,7 @@ export const SALES_FAQS = [
   {
     question: "Wie erhalte ich das Buch?",
     answer:
-      "Digital, direkt nach dem Kauf. Du liest es auf jedem Gerät oder druckst es im A4-Format. Am Ende liegen vier helle Vorlagen, die Tinte sparen.",
+      "Direkt nach dem Kauf als PDF-Download – wie ein Freebie, nur für dich. Optional kannst du es dir per Knopfdruck an die Checkout-E-Mail schicken. Am Ende liegen vier helle Vorlagen, die Tinte sparen.",
   },
   {
     question: "Wie läuft der Perspektivenwechsel ab?",

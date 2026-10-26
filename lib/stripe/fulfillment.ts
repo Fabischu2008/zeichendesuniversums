@@ -1,15 +1,8 @@
 import Stripe from "stripe";
 import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
-  PRODUCT_ID_BOOK_BALANCE,
-  PRODUCT_ID_BOOK_BALANCE_CALL,
   PRODUCT_ID_COMPAT_PAARANALYSE,
 } from "@/lib/cms";
-import {
-  buildBookDownloadUrl,
-  createBookAccessToken,
-} from "@/lib/book-access-token";
-import { sendBookAccessEmail } from "@/lib/email-book-access";
 import { buildCompatibilityAccessLinks } from "@/lib/compatibility-access-links";
 import {
   sendCompatibilityAccessEmail,
@@ -131,7 +124,14 @@ export async function fulfillCheckoutSession(
   const book =
     profile.ok || compat?.ok ? null : await getPaidBookCheckoutSessionInfo(sid);
 
-  const info = profile.ok ? profile : compat?.ok ? compat : book;
+  if (book?.ok) {
+    return {
+      status: "skipped",
+      reason: "Buch: Download auf der Success-Seite, Mail nur auf Wunsch.",
+    };
+  }
+
+  const info = profile.ok ? profile : compat;
   if (!info?.ok) {
     return {
       status: "skipped",
@@ -145,25 +145,6 @@ export async function fulfillCheckoutSession(
   }
 
   const site = getSiteUrl();
-
-  if (book?.ok) {
-    const token = createBookAccessToken(sid);
-    if (!token) {
-      return { status: "failed", reason: "Download-Token nicht erzeugbar." };
-    }
-    const claim = await claimAccessMailSend(sid);
-    if (!claim.claimed) {
-      return { status: "skipped", reason: claim.reason ?? "Bereits versendet." };
-    }
-    return finish(
-      sid,
-      await sendBookAccessEmail({
-        to: recipient,
-        downloadUrl: buildBookDownloadUrl(site, token),
-        includeCall: book.includeCall,
-      }),
-    );
-  }
 
   if (profile.ok) {
     if (!profile.birthPayload) {
@@ -215,6 +196,4 @@ export async function fulfillCheckoutSession(
 export const DIGITAL_PRODUCT_IDS = [
   PRODUCT_ID_ASTRO_VOLLPROFIL,
   PRODUCT_ID_COMPAT_PAARANALYSE,
-  PRODUCT_ID_BOOK_BALANCE,
-  PRODUCT_ID_BOOK_BALANCE_CALL,
 ] as const;
