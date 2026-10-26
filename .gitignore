@@ -37,6 +37,9 @@ yarn-error.log*
 # vercel
 .vercel
 
+# Bezahltes Buch — nicht ins öffentliche Repo.
+/private/books/*.pdf
+
 # jetbrains / idea (keep project files optional, ignore user-specific)
 .idea/workspace.xml
 .idea/misc.xml

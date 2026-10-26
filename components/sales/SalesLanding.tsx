@@ -40,38 +40,59 @@ export function SalesLanding() {
 
   return (
     <div className="min-h-dvh bg-[#0b0618] text-[#f6efe2]">
-      <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0618]/90 backdrop-blur">
-        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-          <Link href="/" className="inline-flex items-center gap-2">
-            <Image
-              src="/images/logo-eye-inline.png"
-              alt=""
-              width={40}
-              height={40}
-              className="h-10 w-10 object-contain"
-              aria-hidden
-            />
-            <span className="text-sm font-semibold tracking-tight">
-              Zeichen des Universums
-            </span>
-          </Link>
-          <a href="#zeichen" className={ghostBtn + " h-10 px-4 text-xs sm:text-sm"}>
-            Dein Zeichen wählen
-          </a>
+      <div className="relative isolate">
+        <div className="pointer-events-none absolute inset-0 overflow-hidden">
+          <Image
+            src="/images/hero-cosmic-eye.png"
+            alt=""
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover object-[70%_42%] sm:object-[75%_45%]"
+            aria-hidden
+          />
+          <div
+            aria-hidden
+            className="absolute inset-0 bg-gradient-to-b from-[#0b0618]/50 via-[#0b0618]/25 to-[#0b0618] sm:bg-gradient-to-r sm:from-[#0b0618]/70 sm:via-[#0b0618]/25 sm:to-transparent"
+          />
+          <div
+            aria-hidden
+            className="absolute inset-x-0 bottom-0 h-28 bg-gradient-to-t from-[#0b0618] to-transparent sm:h-36"
+          />
         </div>
-      </header>
 
-      <main>
-        <section className="mx-auto grid max-w-6xl gap-10 px-4 py-14 sm:px-6 sm:py-20 lg:grid-cols-[1.15fr_0.85fr] lg:items-center">
-          <div>
+        <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0618]/20 backdrop-blur-sm">
+          <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
+            <Link href="/" className="inline-flex items-center gap-2">
+              <Image
+                src="/images/logo-eye-inline.png"
+                alt=""
+                width={40}
+                height={40}
+                className="h-10 w-10 object-contain"
+                aria-hidden
+              />
+              <span className="text-sm font-semibold tracking-tight">
+                Zeichen des Universums
+              </span>
+            </Link>
+            <a href="#zeichen" className={ghostBtn + " h-10 px-4 text-xs sm:text-sm"}>
+              Dein Zeichen wählen
+            </a>
+          </div>
+        </header>
+
+        <section className="relative z-10">
+          <div className="mx-auto flex min-h-[min(520px,72vh)] max-w-6xl flex-col justify-center px-4 py-12 sm:px-6 sm:py-16 lg:py-20">
+            <div className="min-w-0 w-full max-w-xl">
             <p className="text-xs font-semibold uppercase tracking-[0.22em] text-[#e8d5a3]">
               Kein Zufall, dass du gerade hier bist
             </p>
-            <h1 className="mt-4 text-4xl font-semibold tracking-tight sm:text-5xl lg:text-6xl">
+            <h1 className="mt-4 break-words text-4xl font-semibold tracking-tight sm:text-5xl">
               Du hast um ein Zeichen gebeten.
               <span className="mt-2 block text-[#e8d5a3]">Hier ist es.</span>
             </h1>
-            <p className="mt-6 max-w-xl text-base leading-7 text-[#c8bfd8] sm:text-lg">
+            <p className="mt-6 text-base leading-7 text-[#f6efe2]/90 sm:text-lg">
               Manchmal begegnet uns genau das, was wir gerade brauchen.{" "}
               <strong className="font-medium text-[#f6efe2]">
                 Dein Sternzeichen in Balance
@@ -79,7 +100,7 @@ export function SalesLanding() {
               ist das Bewusstseins-Buch, das dich in ein wacheres Jahr 2027
               begleitet.
             </p>
-            <p className="mt-4 max-w-xl text-base leading-7 text-[#c8bfd8]">
+            <p className="mt-4 text-base leading-7 text-[#f6efe2]/85">
               Erkenne dein Zeichen. Umarme deinen Gegenpol. Entdecke das
               Bewusstsein, das beides sieht.
             </p>
@@ -91,7 +112,7 @@ export function SalesLanding() {
                 Einen Blick hineinwerfen
               </a>
             </div>
-            <ul className="mt-6 space-y-1.5 text-sm text-[#c8bfd8]">
+            <ul className="mt-6 space-y-1.5 text-sm text-[#f6efe2]/80">
               <li>✦ 63 Seiten, sofort lesbar</li>
               <li>✦ Für alle 12 Sternzeichen</li>
               <li>✦ Mondtermine 2027 inklusive</li>
@@ -100,22 +121,12 @@ export function SalesLanding() {
               Auch mit persönlichem Call: Buch + Perspektivenwechsel ·{" "}
               {eur(CALL_PRICE)}
             </p>
-          </div>
-          <div className="relative isolate min-h-[280px] overflow-hidden rounded-[2rem] border border-white/10 bg-[#16102a] sm:min-h-[380px]">
-            <Image
-              src="/images/hero-cosmic-eye.png"
-              alt="Kosmisches Auge – Covermotiv"
-              fill
-              priority
-              className="object-cover object-center"
-              sizes="(max-width: 1024px) 100vw, 40vw"
-            />
-            <div
-              aria-hidden
-              className="absolute inset-0 bg-gradient-to-t from-[#0b0618] via-transparent to-transparent"
-            />
+            </div>
           </div>
         </section>
+      </div>
+
+      <main>
 
         <section className="border-t border-white/10 px-4 py-16 sm:px-6 sm:py-20">
           <div className="mx-auto max-w-6xl">

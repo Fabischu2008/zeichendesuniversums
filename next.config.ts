@@ -4,6 +4,9 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
+  outputFileTracingIncludes: {
+    "/*": ["./private/books/**/*"],
+  },
   images: {
     formats: ["image/avif", "image/webp"],
   },

@@ -1,6 +1,8 @@
 import type { ProfileTokenBirthPayload } from "@/lib/profile-access-token";
 import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
+  PRODUCT_ID_BOOK_BALANCE,
+  PRODUCT_ID_BOOK_BALANCE_CALL,
   PRODUCT_ID_COMPAT_PAARANALYSE,
 } from "@/lib/cms";
 import Stripe from "stripe";
@@ -210,6 +212,41 @@ export async function getPaidCompatibilityCheckoutSessionInfo(sessionId: string)
   const customerEmail = trimmed.length > 0 ? trimmed : null;
 
   return { ok: true, customerEmail, birthA, birthB };
+}
+
+export async function getPaidBookCheckoutSessionInfo(sessionId: string): Promise<{
+  ok: boolean;
+  customerEmail: string | null;
+  includeCall: boolean;
+}> {
+  const session = await retrieveCheckoutSession(sessionId);
+  if (!session) {
+    return { ok: false, customerEmail: null, includeCall: false };
+  }
+  if (!checkoutSessionPaymentOk(session)) {
+    return { ok: false, customerEmail: null, includeCall: false };
+  }
+
+  const meta = session.metadata ?? {};
+  const id = meta.cms_product_id ?? meta.productId ?? "";
+  const isBook =
+    id === PRODUCT_ID_BOOK_BALANCE || id === PRODUCT_ID_BOOK_BALANCE_CALL;
+  if (!isBook) {
+    return { ok: false, customerEmail: null, includeCall: false };
+  }
+
+  const raw =
+    (typeof session.customer_details?.email === "string"
+      ? session.customer_details.email
+      : null) ||
+    (typeof session.customer_email === "string" ? session.customer_email : null);
+  const trimmed = raw?.trim() ?? "";
+
+  return {
+    ok: true,
+    customerEmail: trimmed.length > 0 ? trimmed : null,
+    includeCall: id === PRODUCT_ID_BOOK_BALANCE_CALL,
+  };
 }
 
 /**
