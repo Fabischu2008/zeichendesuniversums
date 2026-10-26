@@ -14,6 +14,8 @@ import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
   PRODUCT_ID_COACHING_EINFLUSS,
   PRODUCT_ID_COMPAT_PAARANALYSE,
+  PRODUCT_ID_BOOK_BALANCE,
+  PRODUCT_ID_BOOK_BALANCE_CALL,
   PRODUCT_ID_READING_PROFILE_30,
   PRODUCT_ID_READING_RELATIONSHIP,
   PRODUCT_ID_READING_TAROT_60,
@@ -117,6 +119,8 @@ export default async function SuccessPage({
     productId === PRODUCT_ID_READING_PROFILE_30 ||
     productId === PRODUCT_ID_READING_TAROT_60 ||
     productId === PRODUCT_ID_READING_RELATIONSHIP;
+  const isBookCallProduct = productId === PRODUCT_ID_BOOK_BALANCE_CALL;
+  const isBookOnlyProduct = productId === PRODUCT_ID_BOOK_BALANCE;
   const isCoachingProduct = productId === PRODUCT_ID_COACHING_EINFLUSS;
   const unifiedCalendlyUrl =
     "https://calendly.com/zeichendesuniversums-info/meeting";
@@ -293,6 +297,49 @@ export default async function SuccessPage({
               >
                 Termin in Calendly buchen
               </a>
+              {canTrackAdsPurchase ? (
+                <AdsPurchaseConversionScript
+                  sendTo={adsSendTo!}
+                  value={conversionValue!}
+                  transactionId={sessionId!}
+                />
+              ) : null}
+            </section>
+          </div>
+        </main>
+      </>
+    );
+  }
+
+  if (isBookOnlyProduct || isBookCallProduct) {
+    return (
+      <>
+        <AccessBrandHeader />
+        <main className="mx-auto w-full max-w-4xl px-4 py-8">
+          <div className="mx-auto max-w-2xl space-y-6">
+            <section className="rounded-3xl border border-emerald-500/25 bg-emerald-500/[0.08] p-6 sm:p-8">
+              <div className="inline-flex items-center gap-2 rounded-full border border-emerald-500/35 bg-emerald-500/15 px-3 py-1 text-sm font-medium text-emerald-800">
+                <span aria-hidden="true">✓</span>
+                Bezahlt
+              </div>
+              <h1 className="mt-3 text-2xl font-semibold tracking-tight">
+                Danke für deinen Kauf
+              </h1>
+              <p className="mt-2 text-sm text-black/70">
+                {isBookCallProduct
+                  ? "Buch + Perspektivenwechsel ist bezahlt. Das Buch kommt an die E-Mail aus dem Checkout. Den Call buchst du direkt hier."
+                  : "Dein Sternzeichen in Balance ist bezahlt. Du bekommst das Buch an die E-Mail aus dem Checkout."}
+              </p>
+              {isBookCallProduct ? (
+                <a
+                  href={readingCalendlyUrl}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="mt-5 inline-flex h-11 items-center justify-center rounded-xl bg-black px-5 text-sm font-semibold text-white hover:bg-black/90"
+                >
+                  Termin für den Call wählen
+                </a>
+              ) : null}
               {canTrackAdsPurchase ? (
                 <AdsPurchaseConversionScript
                   sendTo={adsSendTo!}

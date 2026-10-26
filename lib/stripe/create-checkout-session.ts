@@ -5,6 +5,8 @@ import {
   PRODUCT_ID_ASTRO_VOLLPROFIL,
   PRODUCT_ID_COACHING_EINFLUSS,
   PRODUCT_ID_COMPAT_PAARANALYSE,
+  PRODUCT_ID_BOOK_BALANCE,
+  PRODUCT_ID_BOOK_BALANCE_CALL,
   PRODUCT_ID_READING_RELATIONSHIP,
   PRODUCT_ID_READING_TAROT_60,
 } from "@/lib/cms";
@@ -321,9 +323,12 @@ export async function createCheckoutSessionForProduct(
   }
 
   const cancelUrl =
-    product.id === PRODUCT_ID_COMPAT_PAARANALYSE
-      ? `${site}/tools/compatibility`
-      : `${site}/shop`;
+    product.id === PRODUCT_ID_BOOK_BALANCE ||
+    product.id === PRODUCT_ID_BOOK_BALANCE_CALL
+      ? `${site}/#angebot`
+      : product.id === PRODUCT_ID_COMPAT_PAARANALYSE
+        ? `${site}/tools/compatibility`
+        : `${site}/shop`;
 
   try {
     const session = await stripe.checkout.sessions.create({

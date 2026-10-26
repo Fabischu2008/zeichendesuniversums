@@ -63,6 +63,10 @@ export const PRODUCT_ID_READING_RELATIONSHIP = "p_reading_relationship" as const
 export const PRICE_READING_RELATIONSHIP = 44.44;
 export const PRODUCT_ID_COACHING_EINFLUSS = "p_coaching_einfluss" as const;
 export const PRICE_COACHING_EINFLUSS = 2500;
+export const PRODUCT_ID_BOOK_BALANCE = "p_book_balance" as const;
+export const PRICE_BOOK_BALANCE = 22.22;
+export const PRODUCT_ID_BOOK_BALANCE_CALL = "p_book_balance_call" as const;
+export const PRICE_BOOK_BALANCE_CALL = 77.77;
 
 export function checkoutHrefForProduct(productId: string): string {
   return `/checkout?productId=${encodeURIComponent(productId)}`;
@@ -144,6 +148,32 @@ const products: Product[] = [
     category: "guide",
     content:
       "Premium-Coaching für tiefe Selbstreflexion.",
+    unlisted: true,
+  },
+  {
+    id: PRODUCT_ID_BOOK_BALANCE,
+    name: "Dein Sternzeichen in Balance",
+    slug: "sternzeichen-in-balance",
+    price: PRICE_BOOK_BALANCE,
+    description:
+      "63 Seiten: dein Zeichen, dein Gegenpol und der kosmische Kalender 2027. Digital, sofort.",
+    image: "/images/hero-cosmic-eye.png",
+    category: "guide",
+    content:
+      "Bewusstseins-Buch für alle 12 Sternzeichen: Stärke, Schatten, Gegenpol, Übungen, Mantras und Mondtermine 2027.",
+    unlisted: true,
+  },
+  {
+    id: PRODUCT_ID_BOOK_BALANCE_CALL,
+    name: "Buch + Perspektivenwechsel",
+    slug: "sternzeichen-in-balance-call",
+    price: PRICE_BOOK_BALANCE_CALL,
+    description:
+      "Das Buch plus 20–30 Minuten persönlicher Call zu einer Situation, die dich gerade beschäftigt.",
+    image: "/images/hero-cosmic-eye.png",
+    category: "guide",
+    content:
+      "Digitales Buch und ein Call aus der dritten Perspektive: Zeichen, Gegenpol, nächster Schritt. Das Buch ist enthalten.",
     unlisted: true,
   },
 ];

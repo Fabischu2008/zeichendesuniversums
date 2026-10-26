@@ -25,22 +25,15 @@ export const metadata: Metadata = {
     "Zeichen des Universums",
   ],
   robots: {
-    index: true,
+    index: false,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
   },
-  alternates: { canonical: "/" },
+  alternates: { canonical: "/start" },
   openGraph: {
     title: `Zeichen des Universums · ${SITE_NAME}`,
     description:
       "Starte kostenlos mit dem passenden Freebie und gehe danach direkt in die Tools.",
-    url: absoluteUrl("/"),
+    url: absoluteUrl("/start"),
     locale: "de_DE",
     type: "website",
     images: [
