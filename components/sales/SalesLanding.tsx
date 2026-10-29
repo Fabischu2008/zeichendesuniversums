@@ -65,24 +65,27 @@ export function SalesLanding() {
           />
         </div>
 
-        <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0618]/20 backdrop-blur-sm">
+        <header className="sticky top-0 z-30 border-b border-white/10 bg-[#0b0618]/80 backdrop-blur-md">
           <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-3 sm:px-6">
-            <Link href="/" className="inline-flex items-center gap-2">
+            <Link href="/" className="inline-flex min-w-0 items-center gap-2">
               <Image
                 src="/images/logo-eye-inline.png"
                 alt=""
                 width={40}
                 height={40}
-                className="h-10 w-10 object-contain"
+                className="h-10 w-10 shrink-0 object-contain"
                 aria-hidden
               />
-              <span className="text-sm font-semibold tracking-tight">
+              <span className="truncate text-sm font-semibold tracking-tight">
                 Zeichen des Universums
               </span>
             </Link>
-            <a href="#zeichen" className={ghostBtn + " h-10 px-4 text-xs sm:text-sm"}>
-              Dein Zeichen wählen
-            </a>
+            <Link
+              href={BOOK_CHECKOUT_HREF}
+              className={`${goldBtn} h-10 shrink-0 px-4 text-xs sm:px-5 sm:text-sm`}
+            >
+              {sign ? `Buch für ${sign}` : "Buch sichern"} · {eur(BOOK_PRICE)}
+            </Link>
           </div>
         </header>
 
