@@ -156,11 +156,11 @@ const products: Product[] = [
     slug: "sternzeichen-in-balance",
     price: PRICE_BOOK_BALANCE,
     description:
-      "63 Seiten: dein Zeichen, dein Gegenpol und der kosmische Kalender 2027. Digital, sofort.",
+      "76 Seiten: dein Zeichen, dein Gegenpol und der kosmische Kalender 2027. Digital, sofort.",
     image: "/images/hero-cosmic-eye.png",
     category: "guide",
     content:
-      "Bewusstseins-Buch für alle 12 Sternzeichen: Stärke, Schatten, Gegenpol, Übungen, Mantras und Mondtermine 2027.",
+      "Bewusstseins-Workbook für alle 12 Sternzeichen: Stärke, Gegenpol, vier Stufen des Bewusstseins, Übungen und Mondtermine 2027.",
     unlisted: true,
   },
   {

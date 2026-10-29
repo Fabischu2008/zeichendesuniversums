@@ -117,7 +117,7 @@ export function SalesLanding() {
               </a>
             </div>
             <ul className="mt-6 space-y-1.5 text-sm text-[#f6efe2]/80">
-              <li>✦ 63 Seiten, sofort lesbar</li>
+              <li>✦ 76 Seiten, sofort lesbar</li>
               <li>✦ Für alle 12 Sternzeichen</li>
               <li>✦ Mondtermine 2027 inklusive</li>
             </ul>
@@ -189,7 +189,8 @@ export function SalesLanding() {
             </h2>
             <p className="mt-4 max-w-2xl text-base leading-7 text-[#c8bfd8]">
               Cover, die sechs Achsen und eine Zeichenseite. Tippe auf eine
-              Seite, um sie größer zu sehen.
+              Seite, um sie größer zu sehen – oder lade die Leseprobe (11
+              Seiten) herunter.
             </p>
             <div className="mt-10 grid gap-4 sm:grid-cols-3">
               {BOOK_PREVIEWS.map((page) => (
@@ -214,6 +215,13 @@ export function SalesLanding() {
                 </button>
               ))}
             </div>
+            <a
+              href="/downloads/Leseprobe-Dein-Sternzeichen-in-Balance.pdf"
+              download
+              className={`${ghostBtn} mt-8`}
+            >
+              Leseprobe herunterladen
+            </a>
 
             <p className="mt-16 text-xs font-semibold uppercase tracking-[0.22em] text-[#e8d5a3]">
               Das Zeichen hinter allen Zeichen
@@ -279,7 +287,7 @@ export function SalesLanding() {
                 [
                   "Teil II",
                   "Der Tierkreis als Spiegel",
-                  "Alle 12 Zeichen auf je zwei Seiten: Stärke, Schatten, Gegenpol, Übung, Mantra, Körperanker, Mondtermine 2027.",
+                  "Alle 12 Zeichen: Profil, Alltagsexperiment, vier Stufen des Bewusstseins, Mantra und Mondtermine 2027.",
                 ],
                 [
                   "Teil III",
@@ -516,8 +524,8 @@ export function SalesLanding() {
                 </p>
                 <p className="mt-1 text-xs text-[#c8bfd8]">einmalig · digital</p>
                 <ul className="mt-6 space-y-2 text-sm leading-6 text-[#c8bfd8]">
-                  <li>✦ 63 Seiten, Lila-Gold-Design</li>
-                  <li>✦ Alle 12 Zeichen mit Gegenpol</li>
+                  <li>✦ 76 Seiten, Lila-Gold-Design</li>
+                  <li>✦ Alle 12 Zeichen mit Gegenpol und vier Stufen</li>
                   <li>✦ Bewusstseinsübungen und 7-Tage-Weg</li>
                   <li>✦ Kosmischer Kalender 2027</li>
                   <li>✦ 4 Vorlagen zum Ausdrucken</li>

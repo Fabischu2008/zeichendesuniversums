@@ -15,7 +15,7 @@ export const metadata: Metadata = {
     absolute: "Dein Sternzeichen in Balance · Zeichen des Universums",
   },
   description:
-    "63 Seiten Bewusstseins-Buch für alle 12 Sternzeichen: Zeichen, Gegenpol und kosmischer Kalender 2027. Digital 22,22 € – oder mit persönlichem Call 77,77 €.",
+    "76 Seiten Bewusstseins-Buch für alle 12 Sternzeichen: Zeichen, Gegenpol und kosmischer Kalender 2027. Digital 22,22 € – oder mit persönlichem Call 77,77 €.",
   alternates: { canonical: "/" },
   openGraph: {
     title: `Dein Sternzeichen in Balance · ${SITE_NAME}`,
